@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from .models import Complaint
+from .forms import Complaint_form
 
 User = get_user_model()
 
@@ -13,6 +14,19 @@ def previous(request):
     return render(
         request, "complaints/previous_requests.html", context={"complaints": complaints}
     )
+
+
+def complaint_register(request):
+    if not request.user.is_authenticated:
+        return render(request, "registration/home.html", context={"title": "home"})
+
+    form = Complaint_form(request.POST, request.FILES)
+    if form.is_valid():
+        form_obj = form.save(commit=False)
+        form_obj.user = request.user
+        form_obj.save()
+        message.success(request, "Your Complaint has been Successfully Registered")
+        return render(request, "registration/home.html", context={"title": "home"})
 
 
 # TODO

@@ -36,6 +36,8 @@ class Complaint(models.Model):
     resolved_at = models.DateTimeField()
     remark = models.TextField()
     remark_to_user = models.TextField()
+    urgency = models.BooleanField(default=False)
+    urgency_reason = models.TextField()
     handler = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="handler"
     )
