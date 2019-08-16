@@ -108,3 +108,6 @@ venv.bak/
 
 # secrets
 secrets.py
+
+# migrations
+migrations
