@@ -111,3 +111,6 @@ secrets.py
 
 # migrations
 migrations
+
+# virtual environment
+Portal
