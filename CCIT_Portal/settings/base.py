@@ -114,7 +114,13 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+
+# Custom User Model
+
 AUTH_USER_MODEL = "users.CustomUser"
+
+
+# Authentication Backends for bits-mail login
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
@@ -125,3 +131,20 @@ SITE_ID = 1
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
+
+
+# Allowed domains for login
+
+ALLOWED_DOMAINS = ["hyderabad.bits-pilani.ac.in"]
+
+
+# Allauth settings
+
+LOGIN_REDIRECT_URL = "/home"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/logout"
+ACCOUNT_SESSION_REMEMBER = True
+SOCIALACCOUNT_ADAPTER = "users.adapters.CustomSocialAccountAdapter"
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDER = {
+    "google": {"SCOPE": ["profile", "email"], "AUTH_PARAMS": {"access_type": "online"}}
+}

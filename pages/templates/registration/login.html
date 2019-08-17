@@ -1,0 +1,16 @@
+{% extends "registration/base.html" %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message|safe }}</p>
+    {% endfor %}
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+
+{% endblock content %}
