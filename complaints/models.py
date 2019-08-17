@@ -38,7 +38,7 @@ class Complaint(models.Model):
     remark_to_user = models.TextField()
     urgency = models.BooleanField(default=False)
     urgency_reason = models.TextField()
-    contact_no = models.IntegerField(null=False)
+    contact_no = models.PositiveIntegerField(null=False)
     room_no = models.TextField(null=False)
     avail_start_time = models.TimeField(null=False)
     avail_end_time = models.TimeField(null=False)
