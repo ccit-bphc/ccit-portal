@@ -20,7 +20,7 @@ from complaints import urls as complaints_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("home/", pages_views.home, name="home"),
     path("contact/", pages_views.contact, name="contact-us"),
-    path("complain/", include(complaints_urls)),
+    path("home/", include(complaints_urls)),
+    # path("", include(complaints_urls)),
 ]
