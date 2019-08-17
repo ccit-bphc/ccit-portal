@@ -26,7 +26,7 @@ def complaint_register(request):
         form_obj = form.save(commit=False)
         form_obj.user = request.user
         form_obj.save()
-        message.success(request, "Your Complaint has been Successfully Registered")
+        messages.success(request, "Your Complaint has been Successfully Registered")
         return render(request, "registration/home.html", context={"title": "home"})
     else:
         form = Complaint_form()
