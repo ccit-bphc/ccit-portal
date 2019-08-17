@@ -17,8 +17,8 @@ def previous(request):
 
 
 def complaint_register(request):
-    #if not request.user.is_authenticated:
-     #   return render(request, "registration/home.html", context={"title": "home"})
+    if not request.user.is_authenticated:
+        return render(request, "registration/home.html", context={"title": "home"})
 
     form = Complaint_form(request.POST)
     if form.is_valid():
