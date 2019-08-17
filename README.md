@@ -1,3 +1,7 @@
-# CCIT Complaint Portal
+# CCIT Portal
 
-Complaint Portal for Internet Related Problems in BPHC
+Contains the Complaint Portal for Internet Related Problems in BPHC.
+
+
+## Contributing
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
