@@ -19,7 +19,7 @@ class Complaint_form(forms.ModelForm):
             "remark": ("Complaint Details"),
             "contact_no": ("Contact Number"),
             "room_no": ("Room Number"),
-            #"avail_start_time": ("Complaint Details"),
+            "avail_start_time": ("Complaint Details"),
         }
         widgets = {"contact_no": forms.Textarea(attrs={"cols": 20, "rows": 1})}
 

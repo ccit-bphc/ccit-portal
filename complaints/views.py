@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
-from django.contrib import messages
 from .models import Complaint
 from .forms import Complaint_form
+from django.contrib import messages
 
 User = get_user_model()
 
@@ -18,8 +18,8 @@ def previous(request):
 
 
 def complaint_register(request):
-    # if not request.user.is_authenticated:
-    #  return render(request, "registration/home.html", context={"title": "home"})
+    if not request.user.is_authenticated:
+        return render(request, "registration/home.html", context={"title": "home"})
 
     form = Complaint_form(request.POST)
     if form.is_valid():
