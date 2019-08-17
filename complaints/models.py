@@ -38,6 +38,10 @@ class Complaint(models.Model):
     remark_to_user = models.TextField()
     urgency = models.BooleanField(default=False)
     urgency_reason = models.TextField()
+    contact_no = models.IntegerField(null=False)
+    room_no = models.TextField(null=False)
+    avail_start_time = models.TimeField(null=False)
+    avail_end_time = models.TimeField(null=False)
     handler = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="handler"
     )
