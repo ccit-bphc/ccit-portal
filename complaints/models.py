@@ -31,7 +31,7 @@ class Complaint(models.Model):
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
     category = models.CharField(max_length=2, choices=CATEGORY_CHOICES)
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=REGISTERED)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField()
     remark = models.TextField()
@@ -48,3 +48,26 @@ class Complaint(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.category} - {self.id}"
+
+
+class UnblockRequest(models.Model):
+    REGISTERED = "RD"
+    DONE = "DN"
+    CANCELLED = "CD"
+
+    STATUS_CHOICES = (
+        (REGISTERED, "Registered"),
+        (DONE, "Done"),
+        (CANCELLED, "Cancelled"),
+    )
+
+    User = get_user_model()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requestee")
+    url = models.TextField()
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=REGISTERED)
+    request_time = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField()
+    remark_to_user = models.TextField()
+    handler = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="resolver"
+    )
