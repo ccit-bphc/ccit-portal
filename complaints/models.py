@@ -1,7 +1,6 @@
+"""Module for Creating Complaints Model"""
 from django.db import models
 from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 
 class Complaint(models.Model):
@@ -29,6 +28,7 @@ class Complaint(models.Model):
         (CATEGORY_4, "CATEGORY_4"),
     )
 
+    User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
     category = models.CharField(max_length=2, choices=CATEGORY_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES)

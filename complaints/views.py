@@ -1,13 +1,12 @@
+"""Module for creating views to manage user complaints"""
 from django.shortcuts import render
-from django.contrib.auth import get_user_model
 from django.contrib import messages
 from .models import Complaint
-from .forms import Complaint_form, Handle_form
-
-User = get_user_model()
+from .forms import ComplaintForm, ComplaintHandleForm
 
 
 def previous(request):
+    """View for displaying previous complaints of the user"""
     if not request.user.is_authenticated:
         return render(request, "registration/home.html", context={"title": "home"})
     user = request.user
@@ -17,11 +16,11 @@ def previous(request):
     )
 
 
-def complaint_register(request):
+def register_complaint(request):
     if not request.user.is_authenticated:
         return render(request, "registration/home.html", context={"title": "home"})
 
-    form = Complaint_form(request.POST)
+    form = ComplaintForm(request.POST)
     if form.is_valid():
         form_obj = form.save(commit=False)
         form_obj.user = request.user
@@ -29,15 +28,15 @@ def complaint_register(request):
         messages.success(request, "Your Complaint has been Successfully Registered")
         return render(request, "registration/home.html", context={"title": "home"})
     else:
-        form = Complaint_form()
+        form = ComplaintForm()
         return render(request, "complaints/complaints_register.html", {"form": form})
 
 
-def complaint_handle(request):
+def handle_complaint(request):
     if not request.user.is_authenticated:
         return render(request, "registration/home.html", context={"title": "home"})
 
-    form = Handle_form(request.POST)
+    form = ComplaintHandleForm(request.POST)
     if form.is_valid():
         form_obj = form.save(commit=False)
         form_obj.handler = request.user
@@ -56,7 +55,7 @@ def complaint_handle(request):
         )
 
 
-# TODO
 def open_site(request):
+    """View For Handling Request for unblocking websites"""
     if request.method == "POST":
         pass
