@@ -21,12 +21,20 @@ class ComplaintForm(forms.ModelForm):
 class ComplaintHandleForm(forms.ModelForm):
     class Meta:
         model = models.Complaint
-        fields = ("status", "remark_to_user", "resolved_at")
+        fields = ("id", "status", "remark_to_user")
 
 
-class OpenSiteForm(forms.ModelForm):
+class UnblockRequestForm(forms.ModelForm):
     """Model Form for handling requests for unblocking websites"""
 
     class Meta:
-        model = models.Complaint
-        fields = ("category", "remark")
+        model = models.UnblockRequest
+        fields = ("url", "reason")
+
+
+class UnblockHandleForm(forms.ModelForm):
+    """Model Form for resolving requests for unblocking websites"""
+
+    class Meta:
+        model = models.UnblockRequest
+        fields = ("id", "status", "remark_to_user")
