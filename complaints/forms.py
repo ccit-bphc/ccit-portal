@@ -1,8 +1,9 @@
+"""Module containing Model forms for receiving and  handling complaints """
 from django import forms
 from . import models
 
 
-class Complaint_form(forms.ModelForm):
+class ComplaintForm(forms.ModelForm):
     class Meta:
         model = models.Complaint
         fields = (
@@ -15,17 +16,17 @@ class Complaint_form(forms.ModelForm):
             "avail_start_time",
             "avail_end_time",
         )
-        labels = {
-            "remark": ("Complaint Details"),
-            "contact_no": ("Contact Number"),
-            "room_no": ("Room Number"),
-            "avail_start_time": ("Complaint Details"),
-        }
-        widgets = {"contact_no": forms.Textarea(attrs={"cols": 20, "rows": 1})}
 
 
-class OpenSite_form(forms.ModelForm):
+class ComplaintHandleForm(forms.ModelForm):
+    class Meta:
+        model = models.Complaint
+        fields = ("status", "remark_to_user", "resolved_at")
+
+
+class OpenSiteForm(forms.ModelForm):
+    """Model Form for handling requests for unblocking websites"""
+
     class Meta:
         model = models.Complaint
         fields = ("category", "remark")
-
