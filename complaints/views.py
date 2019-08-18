@@ -19,7 +19,7 @@ def previous(request):
 
 def complaint_register(request):
     if not request.user.is_authenticated:
-         return render(request, "registration/home.html", context={"title": "home"})
+        return render(request, "registration/home.html", context={"title": "home"})
 
     form = Complaint_form(request.POST)
     if form.is_valid():
@@ -42,18 +42,18 @@ def complaint_handle(request):
         form_obj = form.save(commit=False)
         form_obj.handler = request.user
         form_obj.save()
-        if request.POST.get('status')=='DN':
+        if request.POST.get("status") == "DN":
             messages.success(request, "The Complaint has been Successfully Resolved")
-        if request.POST.get('status')=='CD':
+        if request.POST.get("status") == "CD":
             messages.success(request, "The Complaint has been Successfully Cancelled")
         return render(request, "registration/home.html", context={"title": "home"})
     else:
         complaints = Complaint.object.filter(status="RD").order_by("-uploaded_at")
         return render(
-        request, "complaints/handle_requests.html",context={"complaints":complaints}
-    )
-
-
+            request,
+            "complaints/handle_requests.html",
+            context={"complaints": complaints},
+        )
 
 
 # TODO
