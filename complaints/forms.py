@@ -23,6 +23,13 @@ class Complaint_form(forms.ModelForm):
         }
         widgets = {"contact_no": forms.Textarea(attrs={"cols": 20, "rows": 1})}
 
+class Handle_form(forms.ModelForm):
+    class Meta:
+        model=models.Complaint
+        fields=("status","remark_to_user","resolved_at")
+
+
+
 
 class OpenSite_form(forms.ModelForm):
     class Meta:
