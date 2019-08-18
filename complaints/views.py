@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from .models import Complaint
-from .forms import Complaint_form
+from .forms import Complaint_form, Handle_form
 
 User = get_user_model()
 
@@ -31,6 +31,29 @@ def complaint_register(request):
     else:
         form = Complaint_form()
         return render(request, "complaints/complaints_register.html", {"form": form})
+
+
+def complaint_handle(request):
+    if not request.user.is_authenticated:
+        return render(request, "registration/home.html", context={"title": "home"})
+
+    form = Handle_form(request.POST)
+    if form.is_valid():
+        form_obj = form.save(commit=False)
+        form_obj.handler = request.user
+        form_obj.save()
+        if request.POST.get('status')=='DN':
+            messages.success(request, "The Complaint has been Successfully Resolved")
+        if request.POST.get('status')=='CD':
+            messages.success(request, "The Complaint has been Successfully Cancelled")
+        return render(request, "registration/home.html", context={"title": "home"})
+    else:
+        complaints = Complaint.object.filter(status="RD").order_by("-uploaded_at")
+        return render(
+        request, "complaints/handle_requests.html",context={"complaints":complaints}
+    )
+
+
 
 
 # TODO
