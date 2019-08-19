@@ -30,6 +30,6 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                 (
                     f"You are already logged in as {request.user.username}. "
                     "Please logout first to login as another user"
-                )
+                ),
             )
             raise ImmediateHttpResponse(redirect("home"))
