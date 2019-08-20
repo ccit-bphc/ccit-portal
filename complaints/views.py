@@ -1,5 +1,5 @@
 """Module for creating views to manage user complaints"""
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -19,9 +19,41 @@ def previous(request):
     """View for displaying previous complaints of the user"""
     user = request.user
     complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
     return render(
-        request, "complaints/previous_requests.html", context={"complaints": complaints}
+        request,
+        "complaints/previous_requests.html",
+        context={"complaints": complaints, "unblocks": unblocks},
     )
+
+
+def cancel_complaint(request, pk: int):
+    """User can cancel their own complaint"""
+    if request.method != "POST":
+        return redirect("previous-requests")
+    user = request.user
+    complaint = Complaint.objects.get(pk=pk)
+    if complaint.user != user:
+        return redirect("previous-requests")
+    complaint.handler = user
+    complaint.resolved_at = timezone.now()
+    complaint.status = complaint.CANCELLED
+    complaint.save()
+    messages.success(request, "Your Complaint has been Successfully Cancelled.")
+    return redirect("previous-requests")
+
+
+def cancel_unblock_request(request, pk: int):
+    """User can cancel their own unblock request"""
+    if request.method != "POST":
+        return redirect("previous-requests")
+    user = request.user
+    unblock = UnblockRequest.objects.get(pk=pk)
+    if unblock.user != user:
+        return redirect("previous-requests")
+    unblock.delete()
+    messages.success(request, "Your Request has been Successfully Cancelled.")
+    return redirect("previous-requests")
 
 
 @user_is_logged_in_and_active
@@ -175,7 +207,7 @@ def email_resolve(
     request_id, request_status, issue, user_email, category, details, remark_user
 ):
     """Function to send email to the user when his request or compliant gets resolved"""
-    subject = f"{issue} request_status"
+    subject = f"{issue} {request_status}"
     message = (
         f"Your {issue} with reference number {request_id}, "
         f"category- {category} and details- {details} has been {request_status}. "
