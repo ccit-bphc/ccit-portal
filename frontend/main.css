@@ -1,0 +1,165 @@
+* {
+	box-sizing: border-box;
+}
+
+.mdcls {
+	align-self: center;
+	margin: 1em 1em 1em 1em;
+}
+
+.bar {
+	position: fixed;
+	z-index: 5;
+	top: 0px;
+	left: 0px;
+	height: 9.7%;
+	padding-bottom: 10px;
+	width: 100%;
+	margin: 0px;
+	overflow: hidden;
+	background-color: #3498db;
+	list-style-type: none;
+}
+
+.bar-nav li {
+	float: left;
+	style: none;
+}
+
+.bar-nav .ccit-header,
+li a {
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	font-family: "Lexend Deca";
+	font-weight: 700;
+}
+
+.ccit-header {
+	color: rgb(52, 73, 94);
+	float: left;
+	font-size: 23px;
+	padding: 19px 14px;
+}
+
+.logout li {
+	float: right;
+	style: none;
+}
+
+.logout li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 24px 16px;
+	text-decoration: none;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.bar-nav li a {
+	font-size: 14px;
+	padding: 24px 16px;
+	color: white;
+}
+
+.bar-nav li a:hover,
+.logout li a:hover {
+	background-color: #2980b9;
+	border-bottom: 10px;
+}
+
+.bar li img {
+	position: relative;
+	display: block;
+	left: 5px;
+	height: 60px;
+	width: 60px;
+}
+
+.form-box {
+	position: relative;
+	top: 1.3em;
+	width: 100%;
+	height: 500px;
+	text-align: left;
+	left: 5em;
+	font-size: 16px;
+	font-family: "Lexend Deca";
+	margin: 0px;
+	padding: 0px;
+	white-space: nowrap;
+}
+
+.ibox {
+	border-width: 1px;
+	border-style: solid;
+	margin-left: 12em;
+	white-space: initial;
+}
+
+.form-box input,textarea {
+	white-space: initial;
+	word-wrap: break-word;
+	text-overflow: clip;
+	width: 435px;
+	background-color: rgba(220, 220, 220, 1);
+	color: black;
+	padding: 1em;
+	border-radius: 5px;
+	border-style: solid;
+	border-width: 0px;
+}
+
+select {
+	position: relative;
+	white-space: nowrap;
+	display: block;
+	position: relative;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #AAAAAA;
+	padding-left: 1px;
+	font-family: "Lexend Deca";
+	color: #666666;
+	font-size: 15px;
+	font-weight: bold;
+	width: 170px;
+	height: 35px;
+	bottom: 10px;
+}
+
+.chbox {
+	position: relative;
+	top: 5px;
+	right: 15em;
+	border-color: #3D7591;
+	border-style: solid;
+	border-width: 2px;
+	height: 20px;
+	width: 20px;
+}
+
+label {
+	display: inline-block;
+	min-width: 160px;
+}
+
+.contacts {
+	margin-left: 12em;
+}
+
+.subform {
+	display: none;
+}
+
+.box {
+	border: 1px solid black;
+	border-radius: 10px;
+	margin-top: 5em;
+	margin-bottom: 1em;
+	margin-right: 15em;
+	margin-left: 15em;
+	background-color: #EEEEEE;
+}
