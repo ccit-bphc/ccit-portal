@@ -80,7 +80,7 @@ li a {
 
 .form-box {
 	position: relative;
-	top: 1.8em;
+	top: 1.3em;
 	width: 100%;
 	height: 500px;
 	text-align: left;
@@ -103,31 +103,13 @@ li a {
 	white-space: initial;
 	word-wrap: break-word;
 	text-overflow: clip;
+	width: 435px;
 	background-color: rgba(220, 220, 220, 1);
 	color: black;
 	padding: 1em;
 	border-radius: 5px;
 	border-style: solid;
 	border-width: 0px;
-}
-
-.formbox, textarea {
-	
-	width: 435px;
-	
-}
-
-input[type=checkbox] {
-	width: 20px;
-	height: 20px;
-}
-
-label textarea{
- vertical-align: top;
-}
-
-.dataform * {
-  vertical-align: top;
 }
 
 select {
@@ -151,17 +133,12 @@ select {
 .chbox {
 	position: relative;
 	top: 5px;
-	right: 10em;
+	right: 15em;
 	border-color: #3D7591;
 	border-style: solid;
 	border-width: 2px;
 	height: 20px;
 	width: 20px;
-	-ms-transform: scale(1); /* IE */
- -moz-transform: scale(1); /* FF */
- -webkit-transform: scale(1); /* Safari and Chrome */
- -o-transform: scale(1); /* Opera */
-  padding: 10px;
 }
 
 label {
@@ -181,7 +158,7 @@ label {
 	border: 1px solid black;
 	border-radius: 10px;
 	margin-top: 5em;
-	margin-bottom: 1.5em;
+	margin-bottom: 1em;
 	margin-right: 15em;
 	margin-left: 15em;
 	background-color: #EEEEEE;
