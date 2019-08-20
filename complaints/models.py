@@ -3,7 +3,7 @@ from datetime import time
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator, validate_email
+from django.core.validators import RegexValidator, URLValidator
 
 
 class Complaint(models.Model):
@@ -97,8 +97,9 @@ class UnblockRequest(models.Model):
 
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requestee")
+    url_validator = URLValidator(message="This is not a valid URL.")
     url = models.TextField(
-        validators=[validate_email],
+        validators=[url_validator],
         unique=True,
         error_messages={"unique": "This url is already under consideration"},
     )
