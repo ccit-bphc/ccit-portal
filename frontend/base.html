@@ -34,19 +34,19 @@
                </select>
                <br>
                <div class="form_class" id="other3" style="display:none;">
-                  <label style="position:relative;bottom:80px;">Complaint Details : </label><textarea align="left"
-                     type="text" name="complaint_details"
-                     style="overflow:auto;height:100px;padding-bottom:80px;"></textarea><br><br>
-                  <label>Urgency<label style="position:relative;left:75px;">:</label></label><input type="checkbox"
-                     id="urgency_id" onclick="urg_fun()" class="chbox" name="urgency"
-                     style="position:relative;align:left;"><br><br>
+                  <div class="DataForm"><label style="">Complaint Details : </label><textarea align="left" type="text"
+                        name="complaint_details" style="overflow:auto;height:100px;"></textarea></div>
+                  <label>Urgency&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</label>
+                  <div class="y" style="display:inline;margin-left:10em;"><input type="checkbox" id="urgency_id"
+                        onclick="urg_fun()" class="chbox" name="urgency" style="margin-left:1em;padding-left:0px;">
+                  </div><br><br>
                   <div id="urg_reason" style="display:none;"><label>Urgency Reason &nbsp;&nbsp;: </label><input
                         align="left" placeholder="----" type="text" id="urg_reason1" name="urg_reason1"
-                        style=""><br><br></div>
+                        style="width:435px;"><br><br></div>
                   <label>Room Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </label><input align="left" type="text"
-                     name="room_no" style="" class="text_cls"><br><br>
+                     name="room_no" style="width:435px;" class="text_cls"><br><br>
                   <label>Contact Number&nbsp;&nbsp;&nbsp;: </label><input align="left" type="text" name="contact_no"
-                     style="" class="text_cls"><br><br>
+                     style="width:435px;" class="text_cls"><br><br>
                   <label>Available Between:</label><input align="left" type="text" name="time1" placeholder="10:00AM"
                      style="position:relative;width: 80px;" class="text_cls">&nbsp;&nbsp;-TO-&nbsp;&nbsp;<input
                      align="left" type="text" name="time2" placeholder="2:00PM" style="width: 80px;"
@@ -56,13 +56,15 @@
                      style="position:relative;width:100px;left:20em;background-color:#AAAAAA">
                </div>
                <div id="url_unblock" class="form_class" style="display:none;">
-                  <label>URL*<label style="position:relative;left:24px;">:</label></label><input align="left"
-                     placeholder="www.example.com" type="text" id="urg_reason" name="url_name"
-                     style="position:relative;right:38px;"><br><br>
-                  <label style="position:relative;bottom:80px;">Details* : </label><textarea align="left" type="text"
-                     name="text1" style="overflow:auto;height:100px;padding-bottom:80px;"></textarea><br><br>
+                  <div class="x" style="text-align:top;display:inline-block">
+                     <label>URL*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</label><input align="left"
+                        placeholder="www.example.com" type="text" id="urg_reason" name="url_name"
+                        style="position:relative;right:px;width:435px"><br><br>
+                     <label style="position:relative;">Details* : </label><textarea align="left" type="text"
+                        name="text1" style="overflow:auto;height:100px;padding-bottom:80px;"></textarea><br><br><br>
+                  </div>
                   <input id="button" type="submit" value="Submit"
-                     style="position:relative;width:100px;left:20em;background-color:#AAAAAA" onclick="foo()">
+                     style="position:relative;width:100px;right:25em;background-color:#AAAAAA">
                </div>
             </form>
          </div>
