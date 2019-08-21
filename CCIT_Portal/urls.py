@@ -22,5 +22,6 @@ urlpatterns = [
     path("contact/", pages_views.contact, name="contact-us"),
     path("complaints/", include("complaints.urls")),
     path("home/", pages_views.home, name="home"),
+    path("denied/", pages_views.denied, name="denied"),
     path("accounts/", include("allauth.urls")),
 ]
