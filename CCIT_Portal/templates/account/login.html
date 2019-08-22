@@ -1,48 +1,49 @@
 <html>
 {% load account socialaccount %}
+{% load static %}
 
 <body bgcolor="#EEEEEE">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   <link rel="stylesheet" href="main.css">
-   <link href='https://fonts.googleapis.com/css?family=Share Tech Mono' rel='stylesheet'>
-   <link href='https://fonts.googleapis.com/css?family=Lexend Deca' rel='stylesheet'>
-   <div class="mdcls">
-      <div class="bar">
-         <div class="bar-nav">
-            <li><img src="bitslogo.png"></li>
-            <div class="ccit-header"><b>CCIT BPHC</b></div>
-            <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
-         </div>
-
-         {% get_providers as socialaccount_providers %}
-         {% if socialaccount_providers %}
-         <p>Faculty members and students are required to login using Google
-         </p>
-
-         <div class="socialaccount_ballot">
-
-            <ul class="socialaccount_providers">
-               {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-            </ul>
-
-
-         </div>
-         {% include "socialaccount/snippets/login_extra.html" %}
-         {% endif %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href=" {% static 'account/main.css' %}">
+  <link href='https://fonts.googleapis.com/css?family=Share Tech Mono' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Lexend Deca' rel='stylesheet'>
+  <div class="mdcls">
+    <div class="bar">
+      <div class="bar-nav">
+        <li><img src="{% static 'account/bitslogo.png' %}"></li>
+        <div class="ccit-header"><b>CCIT BPHC</b></div>
+        <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
       </div>
-      <div class="box" style="position:relative;height: 14em;width:34em;margin-top: 12em;left: 20em">
-         <div class="form-box" style="height: 10.5em;">
-            <form class="login" method="POST" action="{% url 'account_login' %}">
-               {% csrf_token %}
-               {{ form.as_p }}
-               {% if redirect_field_value %}
-               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-               {% endif %}
-               <button class="primaryAction" type="submit">Sign In</button>
-            </form>
-         </div>
+
+      {% get_providers as socialaccount_providers %}
+      {% if socialaccount_providers %}
+      <p>Faculty members and students are required to login using Google
+      </p>
+
+      <div class="socialaccount_ballot">
+
+        <ul class="socialaccount_providers">
+          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </ul>
+
+
       </div>
-   </div>
+      {% include "socialaccount/snippets/login_extra.html" %}
+      {% endif %}
+    </div>
+    <div class="box" style="position:relative;height: 14em;width:34em;margin-top: 12em;left: 20em">
+      <div class="form-box" style="height: 10.5em;">
+        <form class="login" method="POST" action="{% url 'account_login' %}">
+          {% csrf_token %}
+          {{ form.as_p }}
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          <button class="primaryAction" type="submit">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
