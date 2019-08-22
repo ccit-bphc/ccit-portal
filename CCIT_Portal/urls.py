@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from allauth.account.views import LoginView, LogoutView
 from pages import views as pages_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 # from users.views import CustomLoginView
 
@@ -31,3 +33,6 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="account-logout"),
     path("accounts/", include("allauth.urls")),
 ]
+
+if settings.DEBUG== True:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
