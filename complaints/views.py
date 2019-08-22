@@ -115,10 +115,10 @@ def handle_complaint(request):
 @user_is_staff
 def display_to_staff(request):
     """View to display the pending requests and complaints to staff members"""
-    complaints = Complaint.object.filter(status=Complaint.REGISTERED).order_by(
+    complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
-    requests = UnblockRequest.object.filter(status=Complaint.REGISTERED).order_by(
+    requests = UnblockRequest.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
     return render(
