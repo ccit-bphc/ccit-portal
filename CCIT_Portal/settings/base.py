@@ -55,7 +55,7 @@ ROOT_URLCONF = "CCIT_Portal.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,7 +130,9 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 1
 
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 
 # Allowed domains for login
@@ -140,8 +142,8 @@ ALLOWED_DOMAINS = ["hyderabad.bits-pilani.ac.in"]
 
 # Allauth settings
 
-LOGIN_REDIRECT_URL = "/home"
-ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/logout"
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_REDIRECT_URL = "account-login"
 ACCOUNT_SESSION_REMEMBER = True
 SOCIALACCOUNT_ADAPTER = "users.adapters.CustomSocialAccountAdapter"
 SOCIALACCOUNT_QUERY_EMAIL = True
@@ -154,3 +156,4 @@ EMAIL_BACKEND = "dajngo.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
