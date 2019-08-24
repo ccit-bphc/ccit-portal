@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   <title>CCIT BPHC</title>
@@ -6,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="{% static 'main.css' %}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
@@ -16,17 +17,23 @@
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
-    <div class="navbar-header">	  
-	<img class="navbar-brand" src="bitslogo.png"></img>
+    <div class="navbar-header">
+	<img class="navbar-brand" src="static/bitslogo.png"></img>
       <a class="navbar-brand" href="#" style="color:white;">CCIT BPHC</a>
     </div>
     <ul class="nav navbar-nav">
+	  {% if user.is_authenticated %}
 	  <li><a href="my_complaints.html">My Complaints</a></li>
       <li class="active"><a href="complaints_register.html">Register Complaints</a></li>
+	  {%endif%}
       <li><a href="contact.html">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
+	  {% if user.is_authenticated %}
       <li><a href="login.html"><i class="fa fa-power-off"></i> Logout</a></li>
+	  {% else %}
+      <li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+	  {%endif%}
     </ul>
   </div>
 </nav>
@@ -34,9 +41,9 @@
 <div class="container">
 <div class="text-center">
       <div class="col-sm-12 col-md-10 col-md-offset-1">    
-      <legend class="text-center">Your Complaints</legend>
-	   <h4></h4>
-	  </div>
+      <legend class="text-center">Our Contact Info</legend>
+	   <h4>Name : 91XXXXXXXXXX</h4>
+</div>
 </div>
 
 </body>

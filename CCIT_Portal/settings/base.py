@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "users",
     "complaints",
     "pages",
+	"widget_tweaks",
 ]
 
 MIDDLEWARE = [

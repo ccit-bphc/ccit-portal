@@ -76,7 +76,8 @@ def register_complaint(request):
             return render(request, "registration/home.html", context={"title": "home"})
     else:
         form = ComplaintForm()
-        return render(request, "complaints/complaints_register.html", {"form": form})
+        form2 = UnblockRequestForm()
+        return render(request, "complaints/complaints_register.html", {"form": form, "form2": form2})
 
 
 @user_is_logged_in_and_active

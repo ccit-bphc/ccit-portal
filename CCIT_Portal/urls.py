@@ -23,6 +23,9 @@ from django.conf.urls.static import static
 # from users.views import CustomLoginView
 
 
+# from users.views import CustomLoginView
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("contact/", pages_views.contact, name="contact-us"),

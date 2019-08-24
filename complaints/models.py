@@ -18,24 +18,25 @@ class Complaint(models.Model):
         (DONE, "Done"),
         (CANCELLED, "Cancelled"),
     )
-
-    CATEGORY_1 = "C1"
-    CATEGORY_2 = "C2"
-    CATEGORY_3 = "C3"
-    CATEGORY_4 = "C4"
+    CATEGORY_0 = ""
+    CATEGORY_1 = "wifi"
+    CATEGORY_2 = "lan"
+    CATEGORY_3 = "firewall"
+    CATEGORY_4 = "url_unblock"
 
     CATEGORY_CHOICES = (
-        (CATEGORY_1, "CATEGORY_1"),
-        (CATEGORY_2, "CATEGORY_2"),
-        (CATEGORY_3, "CATEGORY_3"),
-        (CATEGORY_4, "CATEGORY_4"),
+        (CATEGORY_0, "Choose a Category"),
+        (CATEGORY_1, "WiFi"),
+        (CATEGORY_2, "Lan"),
+        (CATEGORY_3, "Sophos Firewall"),
+        (CATEGORY_4, "URL unblock request"),
     )
 
     PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
 
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
-    category = models.CharField(max_length=2, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default=CATEGORY_0)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=REGISTERED)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
@@ -49,7 +50,7 @@ class Complaint(models.Model):
     contact_no = models.CharField(
         max_length=15, validators=[phone_number_validator], null=False, blank=False
     )
-    room_no = models.TextField(null=False, blank=False)
+    room_no = models.CharField(max_length=10,null=False, blank=False)
     avail_start_time = models.TimeField(null=False, blank=False)
     avail_end_time = models.TimeField(null=False, blank=False)
     handler = models.ForeignKey(
