@@ -2,7 +2,7 @@
 Custom Adapter For Things.
 """
 
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.conf import settings
 from django.contrib import messages
 from allauth.exceptions import ImmediateHttpResponse
@@ -13,9 +13,23 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     """Custom Adapter for checking email domain before login."""
 
     def pre_social_login(self, request, sociallogin):
-        u = sociallogin.user
-        if u.email.split("@")[1] not in settings.ALLOWED_DOMAINS:
+        user_obj = sociallogin.user
+        user_obj.username = user_obj.email.split("@")[0]
+        if user_obj.email.split("@")[1] not in settings.ALLOWED_DOMAINS:
             messages.error(
                 request, "Please login through bits-mail or contact the administrator."
             )
-            raise ImmediateHttpResponse(render(request, "registration/login.html"))
+            raise ImmediateHttpResponse(redirect("account_login"))
+
+    def authentication_error(
+        self, request, provider_id, error=None, exception=None, extra_context=None
+    ):
+        if not request.user.is_anonymous:
+            messages.error(
+                request,
+                (
+                    f"You are already logged in as {request.user.username}. "
+                    "Please logout first to login as another user"
+                )
+            )
+            raise ImmediateHttpResponse(redirect("home"))

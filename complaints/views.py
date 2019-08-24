@@ -1,9 +1,10 @@
 """Module for creating views to manage user complaints"""
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+from users.permissions import user_is_logged_in_and_active, user_is_staff
 from .models import Complaint, UnblockRequest
 from .forms import (
     ComplaintForm,
@@ -13,21 +14,50 @@ from .forms import (
 )
 
 
+@user_is_logged_in_and_active
 def previous(request):
     """View for displaying previous complaints of the user"""
-    if not request.user.is_authenticated:
-        return render(request, "registration/home.html", context={"title": "home"})
     user = request.user
     complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
     return render(
-        request, "complaints/previous_requests.html", context={"complaints": complaints}
+        request,
+        "complaints/previous_requests.html",
+        context={"complaints": complaints, "unblocks": unblocks},
     )
 
 
-def register_complaint(request):
-    if not request.user.is_authenticated:
-        return render(request, "registration/home.html", context={"title": "home"})
+def cancel_complaint(request, pk: int):
+    """User can cancel their own complaint"""
+    if request.method != "POST":
+        return redirect("previous-requests")
+    user = request.user
+    complaint = Complaint.objects.get(pk=pk)
+    if complaint.user != user:
+        return redirect("previous-requests")
+    complaint.handler = user
+    complaint.resolved_at = timezone.now()
+    complaint.status = complaint.CANCELLED
+    complaint.save()
+    messages.success(request, "Your Complaint has been Successfully Cancelled.")
+    return redirect("previous-requests")
 
+
+def cancel_unblock_request(request, pk: int):
+    """User can cancel their own unblock request"""
+    if request.method != "POST":
+        return redirect("previous-requests")
+    user = request.user
+    unblock = UnblockRequest.objects.get(pk=pk)
+    if unblock.user != user:
+        return redirect("previous-requests")
+    unblock.delete()
+    messages.success(request, "Your Request has been Successfully Cancelled.")
+    return redirect("previous-requests")
+
+
+@user_is_logged_in_and_active
+def register_complaint(request):
     if request.method == "POST":
         form = ComplaintForm(request.POST)
         if form.is_valid():
@@ -46,13 +76,13 @@ def register_complaint(request):
             return render(request, "registration/home.html", context={"title": "home"})
     else:
         form = ComplaintForm()
-        return render(request, "complaints/complaints_register.html", {"form": form})
+        form2 = UnblockRequestForm()
+        return render(request, "complaints/complaints_register.html", {"form": form, "form2": form2})
 
 
+@user_is_logged_in_and_active
+@user_is_staff
 def handle_complaint(request):
-    if not request.user.is_authenticated:
-        return render(request, "registration/home.html", context={"title": "home"})
-
     if request.method == "POST":
         form = ComplaintHandleForm(request.POST)
         if form.is_valid():
@@ -82,13 +112,14 @@ def handle_complaint(request):
             return render(request, "registration/home.html", context={"title": "home"})
 
 
+@user_is_logged_in_and_active
+@user_is_staff
 def display_to_staff(request):
     """View to display the pending requests and complaints to staff members"""
-
-    complaints = Complaint.object.filter(status=Complaint.REGISTERED).order_by(
+    complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
-    requests = UnblockRequest.object.filter(status=Complaint.REGISTERED).order_by(
+    requests = UnblockRequest.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
     return render(
@@ -98,9 +129,9 @@ def display_to_staff(request):
     )
 
 
+@user_is_logged_in_and_active
 def request_unblock(request):
     """View For Registering Request for unblocking websites"""
-
     if request.method == "POST":
         form = UnblockRequestForm(request.POST)
         if form.is_valid():
@@ -118,6 +149,7 @@ def request_unblock(request):
             return render(request, "registration/home.html", context={"title": "home"})
 
 
+@user_is_logged_in_and_active
 def handle_unblock_request(request):
     """View For Handling Request for unblocking websites"""
 
@@ -173,10 +205,10 @@ def email_on_request(request_id, category, details, issue, user_email):
 
 
 def email_resolve(
-        request_id, request_status, issue, user_email, category, details, remark_user
+    request_id, request_status, issue, user_email, category, details, remark_user
 ):
     """Function to send email to the user when his request or compliant gets resolved"""
-    subject = f"{issue} request_status"
+    subject = f"{issue} {request_status}"
     message = (
         f"Your {issue} with reference number {request_id}, "
         f"category- {category} and details- {details} has been {request_status}. "

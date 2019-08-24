@@ -1,19 +1,16 @@
 function urg_fun() {
-	var checkBox = document.getElementById("urgency_id");
+	var checkBox = document.getElementById("default");
 	var a = document.getElementById("urg_reason");
 	if (checkBox.checked == true) {
 		if (a.style.display == 'none') {
 			a.style.display = 'block';
-			document.getElementById("boxclass").style.height = '38em';
 		}
 	} else {
 		a.style.display = 'none';
-		document.getElementById("boxclass").style.height = '34em';
 		}
 	}
 
 $(document).ready(function () {
-	$(".form_class").hide();
 	$("#option").change(function () {
 		document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
@@ -27,26 +24,37 @@ $(document).ready(function () {
 		} if($(this).val() == 'url_unblock') {
 			document.getElementById('url_unblock').style.display = 'block';
 		}
+		$(this).css("width","200px");
+		console.log("Im here 1");
 		console.log($(this).val());
 	});
 	
-	$(".text_cls").change(function () {
+	$(".form-control").change(function () {
 		var x = $(this);
-		console.log($(this));
-		var regex = /^[A-Za-z0-9 ]+$/
+		if(x.attr("a") != "true"){
+		console.log(($(this)).toString());
+		var regex = /[a-zA-Z0-9@(),.\/ ]/
         var isValid = regex.test(x.val());
 		console.log(x.val());
+		console.log(isValid);
+		if(document.getElementById('option').value == "url_unblock"){var b1 = 'b2';}
+		else{var b1 = 'b1';}
 	if ((isValid == false || x.val().length > 12) && x.val() != "") {
+			console.log("current form: ");
+			console.log(document.getElementById('option').value);
             x.css("border", "1px solid red");
-			$(":submit").attr("disabled", true);
-			document.getElementById('button').style.color = "#FFFFFF";
-			document.getElementById('button').style.borderColor = "red";
+			$("#" + b1).attr("disabled", true);
+			document.getElementById(b1).style.background = "#888888";
+			document.getElementById(b1).style.borderColor = "#777777";
 
         } else {
-            x.css("border", "none");
-			$(":submit").attr("disabled", true);
-			$(":submit").attr("disabled", false);
+            x.attr("style","");
+			$("#" + b1).attr("disabled", true);
+			$("#" + b1).attr("disabled", false);
+			$("#" + b1).css("border-color","black");
+			$("#" + b1).css("background","#444444");
         }
+		}
 	});
 
 });
