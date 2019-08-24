@@ -1,14 +1,21 @@
 <!DOCTYPE html>
+{% load static %}
+{% load widget_tweaks %}
+{% load i18n %}
+{% load account socialaccount %}
+{% block content %}
 <html lang="en">
 <head>
   <title>CCIT BPHC</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="main.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+  <script src="{% static 'main.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
 
@@ -17,15 +24,22 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-	  <img class="navbar-brand" src="bitslogo.png"></img>
-      <a class="navbar-brand" href="#" style="color:white;">CCIT BPHC</a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+	  <img class="navbar-brand" src="/static/bitslogo.png"></img>
+      <a class="navbar-brand" href="#">CCIT BPHC</a>
     </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
-      <li><a href="contact_before.html">Contact Us</a></li>
+      <li><a href="/contact">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li class="active"><a href="login.html"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-    </ul>
+      <li><a href="/login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+	</ul>
+    </div>
   </div>
 </nav>
 
@@ -33,7 +47,7 @@
 
   <div class="row" style="">
     <div class="Absolute-Center is-Responsive">
-	<center><img src="ccit.png" alt="..." style="background:#EEEEEE;border:0px;" class="img-thumbnail"></center><br><br>
+	<center><img src="{% static 'ccit.png' %}" alt="..." style="background:#EEEEEE;border:0px;" class="img-thumbnail"></center><br><br>
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <form action="" id="loginForm">
           <div class="form-group input-group">
@@ -47,12 +61,50 @@
 		  </div> 
           <div class="form-group">
             <center><button type="button" class="btn" style="width:50px;display:block;"><i class="fa fa-unlock-alt" style="font-size:18px"></i></button></center>
-          </div>
-        </form>        
-       
+          </div> 
+		  </form> 
+	<div class="col-sm-12 col-md-10 col-md-offset-1">
+	  {% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<p>{% blocktrans with site.name as site_name %}<center><b>Or Login with</b></center><br>{% endblocktrans %}</p>
+
+<div class="socialaccount_ballot">
+
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+
+{% for provider in socialaccount_providers %}
+{% if provider.id == "openid" %}
+{% for brand in provider.get_brands %}
+<li>
+	<label for="default" class="btn btn-default" onclick="" style="position:relative;">
+		<a title="{{brand.name}}" class="socialaccount_provider {{provider.id}} {{brand.id}}" href="{% provider_login_url provider.id openid=brand.openid_url process=process %}">{{brand.name}}</a>
+	</label>
+</li>
+{% endfor %}
+{% endif %}
+	<center><label for="default" class="btn btn-default" onclick="" style="position:relative;text-overflow: ellipsis;">
+	<a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}" 
+     href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}"><img width="20px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"/> Google</a>
+	</label>
+	</center>
+
+
+{% endfor %}
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% else %}
+<p>{% blocktrans %}{% endblocktrans %}</p>
+{% endif %}		
+	</div>
     </div>    
   </div>
 </div>
 
 </body>
 </html>
+{%endblock%}
