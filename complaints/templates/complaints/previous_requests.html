@@ -1,14 +1,17 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   <title>CCIT BPHC</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="main.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+  <script src="{% static 'main.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
 
@@ -16,18 +19,25 @@
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
-    <div class="navbar-header">	  
-	<img class="navbar-brand" src="bitslogo.png"></img>
-      <a class="navbar-brand" href="#" style="color:white;">CCIT BPHC</a>
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+	  <img class="navbar-brand" src="/static/bitslogo.png"></img>
+      <a class="navbar-brand" href="#">CCIT BPHC</a>
     </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
-	  <li><a href="my_complaints.html">My Complaints</a></li>
-      <li class="active"><a href="complaints_register.html">Register Complaints</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
+	  <li class="active"><a href="/complaints/my-tickets">My Complaints</a></li>
+      <li><a href="/complaints/add-tickets">Register Complaints</a></li>
+      <li><a href="/contact">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="login.html"><i class="fa fa-power-off"></i> Logout</a></li>
+      <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
     </ul>
+    </div>
   </div>
 </nav>
 
@@ -35,7 +45,54 @@
 <div class="text-center">
       <div class="col-sm-12 col-md-10 col-md-offset-1">    
       <legend class="text-center">Your Complaints</legend>
-	   <h4></h4>
+	   {% block content %}
+<table>
+    {% for comp in complaints %}
+    <tr>
+        <td>{{ comp.contact_no }}</td>
+        <td>{{ comp.room_no }}</td>
+        <td>{{ comp.category }}</td>
+        <td>{{ comp.remark }}</td>
+        <td>{{ comp.uploaded_at }}</td>
+        <td>{{ comp.status }}</td>
+        <td>{{ comp.urgency }}</td>
+        <td>{{ comp.urgency_reason }}</td>
+        <td>{{ comp.avail_start_time }}</td>
+        <td>{{ comp.avail_end_time }}</td>
+        <td>
+            {% if comp.status == comp.REGISTERED %}
+            <form method="post" action="{% url 'cancel-complaint' pk=comp.pk %}">
+            {% csrf_token %}
+                <input type="submit" value="Cancel">
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+<br>
+<table>
+    {% for req in unblocks %}
+    <tr>
+        <td>{{ req.url }}</td>
+        <td>{{ req.reason }}</td>
+        <td>{{ req.request_time }}</td>
+        <td>{{ req.status }}</td>
+        <td>{{ req.remark_to_user }}</td>
+        <td>
+            {% if req.status == req.REGISTERED %}
+            {% csrf_token %}
+            <form method="post" action="{% url 'cancel-unblock' pk=req.pk %}">
+                <input type="submit" value="Cancel">
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock content %}
 	  </div>
 </div>
 
