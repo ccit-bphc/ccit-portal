@@ -35,7 +35,12 @@
       <li><a href="/contact">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
+<form method="post" action="{% url 'account_logout' %}">
+  {% csrf_token %}
+  <button type="submit" class="btn-link">
+      <li><a><i class="fa fa-power-off"></i> Logout</a></li>
+	  </button>
+	</form>
     </ul>
     </div>
   </div>
