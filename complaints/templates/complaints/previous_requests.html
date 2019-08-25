@@ -86,7 +86,7 @@
 	<td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" name="remark" disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
 	{% if user.is_staff == True %}
 	<form method="post" action="{% url 'complaint-resolve ' ℅}">
-	<td style="background:#EEEEEE;" colspan="1"><textarea class="form-control" a="true" name="remark" rows="5" cols="2" placeholder="Staff's remarks"></textarea></td>
+	<td style="background:#EEEEEE;" colspan="1">Staff's Remarks:<textarea class="form-control" a="true" name="remark_to_user" {% if user.is_staff == False %} disabled {%endif%} rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
 	<input type="hidden" value="{{ comp.pk }}" name="id">
 	<td rowspan="4" style="background:#EEEEEE;">
     {% csrf_token %}
@@ -145,12 +145,13 @@
 	<div>
 	<tr style="display:none;" id="{{ req.pk }}ra">
 	<td style="background:#EEEEEE;">Details:</td>
-	<td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
+	<td style="background:#EEEEEE;" colspan="2">Staff's Remarks:<textarea class="form-control" {% if user.is_staff == False %} disabled {%endif%} a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
 	<td rowspan="2" style="background:#EEEEEE;">
 	{% if user.is_staff == True %}
-	<textarea class="form-control" a="true" rows="5" placeholder="Staff's remarks"></textarea>
 	<form method="post" action="{% url 'update_request_resolve' %}">
     {% csrf_token %}
+	<textarea class="form-control" a="true" name="remark_to_user" rows="5" placeholder="Staff's remarks"></textarea>
+	<input type="hidden" value="{{ comp.pk }}" name="id">
     Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br>
     </form>
 	{%endif%}
