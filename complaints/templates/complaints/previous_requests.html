@@ -145,13 +145,13 @@
 	<div>
 	<tr style="display:none;" id="{{ req.pk }}ra">
 	<td style="background:#EEEEEE;">Details:</td>
-	<td style="background:#EEEEEE;" colspan="2">Staff's Remarks:<textarea class="form-control" {% if user.is_staff == False %} disabled {%endif%} a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
+	<td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
 	<td rowspan="2" style="background:#EEEEEE;">
 	{% if user.is_staff == True %}
 	<form method="post" action="{% url 'update_request_resolve' %}">
     {% csrf_token %}
-	<textarea class="form-control" a="true" name="remark_to_user" rows="5" placeholder="Staff's remarks"></textarea>
-	<input type="hidden" value="{{ comp.pk }}" name="id">
+	Staff's Remarks:<textarea class="form-control" {% if user.is_staff == False %} disabled {%endif%} a="true" name="remark_to_user" rows="5" placeholder="Staff's remarks"></textarea>
+	<input type="hidden" value="{{ req.pk }}" name="id">
     Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br>
     </form>
 	{%endif%}
