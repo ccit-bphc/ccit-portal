@@ -9,6 +9,54 @@ function urg_fun() {
 		a.style.display = 'none';
 		}
 	}
+	
+function checkUR(abc){
+    string = abc.value
+    if(!(/^http:\/\//.test(string))){
+        string = "http://" + string;
+    }
+    abc.value=string
+}
+
+function comp_fun(id){
+	console.log('Im here!');
+	console.log(id);
+	console.log(document.getElementById(id + 'a'));
+	if(document.getElementById(id + 'a').style.display == "none"){
+		document.getElementById(id + 'a').style.display = "";
+		document.getElementById(id + 'b').style.display = "";
+		document.getElementById(id + 'd').style.display = "";
+		document.getElementById(id + 'e').style.display = "";
+		document.getElementById(id + 'c').setAttribute("class", "fas fa-caret-up");
+
+	}
+	else{
+		document.getElementById(id + 'a').style.display = "none";
+		document.getElementById(id + 'b').style.display = "none";
+		document.getElementById(id + 'd').style.display = "none";
+		document.getElementById(id + 'e').style.display = "none";
+		document.getElementById(id + 'c').setAttribute("class", "fas fa-caret-down");
+	}
+	
+}
+
+function req_fun(id){
+	console.log('Im here!');
+	console.log(id);
+	console.log(document.getElementById(id + 'ra'));
+	if(document.getElementById(id + 'ra').style.display == "none"){
+		document.getElementById(id + 'ra').style.display = "";
+		document.getElementById(id + 'rb').style.display = "";
+		document.getElementById(id + 'rc').setAttribute("class", "fas fa-caret-up");
+
+	}
+	else{
+		document.getElementById(id + 'ra').style.display = "none";
+		document.getElementById(id + 'rb').style.display = "none";
+		document.getElementById(id + 'rc').setAttribute("class", "fas fa-caret-down");
+	}
+	
+}
 
 $(document).ready(function () {
 	$("#option").change(function () {
@@ -28,7 +76,7 @@ $(document).ready(function () {
 		console.log("Im here 1");
 		console.log($(this).val());
 	});
-	
+	/*
 	$(".form-control").change(function () {
 		var x = $(this);
 		if(x.attr("a") != "true"){
@@ -55,6 +103,6 @@ $(document).ready(function () {
 			$("#" + b1).css("background","#444444");
         }
 		}
-	});
+	});*/
 
 });
