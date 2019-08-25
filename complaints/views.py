@@ -14,7 +14,7 @@ from .forms import (
 )
 
 
-#@user_is_logged_in_and_active
+@user_is_logged_in_and_active
 def previous(request):
     """View for displaying previous complaints of the user"""
     user = request.user
@@ -73,11 +73,13 @@ def register_complaint(request):
             )
 
             messages.success(request, "Your Complaint has been Successfully Registered")
-            return render(request, "complaints/previous_complaints.html", context={"title": "home"})
+            return render(request, "complaints/complaints_register.html", context={"message": "Complaint Registered Successfully"})
+        else:
+            return render(request, "complaints/complaints_register.html", context={"message":"Failed"});
     else:
         form = ComplaintForm()
         form2 = UnblockRequestForm()
-        return render(request, "complaints/complaints_register.html", {"form": form, "form2": form2})
+        return render(request, "complaints/complaints_register.html", {"form": form, "form2": form2, "message":""})
 
 
 @user_is_logged_in_and_active
@@ -146,8 +148,7 @@ def request_unblock(request):
                 user_email=request.user.email,
             )
             messages.success(request, "Your Request has been Successfully Registered")
-            return render(request, "registration/home.html", context={"title": "home"})
-
+            return render(request, "complaints/complaints_register.html", context={"message": "Complaint Registered Successfully"})
 
 @user_is_logged_in_and_active
 def handle_unblock_request(request):
