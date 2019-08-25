@@ -3,7 +3,7 @@ from datetime import time
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator, URLValidator
+from django.core.validators import RegexValidator
 
 
 class Complaint(models.Model):
@@ -95,9 +95,11 @@ class UnblockRequest(models.Model):
         (CANCELLED, "Cancelled"),
     )
 
+    url_regex = r"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?"
+
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requestee")
-    url_validator = URLValidator(message="This is not a valid URL.")
+    url_validator = RegexValidator(regex=url_regex, message="This is not a valid URL.")
     url = models.TextField(
         validators=[url_validator],
         unique=True,
