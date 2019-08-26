@@ -19,16 +19,15 @@ class Complaint(models.Model):
         (CANCELLED, "Cancelled"),
     )
 
-    CATEGORY_1 = "C1"
-    CATEGORY_2 = "C2"
-    CATEGORY_3 = "C3"
-    CATEGORY_4 = "C4"
+    CATEGORY_1 = "LN"
+    CATEGORY_2 = "WF"
+    CATEGORY_3 = "SF"
 
     CATEGORY_CHOICES = (
-        (CATEGORY_1, "CATEGORY_1"),
-        (CATEGORY_2, "CATEGORY_2"),
-        (CATEGORY_3, "CATEGORY_3"),
-        (CATEGORY_4, "CATEGORY_4"),
+        (None, "Choose A Category"),
+        (CATEGORY_1, "Lan"),
+        (CATEGORY_2, "WiFi"),
+        (CATEGORY_3, "Sophos Firewall"),
     )
 
     PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
