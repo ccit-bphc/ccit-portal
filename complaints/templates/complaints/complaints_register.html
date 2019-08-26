@@ -2,160 +2,152 @@
 {% load static %}
 {% load widget_tweaks %}
 <html lang="en">
-<head>
-  <title>CCIT BPHC</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
-  <script src="{% static 'main.js' %}"></script>
-  <link rel="stylesheet" href="{% static 'main.css' %}">
-</head>
-<body>
-
-<style>.navbar {border-radius:0px;}</style>
-
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-	  <img class="navbar-brand" src="/static/bitslogo.png"></img>
-      <a class="navbar-brand" href="#">CCIT BPHC</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="nav navbar-nav">
-	  <li><a href="/complaints/my-tickets">My Complaints</a></li>
-      <li class="active"><a href="/complaints/add-tickets">Register Complaints</a></li>
-      <li><a href="/contact">Contact Us</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-	  <li><a>User: {{ user }}</a></li>
-      <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
-    </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="container">
-<div class="row">
-
-      <div class="col-md-6 col-md-offset-3">
-
-          <form class="form-horizontal" action="/complaints/add-tickets/" method="post">
-		  {% csrf_token %}
-          <fieldset>
-            <legend class="text-center">Complaint Details</legend>
-    
-            <!-- Name input-->
-			<div class="form-group">
-			<center>
-			{{ message }}
-			{% if message != "" %}<br>{%endif%}
-			<select id="option" name="category" class="form-control form-control-sm" a="true" style="width:200px;">
-                  <option value="none">Choose a Category</option>
-                  <option value="wifi">WiFi</option>
-                  <option value="lan">Lan</option>
-                  <option value="firewall">Sophos Firewall</option>
-                  <option value="url_unblock">URL Unblock req.</option>
-               </select>
-			<!--{% render_field form.category id="option" class="form-control form-control-sm" a="true" style="width:200px;" placeholder="Choose a category" %}-->
-			</center>
-			</div>
-			<div id="other3" style="display:none;">
-			<div class="form-group">
-              <label class="col-md-3 control-label" for="message" >Complaint Details</label>
-              <div class="col-md-9">
-                <textarea class="form-control" a="true" id="message" name="remark" placeholder="Please enter your message here..." rows="5"></textarea>
-				<!--{% render_field form.remark id="message" class="form-control" style="height:115px;" row="5" placeholder="Please enter your message here..." %}-->
-
-			  </div>
+   <head>
+      <title>CCIT BPHC</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+      <script src="{% static 'main.js' %}"></script>
+      <link rel="stylesheet" href="{% static 'main.css' %}">
+   </head>
+   <body>
+      <style>.navbar {border-radius:0px;}</style>
+      <nav class="navbar navbar-inverse">
+         <div class="container-fluid">
+            <div class="navbar-header">
+               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>                        
+               </button>
+               <img class="navbar-brand" src="{% static 'bitslogo.png' %}"></img>
+               <a class="navbar-brand" href="#">CCIT BPHC</a>
             </div>
-
-			<div class="form-group row">
-			<label class="col-md-3 control-label" for="message">-</label>
-			<div class="col-md-9">
-			<label for="default" class="btn btn-default" onclick="urg_fun()" style="position:relative;"><b>Urgency</b><input type="checkbox" id="default" class="badgebox"><!--{% render_field form.urgency id="default" class="badgebox" %}--><span class="badge">&check;</span></label>
-			</div>
-			</div>
-			
-			<div class="form-group" id="urg_reason" style="display:none;">
-              <label class="col-md-3 control-label" for="name">Urgency Reason</label>
-              <div class="col-md-9">
-                <input id="name" name="urgency_reason" type="text" placeholder="" class="form-control">
-				<!--{% render_field form.urgency_reason id="name" class="form-control" style="height:50px;" %}-->
-
-			  </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+               <ul class="nav navbar-nav">
+                  <li><a href="/complaints/my-tickets">My Complaints</a></li>
+                  <li class="active"><a href="/complaints/add-tickets">Register Complaints</a></li>
+                  <li><a href="/contact">Contact Us</a></li>
+               </ul>
+               <ul class="nav navbar-nav navbar-right">
+                  <li><a>User: {{ user }}</a></li>
+                  <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
+               </ul>
             </div>
-	
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="name">Room number</label>
-              <div class="col-md-9">
-                <input id="name" name="room_no" type="text" placeholder="" class="form-control">
-				<!--{% render_field form.room_no id="" class="form-control" %}-->
-			  </div>
+         </div>
+      </nav>
+      <div class="container">
+         <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+               <form class="form-horizontal" action="/complaints/add-tickets/" method="post">
+                  {% csrf_token %}
+                  <fieldset>
+                     <legend class="text-center">Complaint Details</legend>
+                     <!-- Name input-->
+                     <div class="form-group">
+                        <center>
+                           {{ message }}
+                           {% if message|length %}<br><br>{%endif%}
+                           <select id="option" name="category" class="form-control form-control-sm" a="true" style="width:200px;">
+                              <option value="none">Choose a Category</option>
+                              <option value="wifi">WiFi</option>
+                              <option value="lan">Lan</option>
+                              <option value="firewall">Sophos Firewall</option>
+                              <option value="url_unblock">URL Unblock req.</option>
+                           </select>
+                           <!--{% render_field form.category id="option" class="form-control form-control-sm" a="true" style="width:200px;" placeholder="Choose a category" %}-->
+                        </center>
+                     </div>
+                     <div id="other3" style="display:none;">
+                        <div class="form-group">
+                           <label class="col-md-3 control-label" for="message" >Complaint Details</label>
+                           <div class="col-md-9">
+                              <textarea class="form-control" a="true" id="message" name="remark" placeholder="Please enter your message here..." rows="5"></textarea>
+                              <!--{% render_field form.remark id="message" class="form-control" style="height:115px;" row="5" placeholder="Please enter your message here..." %}-->
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <label class="col-md-3 control-label" for="message">-</label>
+                           <div class="col-md-9">
+                              <label for="default" class="btn btn-default" onclick="urg_fun()" style="position:relative;">
+                                 <b>Urgency</b><input type="checkbox" id="default" class="badgebox"><!--{% render_field form.urgency id="default" class="badgebox" %}--><span class="badge">&check;</span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="form-group" id="urg_reason" style="display:none;">
+                           <label class="col-md-3 control-label" for="name">Urgency Reason</label>
+                           <div class="col-md-9">
+                              <input id="urgencry_reason" name="urgency_reason" type="text" placeholder="" class="form-control">
+                              <!--{% render_field form.urgency_reason id="name" class="form-control" style="height:50px;" %}-->
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <label class="col-md-3 control-label" for="name">Room number</label>
+                           <div class="col-md-9">
+                              <input id="room_no" name="room_no" type="text" placeholder="" class="form-control">
+                              <!--{% render_field form.room_no id="" class="form-control" %}-->
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <label class="col-md-3 control-label" for="name">Availability</label>
+                           <div class="col-md-9">
+							<input type="time" id="time" onchange="timerecord1()" value="00:00:00">
+							<!--{% render_field form.avail_start_time id="" class="form-control" style="display:inline;width:85px" placeholder="Ex:11AM" %}-->
+                              &nbsp;&nbsp;to&nbsp;&nbsp;
+							<input type="time" id="time2" onchange="timerecord2()" value="00:00:00">
+							<p style="display:none;" id="time_alert"><br>The difference between times must be at least 1 hour</p>
+							<input type="hidden" id="hiddentime" name="avail_start_time" value="">
+							<input type="hidden" id="hiddentime2" name="avail_end_time" value="">
+							<!--{% render_field form.avail_end_time id="" class="form-control" style="display:inline;width:85px" placeholder="Ex: 4PM" %}-->
+                           </div>
+                        </div>
+                        <!-- Email input-->
+                        <div class="form-group">
+                           <label class="col-md-3 control-label" for="email">Contact no.</label>
+                           <div class="col-md-9">
+                              <input id="contact_no" name="contact_no" type="text" placeholder="" class="form-control">
+                              <!--{% render_field form.contact_no id="" class="form-control" %}-->
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="text-center">
+                              <button id="b1" type="submit" class="btn btn-primary" style="background:#444444;border-color:black;">Submit</button>
+                           </div>
+                        </div>
+                     </div>
+               </form>
+               <form class="form-horizontal" action="/complaints/request-unblock/" method="post">
+               {% csrf_token %}
+               <div id="url_unblock" style="display:none;">
+               <div class="form-group">
+               <label class="col-md-3 control-label" for="email">URL</label>
+               <div class="col-md-9">
+               <input id="url" name="url" type="url" placeholder="" class="form-control">
+               <!--{% render_field form2.url id="" class="form-control" %}-->
+               </div>
+               </div>
+               <div class="form-group">
+               <label class="col-md-3 control-label" for="message">Details</label>
+               <div class="col-md-9">
+               <textarea class="form-control" id="reason" name="reason" a="true" placeholder="Please enter your message here..." rows="5"></textarea>
+               <!--{% render_field form2.reason id="" class="form-control" style="height:115px;" row="5" placeholder="Please enter your messe here..." %}-->
+               </div>
+               </div>
+               <div class="form-group">
+               <div class="text-center">
+               <button id="b2" type="submit" class="btn btn-primary" style="background:#444444;border-color:black;">Submit</button>
+               </div>
+               </div>
+               </div>
+               </fieldset>
+               </form>
             </div>
-		
-			<div class="form-group">
-              <label class="col-md-3 control-label" for="name">Availability</label>
-              <div class="col-md-9">
-                <input id="name" name="avail_start_time" type="time" placeholder="" class="form-control" style="display:inline;width:90px">
-				<!--{% render_field form.avail_start_time id="" class="form-control" style="display:inline;width:85px" placeholder="Ex:11AM" %}-->
-				&nbsp;&nbsp;to&nbsp;&nbsp;
-				<input id="name" name="avail_end_time" type="time" placeholder="" class="form-control" style="display:inline;width:90px">
-				<!--{% render_field form.avail_end_time id="" class="form-control" style="display:inline;width:85px" placeholder="Ex: 4PM" %}-->
-			  </div>
-            </div>
-            <!-- Email input-->
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="email">Contact no.</label>
-              <div class="col-md-9">
-                <input id="email" name="contact_no" type="text" placeholder="" class="form-control">
-				<!--{% render_field form.contact_no id="" class="form-control" %}-->
-
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="text-center">
-                <button id="b1" type="submit" class="btn btn-primary" style="background:#444444;border-color:black;">Submit</button>
-              </div>
-            </div>
-			</div>
-			</form>
-          <form class="form-horizontal" action="/complaints/request-unblock/" method="post">
-		  {% csrf_token %}
-			<div id="url_unblock" style="display:none;">
-			<div class="form-group">
-              <label class="col-md-3 control-label" for="email">URL</label>
-              <div class="col-md-9">
-                <input id="email" name="url" type="url" placeholder="" class="form-control">
-				<!--{% render_field form2.url id="" class="form-control" %}-->
-              </div>
-            </div>
-			<div class="form-group">
-              <label class="col-md-3 control-label" for="message">Details</label>
-              <div class="col-md-9">
-                <textarea class="form-control" id="" name="reason" a="true" placeholder="Please enter your message here..." rows="5"></textarea>
-				<!--{% render_field form2.reason id="" class="form-control" style="height:115px;" row="5" placeholder="Please enter your messe here..." %}-->
-
-              </div>
-            </div>
-			<div class="form-group">
-              <div class="text-center">
-                <button id="b2" type="submit" class="btn btn-primary" style="background:#444444;border-color:black;">Submit</button>
-              </div>
-            </div>
-			</div>
-          </fieldset>
-          </form>
-        </div>
-	</div>
-</div>	
-</body>
+         </div>
+      </div>
+   </body>
 </html>
+

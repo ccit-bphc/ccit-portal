@@ -18,6 +18,34 @@ function checkUR(abc){
     abc.value=string
 }
 
+	function timerecord1() {
+		var t1 = document.getElementById('time').value;
+		console.log('Time 1 = ' + t1);
+		if(t1.length == 5){document.getElementById('hiddentime').value = t1 + ':00';}
+		else{document.getElementById('hiddentime').value = t1;}		
+		y = document.getElementById('hiddentime2').value;
+		x = document.getElementById('hiddentime').value;
+        var y = new Date("01/01/2007 " + y);
+        var x = new Date("01/01/2007 " + x);
+		var x = y - x;
+		x = x / 60 / 60 / 1000;
+		if(x < 1){document.getElementById('time_alert').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
+		else{document.getElementById('time_alert').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
+	};
+	function timerecord2() {
+		var t2 = document.getElementById('time2').value;
+		if(t2.length == 5){document.getElementById('hiddentime2').value = t2 + ':00';}
+		else{document.getElementById('hiddentime2').value = t2;}
+		y = document.getElementById('hiddentime2').value;
+		x = document.getElementById('hiddentime').value;
+        var y = new Date("01/01/2007 " + y);
+        var x = new Date("01/01/2007 " + x);
+		var x = y - x;
+		x = x / 60 / 60 / 1000;
+		if(x < 1){document.getElementById('time_alert').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
+		else{document.getElementById('time_alert').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
+	};
+
 function comp_fun(id){
 	console.log('Im here!');
 	console.log(id);
@@ -76,33 +104,26 @@ $(document).ready(function () {
 		console.log("Im here 1");
 		console.log($(this).val());
 	});
-	/*
-	$(".form-control").change(function () {
-		var x = $(this);
-		if(x.attr("a") != "true"){
-		console.log(($(this)).toString());
-		var regex = /(?:[^\*\^\#\%\@\!\(\)\=\{\}\[\]\:\'\"]*)/
-        var isValid = regex.test(x.val());
-		console.log(x.val());
-		console.log(isValid);
-		if(document.getElementById('option').value == "url_unblock"){var b1 = 'b2';}
-		else{var b1 = 'b1';}
-	if ((isValid == false || x.val().length > 12) && x.val() != "") {
-			console.log("current form: ");
-			console.log(document.getElementById('option').value);
-            x.css("border", "1px solid red");
-			$("#" + b1).attr("disabled", true);
-			document.getElementById(b1).style.background = "#888888";
-			document.getElementById(b1).style.borderColor = "#777777";
 
-        } else {
-            x.attr("style","");
-			$("#" + b1).attr("disabled", true);
-			$("#" + b1).attr("disabled", false);
-			$("#" + b1).css("border-color","black");
-			$("#" + b1).css("background","#444444");
-        }
+	
+	$('#room_no').change(function (){
+		var room_no = document.getElementById('room_no');
+		var regex = /[ !@#$%^&*()_+\-=\[\]{};':"\\|<>\/?]/ ;
+		if(regex.test(room_no.value)){
+			room_no.style.borderColor = 'red';
+			document.getElementById('b1').setAttribute('disabled','');
 		}
-	});*/
-
+		else{room_no.style="";document.getElementById('b1').removeAttribute('disabled');}
+	});
+	
+	$('#contact_no').change(function (){
+		var contact_no = document.getElementById('contact_no');
+		var regex = /^\d+$/ ;
+		if((!regex.test(contact_no.value)) || (contact_no.value.length > 12 || contact_no.value.length < 8)){
+			contact_no.style.borderColor = 'red';
+			document.getElementById('b1').setAttribute('disabled','');
+		}
+		else{contact_no.style="";document.getElementById('b1').removeAttribute('disabled');}
+	});
 });
+

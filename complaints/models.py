@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 
+
 class Complaint(models.Model):
     """Model Class for storing complaint tickets"""
 
@@ -102,6 +103,7 @@ class UnblockRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requestee")
     url_validator = RegexValidator(regex=url_regex, message="This is not a valid URL.")
     url = models.TextField(
+
         validators=[url_validator],
         unique=True,
         error_messages={"unique": "This url is already under consideration"},
