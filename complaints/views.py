@@ -87,6 +87,7 @@ def register_complaint(request):
 def handle_complaint(request):
     if request.method == "POST":
         form = ComplaintHandleForm(request.POST)
+        print(form);
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.handler = request.user
