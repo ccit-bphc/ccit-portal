@@ -4,7 +4,12 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
-from users.permissions import user_is_logged_in_and_active, user_is_staff
+from users.permissions import (
+    user_is_logged_in_and_active,
+    user_is_staff,
+    user_is_nucleus,
+    user_is_staff_or_nucleus,
+)
 from .models import Complaint, UnblockRequest
 from .forms import ComplaintForm, UnblockRequestForm
 
@@ -22,12 +27,13 @@ def previous(request):
     )
 
 
-def cancel_complaint(request, pk: int):
+@user_is_logged_in_and_active
+def cancel_complaint(request):
     """User can cancel their own complaint"""
     if request.method != "POST":
         return redirect("previous-requests")
     user = request.user
-    complaint = Complaint.objects.get(pk=pk)
+    complaint = Complaint.objects.get(request.POST.get("id"))
     if complaint.user != user:
         return redirect("previous-requests")
     complaint.handler = user
@@ -38,12 +44,13 @@ def cancel_complaint(request, pk: int):
     return redirect("previous-requests")
 
 
-def cancel_unblock_request(request, pk: int):
+@user_is_logged_in_and_active
+def cancel_unblock_request(request):
     """User can cancel their own unblock request"""
     if request.method != "POST":
         return redirect("previous-requests")
     user = request.user
-    unblock = UnblockRequest.objects.get(pk=pk)
+    unblock = UnblockRequest.objects.get(request.POST.get("id"))
     if unblock.user != user:
         return redirect("previous-requests")
     unblock.delete()
@@ -75,7 +82,7 @@ def register_complaint(request):
 
 
 @user_is_logged_in_and_active
-@user_is_staff
+@user_is_staff_or_nucleus
 def handle_complaint(request):
     if request.method == "POST":
         user_id = request.POST.get("id")
@@ -103,7 +110,7 @@ def handle_complaint(request):
 
 
 @user_is_logged_in_and_active
-@user_is_staff
+@user_is_staff_or_nucleus
 def display_to_staff(request):
     """View to display the pending requests and complaints to staff members"""
     complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
@@ -147,6 +154,7 @@ def request_unblock(request):
 
 
 @user_is_logged_in_and_active
+@user_is_staff_or_nucleus
 def handle_unblock_request(request):
     """View For Handling Request for unblocking websites"""
     if request.method == "POST":
