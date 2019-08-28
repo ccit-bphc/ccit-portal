@@ -85,8 +85,8 @@ def register_complaint(request):
 @user_is_staff_or_nucleus
 def handle_complaint(request):
     if request.method == "POST":
-        user_id = request.POST.get("id")
-        complaint_set = Complaint.objects.filter(id=user_id)
+        complaint_id = request.POST.get("id")
+        complaint_set = Complaint.objects.filter(id=complaint_id)
         complaint_obj = complaint_set[0]
         complaint_obj.status = request.POST.get("status")
         complaint_obj.handler = request.user
@@ -116,19 +116,23 @@ def display_to_staff(request):
     complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
-    requests = UnblockRequest.objects.filter(status=Complaint.REGISTERED).order_by(
+    requests = UnblockRequest.objects.filter(status=UnblockRequest.REGISTERED).order_by(
         "-uploaded_at"
     )
-    complaints_handler = Complaint.objects.filter(handler=request.user).order_by(
-        "-uploaded_at"
-    )
+    requests_verified = UnblockRequest.objects.filter(
+        status=UnblockRequest.VERIFIED
+    ).order_by("-uploaded_at")
+    complaints_handled = Complaint.objects.filter(
+        handler=request.user, status=Complaint.TAKEN_UP
+    ).order_by("-uploaded_at")
     return render(
         request,
         "complaints/handle_requests.html",
         context={
-            "complaints_handler": complaints_handler,
+            "complaints_handler": complaints_handled,
             "complaints": complaints,
             "requests": requests,
+            "requests_verified": requests_verified,
         },
     )
 
@@ -166,15 +170,18 @@ def handle_unblock_request(request):
         request_obj.remark_to_user = request.POST.get("remark_to_user")
         request_obj.resolved_at = timezone.now()
         request_obj.save()
-        email_resolve(
-            category=request_obj.category,
-            request_id=request_obj.id,
-            issue="Request",
-            user_email=request.user.email,
-            request_status=request_obj.status,
-            details=request_obj.remark,
-            remark_user=request_obj.remark_to_user,
-        )
+        if request_obj.status == UnblockRequest.VERIFIED:
+            email_verified(url=request_obj.url)
+        else:
+            email_resolve(
+                category=request_obj.category,
+                request_id=request_obj.id,
+                issue="Request",
+                user_email=request.user.email,
+                request_status=request_obj.status,
+                details=request_obj.remark,
+                remark_user=request_obj.remark_to_user,
+            )
         return render(
             request, "complaints/previous_complaints.html", context={"title": "home"}
         )
@@ -198,7 +205,7 @@ def email_on_request(request_id, category, details, issue, user_email):
         f"category- {category} and details- {details} has been registered. "
         f"Please allocate a technician to look into the issue"
     )
-    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
+    to_email = ["ccit_student_nucleus@hyderabad.bits-pilani.ac.in"]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 
@@ -214,4 +221,17 @@ def email_resolve(
     )
     from_email = settings.EMAIL_HOST_USER
     to_email = [user_email]
+    send_mail(subject, message, from_email, to_email, fail_silently=True)
+
+
+def email_verified(url):
+    """Function to send email to ccit when the ccit nucleus verifies an unblock request"""
+    subject = "Website Unblock Request Verified"
+    message = (
+        "CCIT Student Nucleus has verified the request for unblocking "
+        f"the website- {url} to be genuine. "
+        "Please do the needful at the earliest."
+    )
+    from_email = settings.EMAIL_HOST_USER
+    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
