@@ -10,12 +10,14 @@ class Complaint(models.Model):
     """Model Class for storing complaint tickets"""
 
     REGISTERED = "RD"
+    TAKEN_UP = "TU"
     DONE = "DN"
     CANCELLED = "CD"
 
     STATUS_CHOICES = (
         (REGISTERED, "Registered"),
-        (DONE, "Done"),
+        (TAKEN_UP, "Issue Taken Up"),
+        (DONE, "Resolved"),
         (CANCELLED, "Cancelled"),
     )
 
