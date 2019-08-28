@@ -9,6 +9,7 @@ django-allauth = "*"
 
 [dev-packages]
 black = "*"
+coverage = "*"
 pylint = "*"
 pylint-django = "*"
 

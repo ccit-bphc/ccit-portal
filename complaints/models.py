@@ -68,7 +68,7 @@ class Complaint(models.Model):
         ):
             raise ValidationError("Available time is less than one hour.")
         if self.urgency:
-            if self.urgency_reason == "":
+            if self.urgency_reason is None or self.urgency_reason == "":
                 raise ValidationError("No urgency reason given for urgent complaint.")
         if not self.user.is_staff:
             if self.handler == self.user:
