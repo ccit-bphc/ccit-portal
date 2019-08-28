@@ -10,3 +10,18 @@ def user_is_logged_in_and_active(function):
 def user_is_staff(function):
     staff_user = user_passes_test(lambda u: u.is_staff, login_url="denied")
     return staff_user(function)
+
+
+def user_is_nucleus(function):
+    nucleus_user = user_passes_test(
+        lambda u: u.groups.filter(name="nucleus"), login_url="denied"
+    )
+    return nucleus_user(function)
+
+
+def user_is_staff_or_nucleus(function):
+    dec_func = user_passes_test(
+        lambda u: u.is_staff or u.groups.filter(name="nucleus").exists(),
+        login_url="denied",
+    )
+    return dec_func(function)
