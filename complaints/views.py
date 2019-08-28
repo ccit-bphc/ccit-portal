@@ -86,6 +86,8 @@ def handle_complaint(request):
         complaint_obj.remark_to_user = request.POST.get("remark_to_user")
         complaint_obj.resolved_at = timezone.now()
         complaint_obj.save()
+        if complaint_obj.status == Complaint.TAKEN_UP:
+            complaint_obj.status = "Taken up by a technician"
         email_resolve(
             category=complaint_obj.category,
             request_id=complaint_obj.id,
@@ -110,10 +112,17 @@ def display_to_staff(request):
     requests = UnblockRequest.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
+    complaints_handler = Complaint.objects.filter(handler=request.user).order_by(
+        "-uploaded_at"
+    )
     return render(
         request,
         "complaints/handle_requests.html",
-        context={"complaints": complaints, "requests": requests},
+        context={
+            "complaints_handler": complaints_handler,
+            "complaints": complaints,
+            "requests": requests,
+        },
     )
 
 
