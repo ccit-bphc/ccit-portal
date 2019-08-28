@@ -90,9 +90,11 @@ class UnblockRequest(models.Model):
     REGISTERED = "RD"
     DONE = "DN"
     CANCELLED = "CD"
+    VERIFIED = "VF"
 
     STATUS_CHOICES = (
         (REGISTERED, "Registered"),
+        (VERIFIED, "Verified"),
         (DONE, "Done"),
         (CANCELLED, "Cancelled"),
     )
