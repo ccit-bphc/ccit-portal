@@ -6,12 +6,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from users.permissions import user_is_logged_in_and_active, user_is_staff
 from .models import Complaint, UnblockRequest
-from .forms import (
-    ComplaintForm,
-    ComplaintHandleForm,
-    UnblockRequestForm,
-    UnblockHandleForm,
-)
+from .forms import ComplaintForm, UnblockRequestForm
 
 
 @user_is_logged_in_and_active
@@ -83,32 +78,26 @@ def register_complaint(request):
 @user_is_staff
 def handle_complaint(request):
     if request.method == "POST":
-        form = ComplaintHandleForm(request.POST)
-        if form.is_valid():
-            form_obj = form.save(commit=False)
-            form_obj.handler = request.user
-            form_obj.resolved_at = timezone.now()
-            form_obj.save()
-            if request.POST.get("status") == Complaint.DONE:
-                messages.success(
-                    request, "The Complaint has been Successfully Resolved"
-                )
-                status = "Resolved"
-            if request.POST.get("status") == Complaint.CANCELLED:
-                messages.success(
-                    request, "The Complaint has been Successfully Cancelled"
-                )
-                status = "Cancelled"
-            email_resolve(
-                category=form_obj.category,
-                request_id=form_obj.id,
-                issue="Complaint",
-                user_email=request.user.email,
-                request_status=status,
-                details=form_obj.remark,
-                remark_user=form_obj.remark_to_user,
-            )
-            return render(request, "registration/home.html", context={"title": "home"})
+        user_id = request.POST.get("id")
+        complaint_set = Complaint.objects.filter(id=user_id)
+        complaint_obj = complaint_set[0]
+        complaint_obj.status = request.POST.get("status")
+        complaint_obj.handler = request.user
+        complaint_obj.remark_to_user = request.POST.get("remark_to_user")
+        complaint_obj.resolved_at = timezone.now()
+        complaint_obj.save()
+        email_resolve(
+            category=complaint_obj.category,
+            request_id=complaint_obj.id,
+            issue="Complaint",
+            user_email=request.user.email,
+            request_status=complaint_obj.status,
+            details=complaint_obj.remark,
+            remark_user=complaint_obj.remark_to_user,
+        )
+        return render(
+            request, "complaints/previous_complaints.html", context={"title": "home"}
+        )
 
 
 @user_is_logged_in_and_active
@@ -151,34 +140,27 @@ def request_unblock(request):
 @user_is_logged_in_and_active
 def handle_unblock_request(request):
     """View For Handling Request for unblocking websites"""
-
     if request.method == "POST":
-        form = UnblockHandleForm(request.POST)
-        if form.is_valid():
-            form_obj = form.save(commit=False)
-            form_obj.handler = request.user
-            form_obj.resolved_at = timezone.now()
-            form_obj.save()
-            if request.POST.get("status") == Complaint.DONE:
-                messages.success(
-                    request, "The Complaint has been Successfully Resolved"
-                )
-                status = "Resolved"
-            if request.POST.get("status") == Complaint.CANCELLED:
-                messages.success(
-                    request, "The Complaint has been Successfully Cancelled"
-                )
-                status = "Cancelled"
-            email_resolve(
-                category=form_obj.category,
-                request_id=form_obj.id,
-                issue="Request",
-                user_email=request.user.email,
-                request_status=status,
-                details=form_obj.reason,
-                remark_user=form_obj.remark_to_user,
-            )
-            return render(request, "registration/home.html", context={"title": "home"})
+        user_id = request.POST.get("id")
+        request_set = UnblockRequest.objects.filter(id=user_id)
+        request_obj = request_set[0]
+        request_obj.status = request.POST.get("status")
+        request_obj.handler = request.user
+        request_obj.remark_to_user = request.POST.get("remark_to_user")
+        request_obj.resolved_at = timezone.now()
+        request_obj.save()
+        email_resolve(
+            category=request_obj.category,
+            request_id=request_obj.id,
+            issue="Request",
+            user_email=request.user.email,
+            request_status=request_obj.status,
+            details=request_obj.remark,
+            remark_user=request_obj.remark_to_user,
+        )
+        return render(
+            request, "complaints/previous_complaints.html", context={"title": "home"}
+        )
 
 
 def email_on_request(request_id, category, details, issue, user_email):
