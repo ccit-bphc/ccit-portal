@@ -14,9 +14,6 @@
   <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
-
-<style>.navbar {border-radius:0px;}td{background:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}</style>
-
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -30,6 +27,8 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
+	<style>.navbar {border-radius:0px;}td{background:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}</style>
+
 	{% if user.is_authenticated %} 
 	{% if user.is_staff or user.is_nucleus %}
 	  <li><a href="/complaints/my-tickets">All Complaints</a></li>
@@ -122,6 +121,15 @@
                            Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br>
                         </form>
                         {%endif%}
+						{% if user.is_nucleus %}
+                           <form method="post" action="{% url 'handle-request' %}">
+                              <input type="hidden" value="{{ comp.pk }}" name="id">
+                              <input type="hidden" value="DN" name="status">
+
+                                 {% csrf_token %}
+                                 Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
+                           </form>
+                           {%endif%}
                         {% if req.status == req.REGISTERED %}
                         <form method="post" action="">
                            {% csrf_token %}
