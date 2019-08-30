@@ -73,7 +73,8 @@ def register_complaint(request):
                 issue="Complaint",
                 user_email=request.user.email,
             )
-
+            request.user.contact_no = form_obj.contact_no
+            request.user.save()
             messages.success(request, "Your Complaint has been Successfully Registered")
             return render(request, "registration/home.html", context={"title": "home"})
     else:
