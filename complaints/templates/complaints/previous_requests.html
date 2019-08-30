@@ -95,34 +95,46 @@
                            {% if user.is_staff == True %}
                            <form method="post" action="{% url 'complaint-resolve' %}">
                               {%endif%}
-                              <td style="background:#EEEEEE;" colspan="1">Staff's Remarks:<textarea class="form-control" a="true" name="remark_to_user" {% if user.is_staff == False and user.is_nucleus == False %} disabled {%endif%} rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
+                              <td style="background:#EEEEEE;" colspan="1">Staff's Remarks:<textarea class="form-control" a="true" id="remarktouser" name="remark_to_user" {% if user.is_staff == False and user.is_nucleus == False %} disabled {%endif%} rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
                               {% if user.is_staff == True %}
                               <input type="hidden" value="{{ comp.pk }}" name="id">
                               <input type="hidden" value="DN" name="status">
                               <td rowspan="4" style="background:#EEEEEE;">
+								 Currently Handled by: {% if comp.handler != None %}{{ comp.handler }}{%else%}---{%endif%}<br><br>
                                  {% csrf_token %}
                                  Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
                            </form>
                            {%endif%}
 						   {% if user.is_nucleus %}
 						   LOL
-						   {%endif%}
-
+						   {%endif%}						   
 						   {% if user.is_nucleus %}
                            <form method="post" action="{% url 'handle-request' %}">
                               <input type="hidden" value="{{ comp.pk }}" name="id">
                               <input type="hidden" value="DN" name="status">
-                              <td rowspan="4" style="background:#EEEEEE;">
+
                                  {% csrf_token %}
                                  Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
                            </form>
                            {%endif%}
+						   {% if user.is_staff %}
+						   <!-- Form for "Issue taken up" -->
+                           <form method="post" action="<!-- Add link here -->">
+                              <input type="hidden" value="{{ comp.pk }}" name="id">
+                              <input type="hidden" value="{{ comp.status }}" name="status">
+                                 {% csrf_token %}
+                                 Takeup issue: <button type="submit" style="color:blue;border-width:1px;"><i class="fas fa-angle-up"></i></button><br><br>
+                           </form>
+                           {%endif%}
+						
 						   
                            {% if comp.status == comp.REGISTERED %}
                            <form method="post" action="{% url 'complaint-resolve' %}">
                            {% csrf_token %}
                            Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button><br><br>
-                              <input type="hidden" value="{{ comp.pk }}" name="id">
+							  <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
+                              <script>document.getElementById('remark_cancel').value = document.getElementById('remarktouser').value</script>
+							  <input type="hidden" value="{{ comp.pk }}" name="id">
                               <input type="hidden" value="CD" name="status">
 						   </form>
                            {%else%}
@@ -147,59 +159,6 @@
                   {% endfor %}
                </table>
             </center>
-            <br>
-            <legend class="text-center">Unblock Requests</legend>
-            <table class="table table-striped table-bordered" style="">
-               <thead class="">
-                  <tr>
-                     <th>URL</th>
-                     <th>Status</th>
-                     <th>Remarks to User</th>
-                     <th>Details</th>
-                  </tr>
-               </thead>
-               {% for req in unblocks %}
-               <tr>
-                  <td style="text-overflow:clip;overflow:auto;">{{ req.url }}</td>
-                  <td>{{ req.status }}</td>
-                  <td>{{ req.remark_to_user }}</td>
-                  <td>
-                     <button style="color:black;border-width:1px;" onclick="req_fun({{ req.pk }})"><i class="fas fa-caret-down" id="{{ req.pk }}rc"></i></button>
-                  </td>
-               </tr>
-               <div>
-                  <tr style="display:none;" id="{{ req.pk }}ra">
-                     <td style="background:#EEEEEE;">Details:</td>
-                     <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
-                     <td rowspan="2" style="background:#EEEEEE;">
-                        {% if user.is_staff %}
-                        <form method="post" action="{% url 'update_request_resolve' %}">
-                           {% csrf_token %}
-                           {%endif%}
-                           Staff's Remarks:<textarea class="form-control" {% if user.is_staff == False %} disabled {%endif%} a="true" name="remark_to_user" rows="5" placeholder="Staff's remarks">{{req.remark_to_user}}</textarea>
-                           {% if user.is_staff %}
-                           <input type="hidden" value="{{ req.pk }}" name="id">
-                           <input type="hidden" value="{{ req.status }}" name="status">
-                           Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br>
-                        </form>
-                        {%endif%}
-                        {% if req.status == req.REGISTERED %}
-                        <form method="post" action="">
-                           {% csrf_token %}
-                           Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
-                        </form>
-                        {%else%}
-                        -
-                        {% endif %}
-                     </td>
-                  </tr>
-                  <tr style="display:none;" id="{{ req.pk }}rb">
-                     <td style="background:#EEEEEE;">Registered Time:</td>
-                     <td style="background:#EEEEEE;" colspan="2">{{ req.request_time }}</td>
-                  </tr>
-               </div>
-               {% endfor %}
-            </table>
             {% endblock content %}
             <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
          </div>
