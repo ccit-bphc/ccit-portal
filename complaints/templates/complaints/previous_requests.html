@@ -30,7 +30,7 @@
     <ul class="nav navbar-nav">
 	{% if user.is_authenticated %} 
 	{% if user.is_staff or user.is_nucleus %}
-	  <li><a href="/complaints/my-tickets">All Complaints</a></li>
+	  <li class="active"><a href="/complaints/my-tickets">All Complaints</a></li>
 	{%else%}
 	  <li><a href="/complaints/my-tickets">My Complaints</a></li>
 	{%endif%}
@@ -39,7 +39,7 @@
 	{%endif%}
 	<li><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
 	{%endif%}
-      <li class="active"><a href="/contact">Contact Us</a></li>
+      <li><a href="/contact">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
 	{% if user.is_authenticated %} 
