@@ -75,7 +75,7 @@ def register_complaint(request):
             )
 
             messages.success(request, "Your Complaint has been Successfully Registered")
-            return render(request, "registration/home.html", context={"title": "home"})
+            return render(request, "complaints/complaints_register.html", context={"title": "home"})
     else:
         form = ComplaintForm()
         return render(request, "complaints/complaints_register.html", {"form": form})
@@ -154,7 +154,16 @@ def request_unblock(request):
                 user_email=request.user.email,
             )
             messages.success(request, "Your Request has been Successfully Registered")
-            return render(request, "registration/home.html", context={"title": "home"})
+            return render(request, "complaints/request_unblock.html", context={"title": "home"})
+    else:
+        user = request.user
+        complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+        unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
+        return render(
+            request,
+            "complaints/request_unblock.html",
+            context={"complaints": complaints, "unblocks": unblocks},
+            )
 
 
 @user_is_logged_in_and_active
