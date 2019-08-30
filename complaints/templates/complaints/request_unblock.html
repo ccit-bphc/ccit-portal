@@ -39,9 +39,9 @@
 	{% if not user.is_staff and not user.is_nucleus %}
       <li class=""><a href="/complaints/add-tickets">Register Complaints</a></li>
 	{%endif%}
-	<li><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
+	<li class="active"><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
 	{%endif%}
-      <li class="active"><a href="/contact">Contact Us</a></li>
+      <li><a href="/contact">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
 	{% if user.is_authenticated %} 
