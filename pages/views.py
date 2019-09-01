@@ -8,13 +8,13 @@ def home(request):
         return redirect("account-login")
 
     return render(
-        request, "complaints/complaints_register.html", context={"title": "CCIT Complaint Portal"}
+        request, "complaints/complaints_register.html"
     )
 
 
 def contact(request):
     return render(
-        request, "registration/contact.html", context={"title": "CCIT Contact Us"}
+        request, "registration/contact.html"
     )
 
 
