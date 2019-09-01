@@ -5,22 +5,22 @@
 
 	{% if user.is_authenticated %} 
 	{% if user.is_staff or user.is_nucleus %}
-	  <li><a href="/complaints/my-tickets">All Complaints</a></li>
+	  <li><a href="{% url 'previous-requests' %}">All Complaints</a></li>
 	{%else%}
-	  <li><a href="/complaints/my-tickets">My Complaints</a></li>
+	  <li><a href="{% url 'previous-requests' %}">My Complaints</a></li>
 	{%endif%}
 	{% if not user.is_staff and not user.is_nucleus %}
-      <li class=""><a href="/complaints/add-tickets">Register Complaints</a></li>
+      <li class=""><a href="{% url 'unblock-request' %}">Register Complaints</a></li>
 	{%endif%}
 	<li class="active"><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
 	{%endif%}
-      <li><a href="/contact">Contact Us</a></li>
+      <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
 	{% if user.is_authenticated %} 
-      <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
+      <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
 	{%else%}
-	  <li><a href="/login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+	  <li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
 	{%endif%}
     </ul>
     </div>
@@ -33,21 +33,19 @@
         <div class="col-md-6 col-md-offset-3">
 		{% if not user.is_staff and not user.is_nucleus %}
 		<legend class="text-center">Enter URL Info :</legend><br><br>
-			<form class="form-horizontal" action="/complaints/request-unblock/" method="post">
+			<form class="form-horizontal" action="{% url 'unblock-request' %}" method="post">
                {% csrf_token %}
                <div id="url_unblock" style="">
                <div class="form-group">
                <label class="col-md-3 control-label" for="email">URL</label>
                <div class="col-md-9">
                <input id="url" name="url" type="url" placeholder="http://www.example.com" class="form-control">
-               <!-- render_field form2.url id="" class="form-control" %}-->
                </div>
                </div>
                <div class="form-group">
                <label class="col-md-3 control-label" for="message">Details</label>
                <div class="col-md-9">
                <textarea class="form-control" id="reason" name="reason" a="true" placeholder="Please enter your message here..." rows="5"></textarea>
-               <!-- render_field form2.reason id="" class="form-control" style="height:115px;" row="5" placeholder="Please enter your messe here..." %}-->
                </div>
                </div>
                <div class="form-group">
@@ -127,7 +125,6 @@
 	</div>
 </div>
 
-
+{% endblock %}
 </body>
 </html>
-{% endblock %}
