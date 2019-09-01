@@ -11,3 +11,7 @@ class CustomUser(AbstractUser):
     contact_no = models.CharField(
         max_length=15, validators=[phone_number_validator], null=True, blank=True
     )
+
+    @property
+    def is_nucleus(self):
+        return self.groups.filter(name="nuclues").exists()
