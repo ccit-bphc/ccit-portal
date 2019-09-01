@@ -143,6 +143,7 @@ ALLOWED_DOMAINS = ["hyderabad.bits-pilani.ac.in"]
 # Allauth settings
 
 LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = "account-login"
 ACCOUNT_SESSION_REMEMBER = True
 SOCIALACCOUNT_ADAPTER = "users.adapters.CustomSocialAccountAdapter"

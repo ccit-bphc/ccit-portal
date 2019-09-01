@@ -18,13 +18,16 @@ from .forms import ComplaintForm, UnblockRequestForm
 def previous(request):
     """View for displaying previous complaints of the user"""
     user = request.user
-    complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
-    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
-    return render(
-        request,
-        "complaints/previous_requests.html",
-        context={"complaints": complaints, "unblocks": unblocks},
-    )
+    if user.is_staff or user.is_nucleus:
+        complaints = Complaint.objects.filter(status=Complaint.REGISTERED).filter(
+            status=Complaint.TAKEN_UP, handler=user
+        )
+        context = {"complaints": complaints}
+    else:
+        complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+        unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
+        context = {"complaints": complaints, "unblocks": unblocks}
+    return render(request, "complaints/previous_requests.html", context=context)
 
 
 @user_is_logged_in_and_active
@@ -77,6 +80,11 @@ def register_complaint(request):
             request.user.save()
             messages.success(request, "Your Complaint has been Successfully Registered")
             return render(request, "complaints/complaints_register.html")
+        else:
+            messages.error(
+                request, "Please fill all the details correctly in the form provided"
+            )
+            return render(request, "complaints/complaints_register.html")
     else:
         form = ComplaintForm()
         return render(request, "complaints/complaints_register.html")
@@ -91,7 +99,7 @@ def handle_complaint(request):
         complaint_obj = complaint_set[0]
         complaint_obj.status = request.POST.get("status")
         complaint_obj.handler = request.user
-        complaint_obj.remark_to_user = request.POST.get("remark_to_user")
+        complaint_obj.remark_to_user = request.POST.get("remark_to_user", None)
         complaint_obj.resolved_at = timezone.now()
         complaint_obj.save()
         if complaint_obj.status == Complaint.TAKEN_UP:
@@ -105,9 +113,7 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        return render(
-            request, "complaints/previous_complaints.html"
-        )
+        return previous(request)
 
 
 @user_is_logged_in_and_active
@@ -156,6 +162,11 @@ def request_unblock(request):
             )
             messages.success(request, "Your Request has been Successfully Registered")
             return render(request, "complaints/request_unblock.html")
+        else:
+            messages.error(
+                request, "Please fill all the details correctly in the form provided"
+            )
+            return render(request, "complaints/request_unblock.html")
     else:
         user = request.user
         complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
@@ -164,7 +175,7 @@ def request_unblock(request):
             request,
             "complaints/request_unblock.html",
             context={"complaints": complaints, "unblocks": unblocks},
-            )
+        )
 
 
 @user_is_logged_in_and_active
@@ -177,7 +188,7 @@ def handle_unblock_request(request):
         request_obj = request_set[0]
         request_obj.status = request.POST.get("status")
         request_obj.handler = request.user
-        request_obj.remark_to_user = request.POST.get("remark_to_user")
+        request_obj.remark_to_user = request.POST.get("remark_to_user", None)
         request_obj.resolved_at = timezone.now()
         request_obj.save()
         if request_obj.status == UnblockRequest.VERIFIED:
@@ -192,9 +203,7 @@ def handle_unblock_request(request):
                 details=request_obj.remark,
                 remark_user=request_obj.remark_to_user,
             )
-        return render(
-            request, "complaints/previous_complaints.html"
-        )
+        return render(request, "complaints/previous_complaints.html")
 
 
 def email_on_request(request_id, category, details, issue, user_email):

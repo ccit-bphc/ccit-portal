@@ -7,15 +7,18 @@ def home(request):
     if not request.user.is_authenticated:
         return redirect("account-login")
 
-    return render(
-        request, "complaints/complaints_register.html"
-    )
+    return render(request, "complaints/complaints_register.html")
 
 
 def contact(request):
-    return render(
-        request, "registration/contact.html"
-    )
+    return render(request, "registration/contact.html")
+
+
+def signup(request):
+    if not request.user.is_authenticated:
+        return redirect("account-login")
+
+    return render(request, "complaints/complaints_register.html")
 
 
 def denied(request):
