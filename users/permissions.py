@@ -13,15 +13,12 @@ def user_is_staff(function):
 
 
 def user_is_nucleus(function):
-    nucleus_user = user_passes_test(
-        lambda u: u.groups.filter(name="nucleus"), login_url="denied"
-    )
+    nucleus_user = user_passes_test(lambda u: u.is_nucleus, login_url="denied")
     return nucleus_user(function)
 
 
 def user_is_staff_or_nucleus(function):
     dec_func = user_passes_test(
-        lambda u: u.is_staff or u.groups.filter(name="nucleus").exists(),
-        login_url="denied",
+        lambda u: u.is_staff or u.is_nucleus, login_url="denied"
     )
     return dec_func(function)
