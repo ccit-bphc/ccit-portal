@@ -104,11 +104,7 @@ class UnblockRequest(models.Model):
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requestee")
     url_validator = RegexValidator(regex=url_regex, message="This is not a valid URL.")
-    url = models.TextField(
-        validators=[url_validator],
-        unique=True,
-        error_messages={"unique": "This url is already under consideration"},
-    )
+    url = models.TextField(validators=[url_validator])
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=REGISTERED)
     request_time = models.DateTimeField(auto_now_add=True)
     reason = models.TextField()
