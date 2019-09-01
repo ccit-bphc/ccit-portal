@@ -54,7 +54,7 @@
                            <label class="col-md-3 control-label" for="message">-</label>
                            <div class="col-md-9">
                               <label for="default" class="btn btn-default" onclick="urg_fun()" style="position:relative;">
-                                 <b>Urgency</b><input type="checkbox" id="default" class="badgebox"><!-- render_field form.urgency id="default" class="badgebox" %}--><span class="badge">&check;</span>
+                                 <b>Urgency</b><input name="urgency" type="checkbox" id="default" class="badgebox"><span class="badge">&check;</span>
                               </label>
                            </div>
                         </div>
@@ -98,7 +98,7 @@
             </div>
          </div>
       </div>
+	  
+	{% endblock %}
    </body>
 </html>
-
-{% endblock %}
