@@ -76,10 +76,10 @@ def register_complaint(request):
             request.user.contact_no = form_obj.contact_no
             request.user.save()
             messages.success(request, "Your Complaint has been Successfully Registered")
-            return render(request, "complaints/complaints_register.html", context={"title": "home"})
+            return render(request, "complaints/complaints_register.html")
     else:
         form = ComplaintForm()
-        return render(request, "complaints/complaints_register.html", {"form": form})
+        return render(request, "complaints/complaints_register.html")
 
 
 @user_is_logged_in_and_active
@@ -106,7 +106,7 @@ def handle_complaint(request):
             remark_user=complaint_obj.remark_to_user,
         )
         return render(
-            request, "complaints/previous_complaints.html", context={"title": "home"}
+            request, "complaints/previous_complaints.html"
         )
 
 
@@ -155,7 +155,7 @@ def request_unblock(request):
                 user_email=request.user.email,
             )
             messages.success(request, "Your Request has been Successfully Registered")
-            return render(request, "complaints/request_unblock.html", context={"title": "home"})
+            return render(request, "complaints/request_unblock.html")
     else:
         user = request.user
         complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
@@ -193,7 +193,7 @@ def handle_unblock_request(request):
                 remark_user=request_obj.remark_to_user,
             )
         return render(
-            request, "complaints/previous_complaints.html", context={"title": "home"}
+            request, "complaints/previous_complaints.html"
         )
 
 
