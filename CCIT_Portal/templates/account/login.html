@@ -48,6 +48,12 @@
     <div class="Absolute-Center is-Responsive">
 	<center><img src="{% static 'ccit.png' %}" alt="..." style="background:#EEEEEE;border:0px;" class="img-thumbnail"></center><br><br>
       <div class="col-sm-12 col-md-10 col-md-offset-1">
+	  <center>
+	  	{% for message in messages %}
+            <b>{{ message }}</b>
+            {% if message|length %}<br><br>{%endif%}
+		{% endfor %}
+		</center>
         <form action="{% url 'account_login' %}" id="loginForm" method="POST">
           		  {% csrf_token %}
 		<div class="form-group input-group">
@@ -70,7 +76,7 @@
 	  {% get_providers as socialaccount_providers %}
 
 {% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}<center><b>Or Login with</b></center><br>{% endblocktrans %}</p>
+<p>{% blocktrans with site.name as site_name %}<center><b>Students and Staff please login with your google account</b></center><br>{% endblocktrans %}</p>
 
 <div class="socialaccount_ballot">
 

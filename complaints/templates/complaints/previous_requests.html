@@ -29,6 +29,10 @@
          <div class="col-sm-12 col-md-10 col-md-offset-1">
             <legend class="text-center">Your Complaints</legend>
             <center>
+				{% for message in messages %}
+                    <b>{{ message }}</b>
+                    {% if message|length %}<br><br>{%endif%}
+				{% endfor %}
                <table class="table table-bordered" >
                   <thead class="">
                      <tr>

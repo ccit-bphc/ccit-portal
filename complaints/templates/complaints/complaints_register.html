@@ -33,8 +33,10 @@
                      <legend class="text-center">Complaint Details</legend>
                      <div class="form-group">
                         <center>
-                           {{ message }}
+						{% for message in messages %}
+                           <b>{{ message }}</b>
                            {% if message|length %}<br><br>{%endif%}
+						{% endfor %}
                            <select id="option" name="category" class="form-control form-control-sm" a="true" style="width:200px;">
                               <option value="none">Choose a Category</option>
                               <option value="wifi">WiFi</option>
