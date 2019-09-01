@@ -13,12 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from importlib import import_module
 from django.contrib import admin
 from django.urls import path, include
 from allauth.account.views import LoginView, LogoutView
+from allauth.socialaccount import providers
 from pages import views as pages_views
-
-# from users.views import CustomLoginView
 
 
 urlpatterns = [
@@ -29,5 +29,19 @@ urlpatterns = [
     path("", pages_views.home, name="home"),
     path("login/", LoginView.as_view(), name="account-login"),
     path("logout/", LogoutView.as_view(), name="account-logout"),
-    path("accounts/", include("allauth.urls")),
+    path("signup/", pages_views.signup, name="account_signup"),
+    path("social/", include("allauth.socialaccount.urls")),
 ]
+
+# Provider urlpatterns, as separate attribute (for reusability).
+provider_urlpatterns = []
+for provider in providers.registry.get_list():
+    try:
+        prov_mod = import_module(provider.get_package() + ".urls")
+    except ImportError:
+        continue
+    prov_urlpatterns = getattr(prov_mod, "urlpatterns", None)
+    if prov_urlpatterns:
+        provider_urlpatterns += prov_urlpatterns
+urlpatterns += provider_urlpatterns
+

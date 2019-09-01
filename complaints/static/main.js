@@ -95,7 +95,7 @@ $(document).ready(function () {
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
 		}
-		if ($(this).val() == 'wifi' || $(this).val() == 'lan' || $(this).val() == 'firewall') {
+		if ($(this).val() == 'WF' || $(this).val() == 'LN' || $(this).val() == 'SF') {
 			document.getElementById('other3').style.display = 'block';
 		} if($(this).val() == 'url_unblock') {
 			//document.getElementById('url_unblock').style.display = 'block';
