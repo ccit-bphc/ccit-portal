@@ -19,7 +19,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             messages.error(
                 request, "Please login through bits-mail or contact the administrator."
             )
-            raise ImmediateHttpResponse(redirect("account_login"))
+            raise ImmediateHttpResponse(redirect("account-login"))
 
     def authentication_error(
         self, request, provider_id, error=None, exception=None, extra_context=None
@@ -30,6 +30,6 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                 (
                     f"You are already logged in as {request.user.username}. "
                     "Please logout first to login as another user"
-                )
+                ),
             )
             raise ImmediateHttpResponse(redirect("home"))
