@@ -6,8 +6,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from users.permissions import (
     user_is_logged_in_and_active,
-    user_is_staff,
-    user_is_nucleus,
     user_is_staff_or_nucleus,
 )
 from .models import Complaint, UnblockRequest
@@ -16,18 +14,17 @@ from .forms import ComplaintForm, UnblockRequestForm
 
 @user_is_logged_in_and_active
 def previous(request):
-    """View for displaying previous complaints of the user"""
+    """View for displaying previous complaints and requests of the user"""
     user = request.user
     if user.is_staff or user.is_nucleus:
-        complaints = Complaint.objects.filter(status=Complaint.REGISTERED).filter(
-            status=Complaint.TAKEN_UP, handler=user
-        )
-        context = {"complaints": complaints}
-    else:
-        complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
-        unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
-        context = {"complaints": complaints, "unblocks": unblocks}
-    return render(request, "complaints/previous_requests.html", context=context)
+        return redirect("home")
+    complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
+    return render(
+        request,
+        "complaints/previous_requests.html",
+        context={"complaints": complaints, "unblocks": unblocks},
+    )
 
 
 @user_is_logged_in_and_active
@@ -118,29 +115,34 @@ def handle_complaint(request):
 
 @user_is_logged_in_and_active
 @user_is_staff_or_nucleus
-def display_to_staff(request):
+def display_complaint(request):
     """View to display the pending requests and complaints to staff members"""
     complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
         "-uploaded_at"
     )
-    requests = UnblockRequest.objects.filter(status=UnblockRequest.REGISTERED).order_by(
-        "-uploaded_at"
-    )
-    requests_verified = UnblockRequest.objects.filter(
-        status=UnblockRequest.VERIFIED
-    ).order_by("-uploaded_at")
-    complaints_handled = Complaint.objects.filter(
+    complaints_taken = Complaint.objects.filter(
         handler=request.user, status=Complaint.TAKEN_UP
     ).order_by("-uploaded_at")
     return render(
         request,
-        "complaints/handle_requests.html",
-        context={
-            "complaints_handler": complaints_handled,
-            "complaints": complaints,
-            "requests": requests,
-            "requests_verified": requests_verified,
-        },
+        "complaints/handle_complaints.html",
+        context={"complaints_taken": complaints_taken, "complaints": complaints},
+    )
+
+
+@user_is_logged_in_and_active
+@user_is_staff_or_nucleus
+def display_request(request):
+    if request.user.is_nucleus:
+        requests = UnblockRequest.objects.filter(
+            status=UnblockRequest.REGISTERED
+        ).order_by("-uploaded_at")
+    else:
+        requests = UnblockRequest.objects.filter(
+            status=UnblockRequest.VERIFIED
+        ).order_by("-uploaded_at")
+    return render(
+        request, "complaints/handle_requests.html", context={"requests": requests}
     )
 
 
