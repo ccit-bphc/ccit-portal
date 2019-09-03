@@ -6,8 +6,9 @@ from django.shortcuts import render, redirect
 def home(request):
     if not request.user.is_authenticated:
         return redirect("account-login")
-
-    return render(request, "complaints/complaints_register.html")
+    if request.user.is_staff or request.user.is_nucleus:
+        return redirect("complaint-display")
+    return redirect("previous-requests")
 
 
 def contact(request):
