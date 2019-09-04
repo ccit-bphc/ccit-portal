@@ -7,7 +7,7 @@ urlpatterns = [
     path("request-unblock/", views.request_unblock, name="unblock-request"),
     path("add-tickets/", views.register_complaint, name="complaint-register"),
     path("handle-tickets/", views.display_complaint, name="complaint-display"),
-    path("handle-requests/", views.display_request, name="request_display"),
+    path("handle-requests/", views.display_request, name="request-display"),
     path("resolve-tickets/", views.handle_complaint, name="complaint-resolve"),
     path(
         "resolve-unblock-requests/",
