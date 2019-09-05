@@ -38,9 +38,6 @@
                   <tbody bgcolor="white">
                      <tr>
                         <td>{{ comp.category }}</td>
-                        <!--<td>{{ comp.contact_no }}</td>-->
-                        <!--<td>{{ comp.remark }}</td>-->
-                        <!--<td>{{ comp.uploaded_at }}</td>-->
                         <td>{{ comp.room_no }}</td>
                         <td>{{ comp.status }}</td>
                         {% if comp.urgency == True %}
@@ -48,9 +45,6 @@
                         {%else%}
                         <td>No</td>
                         {%endif%}
-                        <!--<td>{{ comp.urgency_reason }}</td>-->
-                        <!--<td>{{ comp.avail_start_time }}</td>-->
-                        <!--<td>{{ comp.avail_end_time }}</td>-->
                         <td>
                            <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
                         </td>
@@ -87,7 +81,6 @@
                            </form>
                            {%endif%}
 						   {% if user.is_staff %}
-						   <!-- Form for "Issue taken up" -->
                            <form method="post" action="{% url 'complaint-resolve' %}">
                               <input type="hidden" value="{{ comp.pk }}" name="id">
                               <input type="hidden" value="{{ comp.status }}" name="status">
