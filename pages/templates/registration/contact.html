@@ -1,21 +1,28 @@
 {% extends 'complaints/base.html' %}
+{% block navbar %}
 
-{% block content %}
+	<style>.navbar {border-radius:0px;}td{background:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}</style>
+
 	{% if user.is_authenticated %} 
 	{% if user.is_staff or user.is_nucleus %}
-	  <li><a href="{% url 'previous-requests' %}">All Complaints</a></li>
+	  <li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
 	{%else%}
 	  <li><a href="{% url 'previous-requests' %}">My Complaints</a></li>
 	{%endif%}
 	{% if not user.is_staff and not user.is_nucleus %}
       <li class=""><a href="{% url 'complaint-register' %}">Register Complaints</a></li>
 	{%endif%}
+	{% if user.is_staff or user.is_nucleus %}
+	<li><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
+	{%else%}
 	<li><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
+	{%endif%}
 	{%endif%}
       <li class="active"><a href="{% url 'contact-us' %}">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
 	{% if user.is_authenticated %} 
+	  <li><a>User: {{user.username}}</a></li>
       <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
 	{%else%}
 	  <li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
@@ -29,6 +36,8 @@
 <div class="text-center">
       <div class="col-sm-12 col-md-10 col-md-offset-1">    
       <legend class="text-center">Our Contact Info</legend>
+	  {%endblock%}
+	  {%block content%}
 	   <h4>Name : 91XXXXXXXXXX</h4>
 </div>
 </div>
