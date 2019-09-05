@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from tld import get_fld
+from tld.exceptions import TldBadUrl, TldDomainNotFound
 
 
 class Complaint(models.Model):
@@ -112,11 +114,16 @@ class UnblockRequest(models.Model):
     handler = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="resolver", blank=True
     )
+    domain = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.id} - {self.url}"
 
     def save(self, *args, **kwargs):
+        try:
+            self.domain = get_fld(self.url)
+        except (TldBadUrl, TldDomainNotFound):
+            raise ValidationError("Given url is not valid.")
         if self.handler == self.user:
             if self.status != self.CANCELLED:
                 raise ValidationError(
