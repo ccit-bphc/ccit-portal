@@ -77,11 +77,14 @@ def register_complaint(request):
             request.user.save()
             messages.success(request, "Your Complaint has been Successfully Registered")
             return render(request, "complaints/complaints_register.html")
+<<<<<<< HEAD
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
             return render(request, "complaints/complaints_register.html")
+=======
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
     else:
         form = ComplaintForm()
         return render(request, "complaints/complaints_register.html")
@@ -110,7 +113,13 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
+<<<<<<< HEAD
         return previous(request)
+=======
+        return render(
+            request, "complaints/previous_complaints.html"
+        )
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 
 
 @user_is_logged_in_and_active
@@ -164,11 +173,14 @@ def request_unblock(request):
             )
             messages.success(request, "Your Request has been Successfully Registered")
             return render(request, "complaints/request_unblock.html")
+<<<<<<< HEAD
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
             return render(request, "complaints/request_unblock.html")
+=======
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
     else:
         user = request.user
         complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
@@ -177,7 +189,11 @@ def request_unblock(request):
             request,
             "complaints/request_unblock.html",
             context={"complaints": complaints, "unblocks": unblocks},
+<<<<<<< HEAD
         )
+=======
+            )
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 
 
 @user_is_logged_in_and_active
@@ -205,7 +221,13 @@ def handle_unblock_request(request):
                 details=request_obj.remark,
                 remark_user=request_obj.remark_to_user,
             )
+<<<<<<< HEAD
         return render(request, "complaints/previous_complaints.html")
+=======
+        return render(
+            request, "complaints/previous_complaints.html"
+        )
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 
 
 def email_on_request(request_id, category, details, issue, user_email):

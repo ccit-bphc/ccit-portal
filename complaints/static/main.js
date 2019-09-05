@@ -1,6 +1,7 @@
 function urg_fun() {
 	var checkBox = document.getElementById("default");
 	var a = document.getElementById("urg_reason");
+<<<<<<< HEAD
 	var b = document.getElementById("urgency_reason");
 	if (checkBox.checked == true) {
 		if (a.style.display == 'none') {
@@ -14,6 +15,18 @@ function urg_fun() {
 	}
 	
 function checkURL(abc){
+=======
+	if (checkBox.checked == true) {
+		if (a.style.display == 'none') {
+			a.style.display = 'block';
+		}
+	} else {
+		a.style.display = 'none';
+		}
+	}
+	
+function checkUR(abc){
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
     string = abc.value
     if(!(/^http:\/\//.test(string))){
         string = "http://" + string;
@@ -23,6 +36,10 @@ function checkURL(abc){
 
 	function timerecord1() {
 		var t1 = document.getElementById('time').value;
+<<<<<<< HEAD
+=======
+		console.log('Time 1 = ' + t1);
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 		if(t1.length == 5){document.getElementById('hiddentime').value = t1 + ':00';}
 		else{document.getElementById('hiddentime').value = t1;}		
 		y = document.getElementById('hiddentime2').value;
@@ -49,12 +66,21 @@ function checkURL(abc){
 	};
 
 function comp_fun(id){
+<<<<<<< HEAD
+=======
+	console.log('Im here!');
+	console.log(id);
+	console.log(document.getElementById(id + 'a'));
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 	if(document.getElementById(id + 'a').style.display == "none"){
 		document.getElementById(id + 'a').style.display = "";
 		document.getElementById(id + 'b').style.display = "";
 		document.getElementById(id + 'd').style.display = "";
 		document.getElementById(id + 'e').style.display = "";
+<<<<<<< HEAD
 		document.getElementById(id + 'f').style.display = "";
+=======
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 		document.getElementById(id + 'c').setAttribute("class", "fas fa-caret-up");
 
 	}
@@ -63,13 +89,22 @@ function comp_fun(id){
 		document.getElementById(id + 'b').style.display = "none";
 		document.getElementById(id + 'd').style.display = "none";
 		document.getElementById(id + 'e').style.display = "none";
+<<<<<<< HEAD
 		document.getElementById(id + 'f').style.display = "none";
+=======
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 		document.getElementById(id + 'c').setAttribute("class", "fas fa-caret-down");
 	}
 	
 }
 
 function req_fun(id){
+<<<<<<< HEAD
+=======
+	console.log('Im here!');
+	console.log(id);
+	console.log(document.getElementById(id + 'ra'));
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 	if(document.getElementById(id + 'ra').style.display == "none"){
 		document.getElementById(id + 'ra').style.display = "";
 		document.getElementById(id + 'rb').style.display = "";
@@ -88,16 +123,29 @@ $(document).ready(function () {
 	$("#option").change(function () {
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
+<<<<<<< HEAD
+=======
+		console.log($(this).val());
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 		if($(this).val() == 'none'){
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
 		}
+<<<<<<< HEAD
 		if ($(this).val() == 'WF' || $(this).val() == 'LN' || $(this).val() == 'SF') {
+=======
+		if ($(this).val() == 'wifi' || $(this).val() == 'lan' || $(this).val() == 'firewall') {
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 			document.getElementById('other3').style.display = 'block';
 		} if($(this).val() == 'url_unblock') {
 			//document.getElementById('url_unblock').style.display = 'block';
 		}
 		$(this).css("width","200px");
+<<<<<<< HEAD
+=======
+		console.log("Im here 1");
+		console.log($(this).val());
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 	});
 	
 	$('#room_no').change(function (){
@@ -110,6 +158,7 @@ $(document).ready(function () {
 		else{room_no.style="";document.getElementById('b1').removeAttribute('disabled');}
 	});
 	
+<<<<<<< HEAD
 	$('#url').change(function (){
 		    string = document.getElementById("url").value;
 			if(!(/^https:\/\//.test(string))){
@@ -120,6 +169,8 @@ $(document).ready(function () {
 			document.getElementById("url").value = string;
 	});
 	
+=======
+>>>>>>> 652d582bf300098067aa6978e1895557fa9e04c6
 	$('#contact_no').change(function (){
 		var contact_no = document.getElementById('contact_no');
 		var regex = /^\d+$/ ;
