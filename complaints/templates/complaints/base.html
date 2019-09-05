@@ -28,6 +28,15 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav">
+	
+	{% block navbar %}
+	{%endblock%}
+	<center>
+	{% for message in messages %}
+    <b>{{ message }}</b>
+    <br><br>
+    {% endfor %}
+	</center>
 	{% block content %}
 	{%endblock%}
 	

@@ -19,20 +19,6 @@
 </head>
 
 <body>
-  {% if form.errors %}
-  {% for field in form %}
-  {% for error in field.errors %}
-  <div class="alert alert-error">
-    <strong>{{ error|escape }}</strong>
-  </div>
-  {% endfor %}
-  {% endfor %}
-  {% for error in form.non_field_errors %}
-  <div class="alert alert-error">
-    <strong>{{ error|escape }}</strong>
-  </div>
-  {% endfor %}
-  {% endif %}
   <style>
     .navbar {
       border-radius: 0px;
@@ -61,17 +47,28 @@
     </div>
   </nav>
 
-  <div class="container">
-
+  <div class="container" style="position:relative;bottom:3em;">
     <div class="row" style="">
       <div class="Absolute-Center is-Responsive">
-        <center><img src="{% static 'ccit.png' %}" alt="..." style="background:#EEEEEE;border:0px;"
-            class="img-thumbnail"></center><br><br>
+        <center><img src="{% static 'ccit.png' %}" alt="..." style="background:#EEEEEE;border:0px;width:60%;height:60%;" class="img-thumbnail"></center><br><br>
         <div class="col-sm-12 col-md-10 col-md-offset-1">
           <center>
+		    {% if form.errors %}
+			  {% for field in form %}
+			  {% for error in field.errors %}
+			  <div class="alert alert-error" style="color:red;">
+				<b>{{ error|escape }}</b>
+			  </div>
+			  {% endfor %}
+			  {% endfor %}
+			  {% for error in form.non_field_errors %}
+			  <div class="alert alert-error" style="color:red;">
+				<strong>{{ error|escape }}</strong>
+			  </div>
+			  {% endfor %}
+			  {% endif %}
             {% for message in messages %}
-            <b>{{ message }}</b>
-            {% if message|length %}<br><br>{%endif%}
+            <b>{{ message }}<br><br></b>
             {% endfor %}
           </center>
           <form action="{% url 'account-login' %}" id="loginForm" method="POST">
@@ -97,8 +94,7 @@
           {% get_providers as socialaccount_providers %}
 
           {% if socialaccount_providers %}
-          <p>{% blocktrans with site.name as site_name %}<center><b>Students and Staff please login with your google
-                account</b></center><br>{% endblocktrans %}</p>
+          <p>{% blocktrans with site.name as site_name %}<center><b>Faculty and students please login with your Bitsmail</b></center><br>{% endblocktrans %}</p>
 
           <div class="socialaccount_ballot">
 
