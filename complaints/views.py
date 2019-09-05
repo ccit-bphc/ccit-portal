@@ -30,7 +30,7 @@ def cancel_complaint(request):
     if request.method != "POST":
         return redirect("previous-requests")
     user = request.user
-    complaint = Complaint.objects.get(request.POST.get("id"))
+    complaint = Complaint.objects.get(pk=request.POST.get("id"))
     if complaint.user != user:
         return redirect("previous-requests")
     complaint.handler = user
@@ -47,7 +47,7 @@ def cancel_unblock_request(request):
     if request.method != "POST":
         return redirect("previous-requests")
     user = request.user
-    unblock = UnblockRequest.objects.get(request.POST.get("id"))
+    unblock = UnblockRequest.objects.get(pk=request.POST.get("id"))
     if unblock.user != user:
         return redirect("previous-requests")
     unblock.delete()
