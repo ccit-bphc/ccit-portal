@@ -1,9 +1,9 @@
 {% extends 'complaints/base.html' %}
 
-{% block content %}
+{% block navbar %}
 {% if user.is_authenticated %}
 {% if user.is_staff or user.is_nucleus %}
-<li><a href="{% url 'previous-requests' %}">All Complaints</a></li>
+<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
 {%else%}
 <li><a href="{% url 'previous-requests' %}">My Complaints</a></li>
 {%endif%}
@@ -16,6 +16,7 @@
 </ul>
 <ul class="nav navbar-nav navbar-right">
    {% if user.is_authenticated %}
+   <li><a>User: {{user.username}}</a></li>
    <li><a href="/logout"><i class="fa fa-power-off"></i> Logout</a></li>
    {%else%}
    <li><a href="/login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
@@ -31,12 +32,10 @@
             {% csrf_token %}
             <fieldset>
                <legend class="text-center">Complaint Details</legend>
+			   {%endblock%}
+			   {% block content %}
                <div class="form-group">
                   <center>
-                     {% for message in messages %}
-                     <b>{{ message }}</b>
-                     {% if message|length %}<br><br>{%endif%}
-                     {% endfor %}
                      <select id="option" name="category" class="form-control form-control-sm" a="true"
                         style="width:200px;">
                         <option value="none">Choose a Category</option>
@@ -51,7 +50,7 @@
                      <label class="col-md-3 control-label" for="message">Complaint Details</label>
                      <div class="col-md-9">
                         <textarea class="form-control" a="true" id="message" name="remark"
-                           placeholder="Please enter your message here..." rows="5"></textarea>
+                           placeholder="Please enter your message here..." rows="5" required></textarea>
                      </div>
                   </div>
                   <div class="form-group row">
@@ -66,22 +65,22 @@
                   <div class="form-group" id="urg_reason" style="display:none;">
                      <label class="col-md-3 control-label" for="name">Urgency Reason</label>
                      <div class="col-md-9">
-                        <input id="urgencry_reason" name="urgency_reason" type="text" placeholder=""
+                        <input id="urgency_reason" name="urgency_reason" type="text" placeholder=""
                            class="form-control">
                      </div>
                   </div>
                   <div class="form-group">
                      <label class="col-md-3 control-label" for="name">Room number</label>
                      <div class="col-md-9">
-                        <input id="room_no" name="room_no" type="text" placeholder="" class="form-control">
+                        <input id="room_no" name="room_no" type="text" placeholder="" class="form-control" required>
                      </div>
                   </div>
                   <div class="form-group">
                      <label class="col-md-3 control-label" for="name">Availability</label>
                      <div class="col-md-9">
-                        <input type="time" id="time" onchange="timerecord1()" value="00:00:00">
+                        <input type="time" id="time" onchange="timerecord1()" value="00:00:00" required>
                         &nbsp;&nbsp;to&nbsp;&nbsp;
-                        <input type="time" id="time2" onchange="timerecord2()" value="00:00:00">
+                        <input type="time" id="time2" onchange="timerecord2()" value="00:00:00" required>
                         <p style="display:none;" id="time_alert"><br>The difference between times must be at least 1
                            hour</p>
                         <input type="hidden" id="hiddentime" name="avail_start_time" value="">
@@ -91,7 +90,7 @@
                   <div class="form-group">
                      <label class="col-md-3 control-label" for="email">Contact no.</label>
                      <div class="col-md-9">
-                        <input id="contact_no" name="contact_no" type="text" placeholder="" class="form-control">
+                        <input id="contact_no" name="contact_no" type="text" placeholder="" class="form-control" required>
                      </div>
                   </div>
                   <div class="form-group">

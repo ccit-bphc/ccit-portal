@@ -1,0 +1,9 @@
+3 new templates. ( 2 for staff and nucleus )
+
+Message styling
+
+Faculty and students message on login
+
+navbar block in base.html with messages
+
+Validation before submission

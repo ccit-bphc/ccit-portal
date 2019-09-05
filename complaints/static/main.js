@@ -1,16 +1,19 @@
 function urg_fun() {
 	var checkBox = document.getElementById("default");
 	var a = document.getElementById("urg_reason");
+	var b = document.getElementById("urgency_reason");
 	if (checkBox.checked == true) {
 		if (a.style.display == 'none') {
 			a.style.display = 'block';
+			b.setAttribute('required','');
 		}
 	} else {
 		a.style.display = 'none';
+		b.removeAttribute('required');
 		}
 	}
 	
-function checkUR(abc){
+function checkURL(abc){
     string = abc.value
     if(!(/^http:\/\//.test(string))){
         string = "http://" + string;
@@ -20,7 +23,6 @@ function checkUR(abc){
 
 	function timerecord1() {
 		var t1 = document.getElementById('time').value;
-		console.log('Time 1 = ' + t1);
 		if(t1.length == 5){document.getElementById('hiddentime').value = t1 + ':00';}
 		else{document.getElementById('hiddentime').value = t1;}		
 		y = document.getElementById('hiddentime2').value;
@@ -47,14 +49,12 @@ function checkUR(abc){
 	};
 
 function comp_fun(id){
-	console.log('Im here!');
-	console.log(id);
-	console.log(document.getElementById(id + 'a'));
 	if(document.getElementById(id + 'a').style.display == "none"){
 		document.getElementById(id + 'a').style.display = "";
 		document.getElementById(id + 'b').style.display = "";
 		document.getElementById(id + 'd').style.display = "";
 		document.getElementById(id + 'e').style.display = "";
+		document.getElementById(id + 'f').style.display = "";
 		document.getElementById(id + 'c').setAttribute("class", "fas fa-caret-up");
 
 	}
@@ -63,15 +63,13 @@ function comp_fun(id){
 		document.getElementById(id + 'b').style.display = "none";
 		document.getElementById(id + 'd').style.display = "none";
 		document.getElementById(id + 'e').style.display = "none";
+		document.getElementById(id + 'f').style.display = "none";
 		document.getElementById(id + 'c').setAttribute("class", "fas fa-caret-down");
 	}
 	
 }
 
 function req_fun(id){
-	console.log('Im here!');
-	console.log(id);
-	console.log(document.getElementById(id + 'ra'));
 	if(document.getElementById(id + 'ra').style.display == "none"){
 		document.getElementById(id + 'ra').style.display = "";
 		document.getElementById(id + 'rb').style.display = "";
@@ -90,7 +88,6 @@ $(document).ready(function () {
 	$("#option").change(function () {
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
-		console.log($(this).val());
 		if($(this).val() == 'none'){
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
@@ -101,8 +98,6 @@ $(document).ready(function () {
 			//document.getElementById('url_unblock').style.display = 'block';
 		}
 		$(this).css("width","200px");
-		console.log("Im here 1");
-		console.log($(this).val());
 	});
 	
 	$('#room_no').change(function (){
@@ -113,6 +108,16 @@ $(document).ready(function () {
 			document.getElementById('b1').setAttribute('disabled','');
 		}
 		else{room_no.style="";document.getElementById('b1').removeAttribute('disabled');}
+	});
+	
+	$('#url').change(function (){
+		    string = document.getElementById("url").value;
+			if(!(/^https:\/\//.test(string))){
+			if(!(/^http:\/\//.test(string))){
+				string = "http://" + string;
+			}
+			}
+			document.getElementById("url").value = string;
 	});
 	
 	$('#contact_no').change(function (){
