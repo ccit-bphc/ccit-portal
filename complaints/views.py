@@ -114,17 +114,29 @@ def handle_complaint(request):
 @user_is_staff_or_nucleus
 def display_complaint(request):
     """View to display the pending requests and complaints to staff members"""
-    complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
-        "-uploaded_at"
-    )
-    complaints_taken = Complaint.objects.filter(
-        handler=request.user, status=Complaint.TAKEN_UP
-    ).order_by("-uploaded_at")
-    return render(
-        request,
-        "complaints/handle_complaints.html",
-        context={"complaints_taken": complaints_taken, "complaints": complaints},
-    )
+    if request.user.is_staff:
+        complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
+            "-uploaded_at"
+        )
+        complaints_taken = Complaint.objects.filter(
+            handler=request.user, status=Complaint.TAKEN_UP
+        ).order_by("-uploaded_at")
+        return render(
+            request,
+            "complaints/handle_complaints.html",
+            context={"complaints_taken": complaints_taken, "complaints": complaints},
+        )
+    if request.user.is_nucleus:
+        complaints = (
+            Complaint.objects.filter(status=Complaint.REGISTERED)
+            .filter(status=Complaint.TAKEN_UP)
+            .order_by("-uploaded_at")
+        )
+        return render(
+            request,
+            "complaints/handle_complaints.html",
+            context={"complaints": complaints},
+        )
 
 
 @user_is_logged_in_and_active
