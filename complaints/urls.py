@@ -9,7 +9,6 @@ urlpatterns = [
     path("handle-tickets/", views.display_complaint, name="complaint-display"),
     path("handle-requests/", views.display_request, name="request-display"),
     path("resolve-tickets/", views.handle_complaint, name="complaint-resolve"),
-
     path(
         "resolve-unblock-requests/",
         views.handle_unblock_request,
