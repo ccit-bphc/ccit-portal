@@ -14,4 +14,10 @@ urlpatterns = [
         views.handle_unblock_request,
         name="update_request_resolve",
     ),
+        path(
+        "complaints/cancel/", views.cancel_complaint, name="cancel-complaint"
+    ),
+    path(
+        "unblocks/cancel/", views.cancel_unblock_request, name="cancel-unblock-request"
+    ),
 ]
