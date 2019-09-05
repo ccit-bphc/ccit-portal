@@ -151,6 +151,21 @@ def request_unblock(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
+            if form_obj.domain in (
+                req.domain
+                for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
+            ):
+                messages.success(
+                    request,
+                    "This url is under consideration. The issue will soon be resolved.",
+                )
+                return render(request, "complaints/request_unblock.html")
+            if form_obj.domain in (
+                req.domain
+                for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
+            ):
+                messages.success(request, "This url has already been unblocked.")
+                return render(request, "complaints/request_unblock.html")
             form_obj.save()
             email_on_request(
                 request_id=form_obj.id,
