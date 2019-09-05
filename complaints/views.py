@@ -4,10 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
-from users.permissions import (
-    user_is_logged_in_and_active,
-    user_is_staff_or_nucleus,
-)
+from users.permissions import user_is_logged_in_and_active, user_is_staff_or_nucleus
 from .models import Complaint, UnblockRequest
 from .forms import ComplaintForm, UnblockRequestForm
 
@@ -110,7 +107,7 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        return previous(request)
+        display_complaint(request)
 
 
 @user_is_logged_in_and_active
@@ -205,7 +202,7 @@ def handle_unblock_request(request):
                 details=request_obj.remark,
                 remark_user=request_obj.remark_to_user,
             )
-        return render(request, "complaints/previous_complaints.html")
+        display_request(request)
 
 
 def email_on_request(request_id, category, details, issue, user_email):
