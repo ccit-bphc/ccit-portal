@@ -137,16 +137,16 @@
                            <form method="post" action="{% url 'handle-request' %}">
                               <input type="hidden" value="{{ comp.pk }}" name="id">
                               <input type="hidden" value="DN" name="status">
-
                                  {% csrf_token %}
                                  Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
                            </form>
                            {%endif%}
                         {% if not req.status == req.CANCELLED %}
-                        <form method="post" action="cancel-unblock-request">
+                        <form method="post" action="{% url 'cancel-unblock-request' %}">
                            {% csrf_token %}
-                           <br>Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
+                        <br>Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
 						<input type="hidden" name="status" value="CD">
+						<input type="hidden" name="id" value="{{ req.pk }}">
 						</form>
                         {%else%}
                         -
