@@ -83,10 +83,7 @@
                         </form>
                         {%endif%}
                         {% if user.is_nucleus %}
-                        LOL
-                        {%endif%}
-                        {% if user.is_nucleus %}
-                        <form method="post" action="{% url 'handle-request' %}">
+                        <form method="post" action="{% url 'request-display' %}">
                            <input type="hidden" value="{{ comp.pk }}" name="id">
                            <input type="hidden" value="DN" name="status">
 
