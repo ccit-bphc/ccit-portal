@@ -143,10 +143,11 @@
                            </form>
                            {%endif%}
                         {% if not req.status == req.CANCELLED %}
-                        <form method="post" action="">
+                        <form method="post" action="cancel-unblock-request">
                            {% csrf_token %}
                            <br>Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
-                        </form>
+						<input type="hidden" name="status" value="CD">
+						</form>
                         {%else%}
                         -
                         {% endif %}
