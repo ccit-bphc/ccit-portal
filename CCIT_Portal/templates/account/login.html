@@ -121,9 +121,14 @@
                   Google</a>
               </label>
             </center>
+
+
             {% endfor %}
+
           </div>
+
           {% include "socialaccount/snippets/login_extra.html" %}
+
           {% else %}
           <p>{% blocktrans %}{% endblocktrans %}</p>
           {% endif %}

@@ -48,7 +48,7 @@
                   <tr style="display:none;" id="{{ req.pk }}ra">
                      <td style="background:#EEEEEE;">Details:</td>
                      <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
-                     <td rowspan="2" style="background:#EEEEEE;">
+                     <td rowspan="3" style="background:#EEEEEE;">
                         {% if user.is_staff %}
                         <form method="post" action="{% url 'update_request_resolve' %}">
                            {% csrf_token %}
@@ -63,7 +63,7 @@
 						{% if user.is_nucleus %}
                            <form method="post" action="{% url 'handle-request' %}">
                               <input type="hidden" value="{{ comp.pk }}" name="id">
-                              <input type="hidden" value="DN" name="status">
+                              <input type="hidden" value="{{ comp.status }}" name="status">
 
                                  {% csrf_token %}
                                  Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
@@ -72,6 +72,8 @@
                         {% if req.status == req.REGISTERED %}
                         <form method="post" action="">
                            {% csrf_token %}
+						    <input type="hidden" value="{{ comp.pk }}" name="id">
+                            <input type="hidden" value="CD" name="status">
                            Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
                         </form>
                         {%else%}
@@ -83,10 +85,14 @@
                      <td style="background:#EEEEEE;">Registered Time:</td>
                      <td style="background:#EEEEEE;" colspan="2">{{ req.request_time }}</td>
                   </tr>
+				  <tr style="display:none;" id="{{ req.pk }}rd">
+                     <td style="background:#EEEEEE;">User:</td>
+                     <td style="background:#EEEEEE;" colspan="2">{{ user.username }}</td>
+                  </tr>
                </div>
                {% endfor %}
             </table>
-            <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
+            <p><b>Status</b> : RD: Registered; CD: Cancelled; DN: Done/Resolved</p>
 			
 		</div>
 	</div>

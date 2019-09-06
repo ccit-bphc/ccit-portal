@@ -4,10 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
-from users.permissions import (
-    user_is_logged_in_and_active,
-    user_is_staff_or_nucleus,
-)
+from users.permissions import user_is_logged_in_and_active, user_is_staff_or_nucleus
 from .models import Complaint, UnblockRequest
 from .forms import ComplaintForm, UnblockRequestForm
 
@@ -33,7 +30,7 @@ def cancel_complaint(request):
     if request.method != "POST":
         return redirect("previous-requests")
     user = request.user
-    complaint = Complaint.objects.get(request.POST.get("id"))
+    complaint = Complaint.objects.get(pk=request.POST.get("id"))
     if complaint.user != user:
         return redirect("previous-requests")
     complaint.handler = user
@@ -50,7 +47,7 @@ def cancel_unblock_request(request):
     if request.method != "POST":
         return redirect("previous-requests")
     user = request.user
-    unblock = UnblockRequest.objects.get(request.POST.get("id"))
+    unblock = UnblockRequest.objects.get(pk=request.POST.get("id"))
     if unblock.user != user:
         return redirect("previous-requests")
     unblock.delete()
@@ -110,24 +107,36 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        return previous(request)
+        display_complaint(request)
 
 
 @user_is_logged_in_and_active
 @user_is_staff_or_nucleus
 def display_complaint(request):
     """View to display the pending requests and complaints to staff members"""
-    complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
-        "-uploaded_at"
-    )
-    complaints_taken = Complaint.objects.filter(
-        handler=request.user, status=Complaint.TAKEN_UP
-    ).order_by("-uploaded_at")
-    return render(
-        request,
-        "complaints/handle_complaints.html",
-        context={"complaints_taken": complaints_taken, "complaints": complaints},
-    )
+    if request.user.is_staff:
+        complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
+            "-uploaded_at"
+        )
+        complaints_taken = Complaint.objects.filter(
+            handler=request.user, status=Complaint.TAKEN_UP
+        ).order_by("-uploaded_at")
+        return render(
+            request,
+            "complaints/handle_complaints.html",
+            context={"complaints_taken": complaints_taken, "complaints": complaints},
+        )
+    if request.user.is_nucleus:
+        complaints = (
+            Complaint.objects.filter(status=Complaint.REGISTERED)
+            .filter(status=Complaint.TAKEN_UP)
+            .order_by("-uploaded_at")
+        )
+        return render(
+            request,
+            "complaints/handle_complaints.html",
+            context={"complaints": complaints},
+        )
 
 
 @user_is_logged_in_and_active
@@ -154,6 +163,21 @@ def request_unblock(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
+            if form_obj.domain in (
+                req.domain
+                for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
+            ):
+                messages.success(
+                    request,
+                    "This url is under consideration. The issue will soon be resolved.",
+                )
+                return render(request, "complaints/request_unblock.html")
+            if form_obj.domain in (
+                req.domain
+                for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
+            ):
+                messages.success(request, "This url has already been unblocked.")
+                return render(request, "complaints/request_unblock.html")
             form_obj.save()
             email_on_request(
                 request_id=form_obj.id,
@@ -205,7 +229,7 @@ def handle_unblock_request(request):
                 details=request_obj.remark,
                 remark_user=request_obj.remark_to_user,
             )
-        return render(request, "complaints/previous_complaints.html")
+        display_request(request)
 
 
 def email_on_request(request_id, category, details, issue, user_email):

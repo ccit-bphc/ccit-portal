@@ -62,10 +62,10 @@
                               <input type="hidden" value="DN" name="status">
 							  {%endif%}
                               <td rowspan="5" style="background:white;">
-							  {% if user.is_staff == True %}
+							  {% if user.is_staff == True or if user.is_nucleus == True  %}
 								 Currently Handled by: {% if comp.handler != None %}{{ comp.handler }}{%else%}---{%endif%}<br><br>
                                  {% csrf_token %}
-                                 Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
+                                 {% if user.is_staff %}Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>{%endif%}
                            </form>
                            {%endif%}
 						   {% if user.is_nucleus %}
