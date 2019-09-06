@@ -14,4 +14,4 @@ class CustomUser(AbstractUser):
 
     @property
     def is_nucleus(self):
-        return self.groups.filter(name="nuclues").exists()
+        return self.groups.filter(name="nucleus").exists()
