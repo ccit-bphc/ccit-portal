@@ -1,131 +1,149 @@
 {% extends 'complaints/base.html' %}
 {% block navbar %}
-	{% if user.is_authenticated %} 
-	<li class="active"><a href="{% url 'complaint-display' %}">All Complaints</a></li>
-	<li><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
-    <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
-	{%endif%}
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-	{% if user.is_authenticated %} 
-	<li><a>User: {{user.username}}</a></li>
-    <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-	{%else%}
-	<li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-	{%endif%}
-    </ul>
-    </div>
-  </div>
+
+{% if user.is_authenticated %}
+<li class="active"><a href="{% url 'complaint-display' %}">All Complaints</a></li>
+<li><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
+<li><a href="{% url 'contact-us' %}">Contact Us</a></li>
+{%endif%}
+</ul>
+<ul class="nav navbar-nav navbar-right">
+   {% if user.is_authenticated %}
+   <li><a>User: {{user.username}}</a></li>
+   <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
+   {%else%}
+   <li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+   {%endif%}
+</ul>
+</div>
+</div>
 </nav>
-      <div class="container">
-      <div class="text-center">
-         <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <legend class="text-center">Your Complaints</legend>
-			{%endblock%}
-			{% block content %}
-            <center>
-               <table class="table table-bordered" >
-                  <thead class="">
-                     <tr>
-                        <th>Category</th>
-                        <th>Room no.</th>
-                        <th>Status</th>
-                        <th>Urgency</th>
-                        <th>Details</th>
-                     </tr>
-                  </thead>
-                  {% for comp in complaints %}
-                  <tbody bgcolor="white">
-                     <tr>
-                        <td>{{ comp.category }}</td>
-                        <td>{{ comp.room_no }}</td>
-                        <td>{{ comp.status }}</td>
-                        {% if comp.urgency == True %}
-                        <td>Yes</td>
-                        {%else%}
-                        <td>No</td>
+<div class="container">
+   <div class="text-center">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <legend class="text-center">Your Complaints</legend>
+         {%endblock%}
+         {% block content %}
+         <center>
+            <table class="table table-bordered">
+               <thead class="">
+                  <tr>
+                     <th>Category</th>
+                     <th>Room no.</th>
+                     <th>Status</th>
+                     <th>Urgency</th>
+                     <th>Details</th>
+                  </tr>
+               </thead>
+               {% for comp in complaints %}
+               <tbody bgcolor="white">
+                  <tr>
+                     <td>{{ comp.category }}</td>
+                     <!--<td>{{ comp.contact_no }}</td>-->
+                     <!--<td>{{ comp.remark }}</td>-->
+                     <!--<td>{{ comp.uploaded_at }}</td>-->
+                     <td>{{ comp.room_no }}</td>
+                     <td>{{ comp.status }}</td>
+                     {% if comp.urgency == True %}
+                     <td>Yes</td>
+                     {%else%}
+                     <td>No</td>
+                     {%endif%}
+                     <!--<td>{{ comp.urgency_reason }}</td>-->
+                     <!--<td>{{ comp.avail_start_time }}</td>-->
+                     <!--<td>{{ comp.avail_end_time }}</td>-->
+                     <td>
+                        <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i
+                              class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
+                     </td>
+                  </tr>
+                  <div>
+                     <tr style="display:none;" id="{{ comp.pk }}a">
+                        <td style="background:white;">Details:</td>
+                        <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark"
+                              disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
+                        {% if user.is_staff == True %}
+                        <form method="post" action="{% url 'complaint-resolve' %}">
+                           {%endif%}
+                           <td style="background:white;" colspan="1" rowspan="5">Staff's Remarks:<textarea
+                                 class="form-control" a="true" id="remarktouser" name="remark_to_user"
+                                 {% if user.is_staff == False and user.is_nucleus == False %} disabled {%endif%}
+                                 rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea>
+                           </td>
+                           {% if user.is_staff == True %}
+                           <input type="hidden" value="{{ comp.pk }}" name="id">
+                           <input type="hidden" value="DN" name="status">
+                           {%endif%}
+                           <td rowspan="5" style="background:white;">
+                              {% if user.is_staff == True %}
+                              Currently Handled by:
+                              {% if comp.handler != None %}{{ comp.handler }}{%else%}---{%endif%}<br><br>
+                              {% csrf_token %}
+                              Resolve: <button type="submit" style="color:green;border-width:1px;"><i
+                                    class="fa fa-check" aria-hidden="true"></i></button><br><br>
+                        </form>
                         {%endif%}
-                        <td>
-                           <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
+                        {% if user.is_nucleus %}
+                        <form method="post" action="{% url 'request-display' %}">
+                           <input type="hidden" value="{{ comp.pk }}" name="id">
+                           <input type="hidden" value="DN" name="status">
+
+                           {% csrf_token %}
+                           Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check"
+                                 aria-hidden="true"></i></button><br><br>
+                        </form>
+                        {%endif%}
+                        {% if user.is_staff %}
+                        <!-- Form for "Issue taken up" -->
+                        <form method="post" action="{% url 'complaint-resolve' %}">
+                           <input type="hidden" value="{{ comp.pk }}" name="id">
+                           <input type="hidden" value="TU" name="status">
+                           {% csrf_token %}
+                           Takeup issue: <button type="submit" style="color:blue;border-width:1px;"><i
+                                 class="fas fa-angle-up"></i></button><br><br>
+                        </form>
+                        {%endif%}
+
+
+                        {% if comp.status == comp.REGISTERED %}
+                        <form method="post" action="{% url 'complaint-resolve' %}">
+                           {% csrf_token %}
+                           Cancel: <button type="submit" style="color:red;border-width:1px;"><i
+                                 class="fas fa-ban"></i></button><br><br>
+                           <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
+                           <script>document.getElementById('remark_cancel').value = document.getElementById('remarktouser').value</script>
+                           <input type="hidden" value="{{ comp.pk }}" name="id">
+                           <input type="hidden" value="CD" name="status">
+                        </form>
+                        {%else%}
+                        -
+                        {% endif %}
                         </td>
                      </tr>
-                     <div>
-                        <tr style="display:none;" id="{{ comp.pk }}a">
-                           <td style="background:white;">Details:</td>
-                           <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark" disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
-                           {% if user.is_staff == True %}
-                           <form method="post" action="{% url 'complaint-resolve' %}">
-                              {%endif%}
-                              <td style="background:white;" colspan="1" rowspan="5">Staff's Remarks:<textarea class="form-control" a="true" id="remarktouser" name="remark_to_user" {% if user.is_staff == False and user.is_nucleus == False %} disabled {%endif%} rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
-                              {% if user.is_staff == True %}
-                              <input type="hidden" value="{{ comp.pk }}" name="id">
-                              <input type="hidden" value="DN" name="status">
-							  {%endif%}
-                              <td rowspan="5" style="background:white;">
-							  {% if user.is_staff == True or user.is_nucleus == True  %}
-								 Currently Handled by: {% if comp.handler != None %}{{ comp.handler }}{%else%}---{%endif%}<br><br>
-                                 {% csrf_token %}
-                                 {% if user.is_staff %}Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>{%endif%}
-                           </form>
-                           {%endif%}
-						   {% if user.is_nucleus %}
-						   LOL
-						   {%endif%}						   
-						   {% if user.is_nucleus %}
-                           <form method="post" action="{% url 'handle-request' %}">
-                              <input type="hidden" value="{{ comp.pk }}" name="id">
-                              <input type="hidden" value="DN" name="status">
-
-                                 {% csrf_token %}
-                                 Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check" aria-hidden="true"></i></button><br><br>
-                           </form>
-                           {%endif%}
-						   {% if user.is_staff %}
-                           <form method="post" action="{% url 'complaint-resolve' %}">
-                              <input type="hidden" value="{{ comp.pk }}" name="id">
-                              <input type="hidden" value="{{ comp.status }}" name="status">
-                                 {% csrf_token %}
-                                 Takeup issue: <button type="submit" style="color:blue;border-width:1px;"><i class="fas fa-angle-up"></i></button><br><br>
-                           </form>
-                           {%endif%}
-						
-						   
-                           {% if comp.status == comp.REGISTERED %}
-                           <form method="post" action="{% url 'complaint-resolve' %}">
-                           {% csrf_token %}
-                           Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button><br><br>
-							  <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
-                              <script>document.getElementById('remark_cancel').value = document.getElementById('remarktouser').value</script>
-							  <input type="hidden" value="{{ comp.pk }}" name="id">
-                              <input type="hidden" value="CD" name="status">
-						   </form>
-                           {%else%}
-                           -
-                           {% endif %}
-                           </td>
-                        </tr>
-                        <tr style="display:none;" id="{{ comp.pk }}b">
-                           <td style="background:white;">Urgency Reason:</td>
-                           <td style="background:white;" colspan="2"><input type="text" class="form-control" a="true" value="{{ comp.reason }}" disabled rows="5" cols="2"></td>
-                        </tr>
-                        <tr style="display:none;" id="{{ comp.pk }}d">
-                           <td style="background:white;">Registered Time:</td>
-                           <td style="background:white;" colspan="2">{{ comp.uploaded_at }}</td>
-                        </tr>
-                        <tr style="display:none;" id="{{ comp.pk }}e">
-                           <td style="background:white;">Availability:</td>
-                           <td style="background:white;" colspan="2">{{ comp.avail_start_time }} to {{ comp.avail_end_time }}</td>
-                        </tr>
-						<tr style="display:none;" id="{{ comp.pk }}f">
-                           <td style="background:white;">Contact :</td>
-                           <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
-                        </tr>
-                     </div>
-                  </tbody>
-                  {% endfor %}
-               </table>
-            </center>
-            <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
-         </div>
+                     <tr style="display:none;" id="{{ comp.pk }}b">
+                        <td style="background:white;">Urgency Reason:</td>
+                        <td style="background:white;" colspan="2"><input type="text" class="form-control" a="true"
+                              value="{{ comp.reason }}" disabled rows="5" cols="2"></td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}d">
+                        <td style="background:white;">Registered Time:</td>
+                        <td style="background:white;" colspan="2">{{ comp.uploaded_at }}</td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}e">
+                        <td style="background:white;">Availability:</td>
+                        <td style="background:white;" colspan="2">{{ comp.avail_start_time }} to
+                           {{ comp.avail_end_time }}</td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}f">
+                        <td style="background:white;">Contact :</td>
+                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
+                     </tr>
+                  </div>
+               </tbody>
+               {% endfor %}
+            </table>
+         </center>
+         <p><b>Status</b> : RD: Registered; CD: Cancelled; DN: Done/Resolved</p>
       </div>
-	{% endblock %}
+   </div>
+   {% endblock %}
