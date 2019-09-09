@@ -58,7 +58,7 @@ def cancel_unblock_request(request):
 @user_is_logged_in_and_active
 def register_complaint(request):
     if request.method == "POST":
-        form = ComplaintForm(request.POST)
+        form = ComplaintForm(request.POST, request.FILES)
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
