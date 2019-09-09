@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
 from users.permissions import user_is_logged_in_and_active, user_is_staff_or_nucleus
@@ -163,22 +164,21 @@ def request_unblock(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
-            if form_obj.domain in (
-                req.domain
-                for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
-            ):
-                messages.success(
-                    request,
-                    "This url is under consideration. The issue will soon be resolved.",
-                )
-                return render(request, "complaints/request_unblock.html")
-            if form_obj.domain in (
-                req.domain
-                for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
-            ):
-                messages.success(request, "This url has already been unblocked.")
-                return render(request, "complaints/request_unblock.html")
-            form_obj.save()
+            try:
+                form_obj.save()
+            except ValidationError as e:
+                if str(e) == "['Given Url is under consideration.']":
+                    messages.success(
+                        request,
+                        "This url is under consideration. The issue will soon be resolved.",
+                    )
+                    return render(request, "complaints/request_unblock.html")
+                elif str(e) == "['Given Url is already unblocked.']":
+                    messages.success(request, "This url has already been unblocked.")
+                    return render(request, "complaints/request_unblock.html")
+                else:
+                    messages.error(request, "Please fill up form correctly.")
+                    return render(request, "complaints/request_unblock.html")
             email_on_request(
                 request_id=form_obj.id,
                 category="Request to Unblock Website",
