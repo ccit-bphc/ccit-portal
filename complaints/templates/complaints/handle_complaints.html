@@ -117,7 +117,7 @@
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}f">
                         <td style="background:white;">Contact :</td>
-                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
+                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}, Attachment: {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
                      </tr>
                   </div>
                </tbody>

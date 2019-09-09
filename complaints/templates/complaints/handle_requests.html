@@ -8,12 +8,8 @@
      <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-	{% if user.is_authenticated %} 
 	  <li><a>User: {{user.username}}</a></li>
       <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-	{%else%}
-	  <li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-	{%endif%}
     </ul>
     </div>
   </div>
