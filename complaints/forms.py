@@ -15,6 +15,7 @@ class ComplaintForm(forms.ModelForm):
             "room_no",
             "avail_start_time",
             "avail_end_time",
+            "avail_date",
             "image",
         )
 
