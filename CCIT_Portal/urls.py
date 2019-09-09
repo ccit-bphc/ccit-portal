@@ -16,9 +16,11 @@ Including another URLconf
 from importlib import import_module
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
 from allauth.account.views import LoginView, LogoutView
 from allauth.socialaccount import providers
 from pages import views as pages_views
+from . import settings
 
 
 urlpatterns = [
@@ -33,6 +35,7 @@ urlpatterns = [
     path("social/", include("allauth.socialaccount.urls")),
 ]
 
+# for django-allauth
 # Provider urlpatterns, as separate attribute (for reusability).
 provider_urlpatterns = []
 for provider in providers.registry.get_list():
@@ -45,3 +48,5 @@ for provider in providers.registry.get_list():
         provider_urlpatterns += prov_urlpatterns
 urlpatterns += provider_urlpatterns
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
