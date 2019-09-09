@@ -1,92 +1,69 @@
 {% extends 'complaints/base.html' %}
-{% block navbar %}
-{% if user.is_authenticated %}
-{% if user.is_staff or user.is_nucleus %}
-<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
-{%else%}
-<li><a href="{% url 'previous-requests' %}">My Complaints</a></li>
-{%endif%}
-{% if not user.is_staff and not user.is_nucleus %}
-<li class=""><a href="{% url 'complaint-register' %}">Register Complaints</a></li>
-{%endif%}
-<li><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
-{%endif%}
-<li><a href="{% url 'contact-us' %}">Contact Us</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-   {% if user.is_authenticated %}
-   <li><a>User: {{user.username}}</a></li>
-   <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-   {%else%}
-   <li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-   {%endif%}
-</ul>
-</div>
-</div>
+{% block navbar %} 
+	<li><a href="{% url 'previous-requests' %}">My Complaints</a></li>
+        <li class=""><a href="{% url 'complaint-register' %}">Register Complaints</a></li>
+	<li><a href="{% url 'unblock-request' %}">URL Unblock Request</a></li>
+      <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+	<li><a>User: {{user.username}}</a></li>
+    <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
+    </ul>
+    </div>
+  </div>
 </nav>
-<div class="container">
-   <div class="text-center">
-      <div class="col-sm-12 col-md-10 col-md-offset-1">
-         <legend class="text-center">Your Complaints</legend>
-         {%endblock%}
-         {% block content %}
-         <center>
-            <table class="table table-bordered">
-               <thead class="">
-                  <tr>
-                     <th>Category</th>
-                     <th>Room no.</th>
-                     <th>Status</th>
-                     <th>Urgency</th>
-                     <th>Details</th>
-                  </tr>
-               </thead>
-               {% for comp in complaints %}
-               <tbody bgcolor="white">
-                  <tr>
-                     <td>{{ comp.category }}</td>
-                     <!--<td>{{ comp.contact_no }}</td>-->
-                     <!--<td>{{ comp.remark }}</td>-->
-                     <!--<td>{{ comp.uploaded_at }}</td>-->
-                     <td>{{ comp.room_no }}</td>
-                     <td>{{ comp.status }}</td>
-                     {% if comp.urgency == True %}
-                     <td>Yes</td>
-                     {%else%}
-                     <td>No</td>
-                     {%endif%}
-                     <!--<td>{{ comp.urgency_reason }}</td>-->
-                     <!--<td>{{ comp.avail_start_time }}</td>-->
-                     <!--<td>{{ comp.avail_end_time }}</td>-->
-                     <td>
-                        <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i
-                              class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
-                     </td>
-                  </tr>
-                  <div>
-                     <tr style="display:none;" id="{{ comp.pk }}a">
-                        <td style="background:white;">Details:</td>
-                        <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark"
-                              disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
-
-                        <td style="background:white;" colspan="1" rowspan="5">Staff's Remarks:<textarea
-                              class="form-control" a="true" id="remarktouser" name="remark_to_user"
-                              {% if user.is_staff == False and user.is_nucleus == False %} disabled {%endif%} rows="5"
-                              cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
-                        <td rowspan="5" style="background:white;">
-                           {% if comp.status == comp.REGISTERED %}
-                           <form method="post" action="{% url 'cancel-complaint' %}">
-                              {% csrf_token %}
-                              Cancel: <button type="submit" style="color:red;border-width:1px;"><i
-                                    class="fas fa-ban"></i></button><br><br>
-                              <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
+      <div class="container">
+      <div class="text-center">
+         <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <legend class="text-center">Your Complaints</legend>
+			{%endblock%}
+			{% block content %}
+            <center>
+               <table class="table table-bordered" >
+                  <thead class="">
+                     <tr>
+                        <th>Category</th>
+                        <th>Room no.</th>
+                        <th>Status</th>
+                        <th>Urgency</th>
+                        <th>Details</th>
+                     </tr>
+                  </thead>
+                  {% for comp in complaints %}
+                  <tbody bgcolor="white">
+                     <tr>
+                        <td>{{ comp.category }}</td>
+                        <td>{{ comp.room_no }}</td>
+                        <td>{{ comp.status }}</td>
+                        {% if comp.urgency == True %}
+                        <td>Yes</td>
+                        {%else%}
+                        <td>No</td>
+                        {%endif%}
+                        <td>
+                           <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
+                        </td>
+                     </tr>
+                     <div>
+                        <tr style="display:none;" id="{{ comp.pk }}a">
+                         <td style="background:white;">Details:</td>
+                         <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark" disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
+                        
+                         <td style="background:white;" colspan="1" rowspan="5">Staff's Remarks:<textarea class="form-control" a="true" id="remarktouser" name="remark_to_user" disabled rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
+                         <td rowspan="5" style="background:white;">
+                         {% if comp.status == comp.REGISTERED %}
+                         <form method="post" action="{% url 'cancel-complaint' %}">
+                         {% csrf_token %}
+                           Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button><br><br>
+							  <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
                               <script>document.getElementById('remark_cancel').value = document.getElementById('remarktouser').value</script>
-                              <input type="hidden" value="{{ comp.pk }}" name="id">
+							  <input type="hidden" value="{{ comp.pk }}" name="id">
                               <input type="hidden" value="CD" name="status">
-                           </form>
+						   </form>
                            {%else%}
                            -
                            {% endif %}
+
                         </td>
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}b">
@@ -105,7 +82,7 @@
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}f">
                         <td style="background:white;">Contact :</td>
-                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
+                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}, Attachment: {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
                      </tr>
                   </div>
                </tbody>
@@ -128,41 +105,40 @@
                   <td>{{ req.status }}</td>
                   <td>{{ req.remark_to_user }}</td>
                   <td>
-                     <button style="color:black;border-width:1px;" onclick="req_fun({{ req.pk }})"><i
-                           class="fas fa-caret-down" id="{{ req.pk }}rc"></i></button>
+                     <button style="color:black;border-width:1px;" onclick="req_fun({{ req.pk }})"><i class="fas fa-caret-down" id="{{ req.pk }}rc"></i></button>
                   </td>
                </tr>
                <div>
                   <tr style="display:none;" id="{{ req.pk }}ra">
                      <td style="background:#EEEEEE;">Details:</td>
-                     <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled
-                           rows="5" cols="2">{{ req.reason }}</textarea></td>
-                     <td rowspan="2" style="background:#EEEEEE;">
-                        {% if user.is_staff %}
+                     <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
+                     <td rowspan="3" style="background:#EEEEEE;">
+                        Staff's Remarks:<textarea class="form-control" disabled a="true" name="remark_to_user" rows="5" placeholder="Staff's remarks">{{req.remark_to_user}}</textarea>
+                        {% if not req.status == req.CANCELLED %}
                         <form method="post" action="{% url 'cancel-unblock-request' %}">
                            {% csrf_token %}
-                           {%endif%}
-                           Staff's Remarks:<textarea class="form-control" {% if user.is_staff == False %} disabled
-                              {%endif%} a="true" name="remark_to_user" rows="5"
-                              placeholder="Staff's remarks">{{req.remark_to_user}}</textarea>
-                           {% if user.is_staff %}
-                           <input type="hidden" value="{{ req.pk }}" name="id">
-                           <input type="hidden" value="{{ req.status }}" name="status">
-                           Resolve: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check"
-                                 aria-hidden="true"></i></button><br>
-                        </form>
-                        {%endif%}
+                        <br>Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
+						<input type="hidden" name="status" value="CD">
+						<input type="hidden" name="id" value="{{ req.pk }}">
+						</form>
+                        {%else%}
+                        -
+                        {% endif %}
                      </td>
                   </tr>
                   <tr style="display:none;" id="{{ req.pk }}rb">
                      <td style="background:#EEEEEE;">Registered Time:</td>
                      <td style="background:#EEEEEE;" colspan="2">{{ req.request_time }}</td>
                   </tr>
+				  <tr style="display:none;" id="{{ req.pk }}rd">
+                     <td style="background:#EEEEEE;">User:</td>
+                     <td style="background:#EEEEEE;" colspan="2">{{ user.username }}, {{comp.contact_no}}, User: {{comp.user}}, Attachment: {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
+                  </tr>
                </div>
                {% endfor %}
             </table>
-         </center>
-         <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
+            </center>
+            <p><b>Status</b> : RD: Registered; CD: Cancelled; DN: Done; TU: Takenup;</p>
+         </div>
       </div>
-   </div>
-   {% endblock %}
+	{% endblock %}

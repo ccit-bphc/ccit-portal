@@ -1,5 +1,6 @@
 {% extends 'complaints/base.html' %}
 {% block navbar %}
+
 {% if user.is_authenticated %}
 <li class="active"><a href="{% url 'complaint-display' %}">All Complaints</a></li>
 <li><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
@@ -38,9 +39,7 @@
                <tbody bgcolor="white">
                   <tr>
                      <td>{{ comp.category }}</td>
-                     <!--<td>{{ comp.contact_no }}</td>-->
-                     <!--<td>{{ comp.remark }}</td>-->
-                     <!--<td>{{ comp.uploaded_at }}</td>-->
+
                      <td>{{ comp.room_no }}</td>
                      <td>{{ comp.status }}</td>
                      {% if comp.urgency == True %}
@@ -48,9 +47,7 @@
                      {%else%}
                      <td>No</td>
                      {%endif%}
-                     <!--<td>{{ comp.urgency_reason }}</td>-->
-                     <!--<td>{{ comp.avail_start_time }}</td>-->
-                     <!--<td>{{ comp.avail_end_time }}</td>-->
+
                      <td>
                         <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i
                               class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
@@ -102,21 +99,6 @@
                                  class="fas fa-angle-up"></i></button><br><br>
                         </form>
                         {%endif%}
-
-
-                        {% if comp.status == comp.REGISTERED %}
-                        <form method="post" action="{% url 'complaint-resolve' %}">
-                           {% csrf_token %}
-                           Cancel: <button type="submit" style="color:red;border-width:1px;"><i
-                                 class="fas fa-ban"></i></button><br><br>
-                           <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
-                           <script>document.getElementById('remark_cancel').value = document.getElementById('remarktouser').value</script>
-                           <input type="hidden" value="{{ comp.pk }}" name="id">
-                           <input type="hidden" value="CD" name="status">
-                        </form>
-                        {%else%}
-                        -
-                        {% endif %}
                         </td>
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}b">
@@ -135,14 +117,15 @@
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}f">
                         <td style="background:white;">Contact :</td>
-                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
+                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}, Attachment: {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
                      </tr>
                   </div>
                </tbody>
                {% endfor %}
             </table>
          </center>
-         <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
+         <p><b>Status</b> : RD: Registered; CD: Cancelled; DN: Done/Resolved</p>
       </div>
    </div>
+
    {% endblock %}

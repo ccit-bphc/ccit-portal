@@ -1,34 +1,18 @@
 {% extends 'complaints/base.html' %}
 
 {% block navbar %}
-<style>
-   .navbar {
-      border-radius: 0px;
-   }
+	<style>.navbar {border-radius:0px;}td{background:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}</style>
 
-   td {
-      background: white;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 150px;
-   }
-</style>
-
-<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
-<li class="active"><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
-<li><a href="{% url 'contact-us' %}">Contact Us</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-   {% if user.is_authenticated %}
-   <li><a>User: {{user.username}}</a></li>
-   <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-   {%else%}
-   <li><a href="{% url 'account-login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-   {%endif%}
-</ul>
-</div>
-</div>
+	<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
+	<li class="active"><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
+     <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+	  <li><a>User: {{user.username}}</a></li>
+      <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
+    </ul>
+    </div>
+  </div>
 </nav>
 
 
