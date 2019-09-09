@@ -67,7 +67,7 @@
                      <label class="col-md-3 control-label" for="name">Availability</label>
                      <div class="col-md-9" style="display:inline;">
 				        <input type="date" id="date" required>&nbsp;&nbsp;
-						<script>date.min = new Date().toISOString().split("T")[0];</script>
+						<script>date.min = new Date().toISOString().split("T")[0];dt = new Date();dt.setDate(dt.getDate() + 7);date.max = dt.toISOString().split("T")[0];</script>
                         <input type="time" id="time" onchange="timerecord1()" value="16:00:00" required>
                         &nbsp;&nbsp;to&nbsp;&nbsp;
                         <input type="time" id="time2" onchange="timerecord2()" value="18:00:00" required>
