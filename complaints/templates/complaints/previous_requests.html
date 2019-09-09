@@ -58,7 +58,7 @@
                          <td style="background:white;" colspan="1" rowspan="5">Staff's Remarks:<textarea class="form-control" a="true" id="remarktouser" name="remark_to_user" {% if user.is_staff == False and user.is_nucleus == False %} disabled {%endif%} rows="5" cols="2" placeholder="Staff's remarks">{{ comp.remark_to_user }}</textarea></td>
                          <td rowspan="5" style="background:white;">
                          {% if comp.status == comp.REGISTERED %}
-                         <form method="post" action="{% url 'complaint-resolve' %}">
+                         <form method="post" action="{% url 'cancel-complaint' %}">
                          {% csrf_token %}
                            Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button><br><br>
 							  <input type="hidden" value="" name="remark_to_user" id="remark_cancel">
