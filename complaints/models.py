@@ -55,6 +55,7 @@ class Complaint(models.Model):
     room_no = models.TextField(null=False, blank=False)
     avail_start_time = models.TimeField(null=False, blank=False)
     avail_end_time = models.TimeField(null=False, blank=False)
+    avail_date = models.DateField(null=False, blank=False)
     handler = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="handler"
     )
