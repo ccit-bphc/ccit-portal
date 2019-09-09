@@ -75,30 +75,33 @@
                            {%else%}
                            -
                            {% endif %}
-                           </td>
-                        </tr>
-                        <tr style="display:none;" id="{{ comp.pk }}b">
-                           <td style="background:white;">Urgency Reason:</td>
-                           <td style="background:white;" colspan="2"><input type="text" class="form-control" a="true" value="{{ comp.reason }}" disabled rows="5" cols="2"></td>
-                        </tr>
-                        <tr style="display:none;" id="{{ comp.pk }}d">
-                           <td style="background:white;">Registered Time:</td>
-                           <td style="background:white;" colspan="2">{{ comp.uploaded_at }}</td>
-                        </tr>
-                        <tr style="display:none;" id="{{ comp.pk }}e">
-                           <td style="background:white;">Availability:</td>
-                           <td style="background:white;" colspan="2">{{ comp.avail_start_time }} to {{ comp.avail_end_time }}</td>
-                        </tr>
-						<tr style="display:none;" id="{{ comp.pk }}f">
-                           <td style="background:white;">Contact :</td>
-                           <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
-                        </tr>
-                     </div>
-                  </tbody>
-                  {% endfor %}
-               </table>
-			   <br>
-			   <legend class="text-center">Unblock Requests</legend>
+
+                        </td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}b">
+                        <td style="background:white;">Urgency Reason:</td>
+                        <td style="background:white;" colspan="2"><input type="text" class="form-control" a="true"
+                              value="{{ comp.reason }}" disabled rows="5" cols="2"></td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}d">
+                        <td style="background:white;">Registered Time:</td>
+                        <td style="background:white;" colspan="2">{{ comp.uploaded_at }}</td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}e">
+                        <td style="background:white;">Availability:</td>
+                        <td style="background:white;" colspan="2">{{ comp.avail_start_time }} to
+                           {{ comp.avail_end_time }}</td>
+                     </tr>
+                     <tr style="display:none;" id="{{ comp.pk }}f">
+                        <td style="background:white;">Contact :</td>
+                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}</td>
+                     </tr>
+                  </div>
+               </tbody>
+               {% endfor %}
+            </table>
+            <br>
+            <legend class="text-center">Unblock Requests</legend>
             <table class="table table-striped table-bordered" style="">
                <thead class="">
                   <tr>
