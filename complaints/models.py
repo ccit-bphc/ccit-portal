@@ -133,6 +133,16 @@ class UnblockRequest(models.Model):
             self.domain = get_fld(self.url)
         except (TldBadUrl, TldDomainNotFound):
             raise ValidationError("Given url is not valid.")
+        if self.domain in (
+            req.domain
+            for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
+        ):
+            raise ValidationError("Given Url is under consideration.")
+        if self.domain in (
+            req.domain
+            for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
+        ):
+            raise ValidationError("Given Url is already unblocked.")
         if self.handler == self.user:
             if self.status != self.CANCELLED:
                 raise ValidationError(
