@@ -12,7 +12,6 @@ function urg_fun() {
 		b.removeAttribute('required');
 		}
 	}
-
 	
 function checkURL(abc){
     string = abc.value
