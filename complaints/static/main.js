@@ -12,24 +12,7 @@ function urg_fun() {
 		b.removeAttribute('required');
 		}
 	}
-	
-function date_fun(){
-	let dt = document.getElementById("date");
-	
-	let today = new Date();
-
-	let td = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-
-	console.log(td);
-	console.log(dt);
-
-	dt.setAttribute("min", td);
-
-	let lastday = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+String((parseInt(today.getDate()) + 15) % 28);
-
-	dt.setAttribute("max", lastday);
-}
-	
+		
 function checkURL(abc){
     string = abc.value
     if(!(/^http:\/\//.test(string))){
