@@ -1,30 +1,17 @@
 {% extends 'complaints/base.html' %}
 
 {% block navbar %}
-<style>
-   .navbar {
-      border-radius: 0px;
-   }
-
-   td {
-      background: white;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 150px;
-   }
-</style>
-
-<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
-<li class="active"><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
-<li><a href="{% url 'contact-us' %}">Contact Us</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-   <li><a>User: {{user.username}}</a></li>
-   <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-</ul>
-</div>
-</div>
+	<style>.navbar {border-radius:0px;}td{background:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}</style>
+	<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
+	<li class="active"><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
+     <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+	  <li><a>User: {{user.username}}</a></li>
+      <li><a href="{% url 'account-logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
+    </ul>
+    </div>
+  </div>
 </nav>
 
 
@@ -58,7 +45,7 @@
                   <td style="background:#EEEEEE;">Details:</td>
                   <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5"
                         cols="2">{{ req.reason }}</textarea></td>
-                  <td rowspan="2" style="background:#EEEEEE;">
+                  <td rowspan="3" style="background:#EEEEEE;">
                      {% if user.is_staff %}
                      <form method="post" action="{% url 'update_request_resolve' %}">
                         {% csrf_token %}
@@ -75,6 +62,7 @@
                      {%endif%}
                      {% if user.is_nucleus %}
                      <form method="post" action="{% url 'update_request_resolve' %}">
+
                         <input type="hidden" value="{{ req.pk }}" name="id">
                         <input type="hidden" value="VF" name="status">
 
@@ -84,6 +72,7 @@
                      </form>
                      {%endif%}
                      <form method="post" action="{% url 'update_request_resolve' %}">
+
                         <input type="hidden" value="{{ req.pk }}" name="id">
                         <input type="hidden" value="CD" name="status">
                         {% csrf_token %}
@@ -96,8 +85,12 @@
                   <td style="background:#EEEEEE;">Registered Time:</td>
                   <td style="background:#EEEEEE;" colspan="2">{{ req.request_time }}</td>
                </tr>
+			   <tr style="display:none;" id="{{ req.pk }}rd">
+                     <td style="background:#EEEEEE;">User:</td>
+                     <td style="background:#EEEEEE;" colspan="2">{{ req.user }}</td>
+                  </tr>
             </div>
-            {% endfor %}
+           {% endfor %}
          </table>
          <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
 

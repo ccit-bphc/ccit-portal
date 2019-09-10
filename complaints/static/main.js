@@ -15,7 +15,7 @@ function urg_fun() {
 	
 function checkURL(abc){
     string = abc.value
-    if(!(/^http:\/\//.test(string))){
+    if(!(/^:\/\//.test(string))){
         string = "http://" + string;
     }
     abc.value=string
@@ -73,12 +73,13 @@ function req_fun(id){
 	if(document.getElementById(id + 'ra').style.display == "none"){
 		document.getElementById(id + 'ra').style.display = "";
 		document.getElementById(id + 'rb').style.display = "";
+		document.getElementById(id + 'rd').style.display = "";
 		document.getElementById(id + 'rc').setAttribute("class", "fas fa-caret-up");
-
 	}
 	else{
 		document.getElementById(id + 'ra').style.display = "none";
 		document.getElementById(id + 'rb').style.display = "none";
+		document.getElementById(id + 'rd').style.display = "none";
 		document.getElementById(id + 'rc').setAttribute("class", "fas fa-caret-down");
 	}
 	
@@ -112,10 +113,8 @@ $(document).ready(function () {
 	
 	$('#url').change(function (){
 		    string = document.getElementById("url").value;
-			if(!(/^https:\/\//.test(string))){
-			if(!(/^http:\/\//.test(string))){
+			if(!(new RegExp('://').test(string))){
 				string = "http://" + string;
-			}
 			}
 			document.getElementById("url").value = string;
 	});

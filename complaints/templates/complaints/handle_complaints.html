@@ -79,17 +79,7 @@
                                     class="fa fa-check" aria-hidden="true"></i></button><br><br>
                         </form>
                         {%endif%}
-                        {% if user.is_nucleus %}
-                        <form method="post" action="{% url 'request-display' %}">
-                           <input type="hidden" value="{{ comp.pk }}" name="id">
-                           <input type="hidden" value="DN" name="status">
-
-                           {% csrf_token %}
-                           Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check"
-                                 aria-hidden="true"></i></button><br><br>
-                        </form>
-                        {%endif%}
-                        {% if user.is_staff %}
+                        {% if user.is_staff and comp.status == comp.REGISTERED %}
                         <!-- Form for "Issue taken up" -->
                         <form method="post" action="{% url 'complaint-resolve' %}">
                            <input type="hidden" value="{{ comp.pk }}" name="id">
@@ -112,7 +102,7 @@
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}e">
                         <td style="background:white;">Availability:</td>
-                        <td style="background:white;" colspan="2">{{ comp.avail_start_time }} to
+                        <td style="background:white;" colspan="2">{{ comp.avail_date }}, {{ comp.avail_start_time }} to
                            {{ comp.avail_end_time }}</td>
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}f">
