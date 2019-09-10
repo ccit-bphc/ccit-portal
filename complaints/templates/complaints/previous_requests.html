@@ -114,7 +114,7 @@
                      <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5" cols="2">{{ req.reason }}</textarea></td>
                      <td rowspan="3" style="background:#EEEEEE;">
                         Staff's Remarks:<textarea class="form-control" disabled a="true" name="remark_to_user" rows="5" placeholder="Staff's remarks">{{req.remark_to_user}}</textarea>
-                        {% if not req.status == req.CANCELLED %}
+                        {% if req.status == req.REGISTERED %}
                         <form method="post" action="{% url 'cancel-unblock-request' %}">
                            {% csrf_token %}
                         <br>Cancel: <button type="submit" style="color:red;border-width:1px;"><i class="fas fa-ban"></i></button>
