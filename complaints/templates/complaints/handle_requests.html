@@ -46,9 +46,9 @@
                   <td style="background:#EEEEEE;">Details:</td>
                   <td style="background:#EEEEEE;" colspan="2"><textarea class="form-control" a="true" disabled rows="5"
                         cols="2">{{ req.reason }}</textarea></td>
-                  <td rowspan="2" style="background:#EEEEEE;">
+                  <td rowspan="3" style="background:#EEEEEE;">
                      {% if user.is_staff %}
-                     <form method="post" action="{% url 'unblock_request_resolve' %}">
+                     <form method="post" action="{% url 'update_request_resolve' %}">
                         {% csrf_token %}
                         {%endif%}
                         Staff's Remarks:<textarea class="form-control" {% if user.is_staff == False %} disabled
@@ -62,7 +62,7 @@
                      </form>
                      {%endif%}
                      {% if user.is_nucleus %}
-                     <form method="post" action="{% url 'unblock_request_resolve' %}">
+                     <form method="post" action="{% url 'update_request_resolve' %}">
                         <input type="hidden" value="{{ comp.pk }}" name="id">
                         <input type="hidden" value="VF" name="status">
 
@@ -71,7 +71,7 @@
                               aria-hidden="true"></i></button><br><br>
                      </form>
                      {%endif%}
-                     <form method="post" action="{% url 'unblock_request_resolve' %}">
+                     <form method="post" action="{% url 'update_request_resolve' %}">
                         <input type="hidden" value="{{ comp.pk }}" name="id">
                         <input type="hidden" value="CD" name="status">
                         {% csrf_token %}
@@ -86,10 +86,10 @@
                </tr>
 			   <tr style="display:none;" id="{{ req.pk }}rd">
                      <td style="background:#EEEEEE;">User:</td>
-                     <td style="background:#EEEEEE;" colspan="2">{{ user.username }}, {{comp.contact_no}}, User: {{comp.user}}</td>
+                     <td style="background:#EEEEEE;" colspan="2">{{ req.user }}</td>
                   </tr>
             </div>
-            {% endfor %}
+           {% endfor %}
          </table>
          <p><b>Status</b> : RD: Registered; CD: Cancelled;</p>
 

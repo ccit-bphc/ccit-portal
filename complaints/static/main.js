@@ -73,12 +73,13 @@ function req_fun(id){
 	if(document.getElementById(id + 'ra').style.display == "none"){
 		document.getElementById(id + 'ra').style.display = "";
 		document.getElementById(id + 'rb').style.display = "";
+		document.getElementById(id + 'rd').style.display = "";
 		document.getElementById(id + 'rc').setAttribute("class", "fas fa-caret-up");
-
 	}
 	else{
 		document.getElementById(id + 'ra').style.display = "none";
 		document.getElementById(id + 'rb').style.display = "none";
+		document.getElementById(id + 'rd').style.display = "none";
 		document.getElementById(id + 'rc').setAttribute("class", "fas fa-caret-down");
 	}
 	
