@@ -152,7 +152,10 @@ class UnblockRequest(models.Model):
             if self.status == self.REGISTERED:
                 raise ValidationError("Request handled but status not updated.")
         if not (
-            self.handler is None or self.handler.is_staff or self.handler == self.user
+            self.handler is None
+            or self.handler.is_staff
+            or self.handler == self.user
+            or self.handler.is_nucleus
         ):
             raise ValidationError("Invalid request handler.")
         if not self.reason:
