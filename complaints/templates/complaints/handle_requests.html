@@ -84,6 +84,10 @@
                   <td style="background:#EEEEEE;">Registered Time:</td>
                   <td style="background:#EEEEEE;" colspan="2">{{ req.request_time }}</td>
                </tr>
+			   <tr style="display:none;" id="{{ req.pk }}rd">
+                     <td style="background:#EEEEEE;">User:</td>
+                     <td style="background:#EEEEEE;" colspan="2">{{ user.username }}, {{comp.contact_no}}, User: {{comp.user}}</td>
+                  </tr>
             </div>
             {% endfor %}
          </table>

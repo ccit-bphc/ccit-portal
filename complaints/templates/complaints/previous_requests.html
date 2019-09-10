@@ -77,7 +77,7 @@
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}e">
                         <td style="background:white;">Availability:</td>
-                        <td style="background:white;" colspan="2">{{ comp.avail_start_time }} to
+                        <td style="background:white;" colspan="2">{{ comp.avail_date }}, {{ comp.avail_start_time }} to
                            {{ comp.avail_end_time }}</td>
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}f">
@@ -132,7 +132,7 @@
                   </tr>
 				  <tr style="display:none;" id="{{ req.pk }}rd">
                      <td style="background:#EEEEEE;">User:</td>
-                     <td style="background:#EEEEEE;" colspan="2">{{ user.username }}, {{comp.contact_no}}, User: {{comp.user}}, Attachment: {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
+                     <td style="background:#EEEEEE;" colspan="2">{{ user.username }}, {{comp.contact_no}}, User: {{comp.user}}</td>
                   </tr>
                </div>
                {% endfor %}

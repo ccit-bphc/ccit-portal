@@ -15,7 +15,7 @@ function urg_fun() {
 	
 function checkURL(abc){
     string = abc.value
-    if(!(/^http:\/\//.test(string))){
+    if(!(/^:\/\//.test(string))){
         string = "http://" + string;
     }
     abc.value=string
@@ -112,10 +112,8 @@ $(document).ready(function () {
 	
 	$('#url').change(function (){
 		    string = document.getElementById("url").value;
-			if(!(/^https:\/\//.test(string))){
-			if(!(/^http:\/\//.test(string))){
+			if(!(new RegExp('://').test(string))){
 				string = "http://" + string;
-			}
 			}
 			document.getElementById("url").value = string;
 	});
