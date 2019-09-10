@@ -2,7 +2,6 @@
 
 {% block navbar %}
 	<style>.navbar {border-radius:0px;}td{background:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}</style>
-
 	<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
 	<li class="active"><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
      <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
@@ -31,7 +30,7 @@
                   <th>Details</th>
                </tr>
             </thead>
-            {% for req in unblocks %}
+            {% for req in requests %}
             <tr>
                <td style="text-overflow:clip;overflow:auto;">{{ req.url }}</td>
                <td>{{ req.status }}</td>
@@ -63,7 +62,8 @@
                      {%endif%}
                      {% if user.is_nucleus %}
                      <form method="post" action="{% url 'update_request_resolve' %}">
-                        <input type="hidden" value="{{ comp.pk }}" name="id">
+
+                        <input type="hidden" value="{{ req.pk }}" name="id">
                         <input type="hidden" value="VF" name="status">
 
                         {% csrf_token %}
@@ -72,7 +72,8 @@
                      </form>
                      {%endif%}
                      <form method="post" action="{% url 'update_request_resolve' %}">
-                        <input type="hidden" value="{{ comp.pk }}" name="id">
+
+                        <input type="hidden" value="{{ req.pk }}" name="id">
                         <input type="hidden" value="CD" name="status">
                         {% csrf_token %}
                         Cancel: <button type="submit" style="color:red;border-width:1px;"><i

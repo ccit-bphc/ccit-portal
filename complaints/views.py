@@ -2,8 +2,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import Q
 from users.permissions import user_is_logged_in_and_active, user_is_staff_or_nucleus
 from .models import Complaint, UnblockRequest
 from .forms import ComplaintForm, UnblockRequestForm
@@ -58,7 +60,7 @@ def cancel_unblock_request(request):
 @user_is_logged_in_and_active
 def register_complaint(request):
     if request.method == "POST":
-        form = ComplaintForm(request.POST)
+        form = ComplaintForm(request.POST, request.FILES)
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
@@ -97,17 +99,19 @@ def handle_complaint(request):
         complaint_obj.resolved_at = timezone.now()
         complaint_obj.save()
         if complaint_obj.status == Complaint.TAKEN_UP:
-            complaint_obj.status = "Taken up by a technician"
+            request_status = "Taken Up"
+        if complaint_obj.status == Complaint.DONE:
+            request_status = "Resolved"
         email_resolve(
             category=complaint_obj.category,
             request_id=complaint_obj.id,
             issue="Complaint",
-            user_email=request.user.email,
-            request_status=complaint_obj.status,
+            user_email=complaint_obj.user.email,
+            request_status=request_status,
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        display_complaint(request)
+        return display_complaint(request)
 
 
 @user_is_logged_in_and_active
@@ -115,28 +119,17 @@ def handle_complaint(request):
 def display_complaint(request):
     """View to display the pending requests and complaints to staff members"""
     if request.user.is_staff:
-        complaints = Complaint.objects.filter(status=Complaint.REGISTERED).order_by(
-            "-uploaded_at"
-        )
-        complaints_taken = Complaint.objects.filter(
-            handler=request.user, status=Complaint.TAKEN_UP
+        complaints = Complaint.objects.filter(
+            Q(status=Complaint.REGISTERED)
+            | Q(handler=request.user, status=Complaint.TAKEN_UP)
         ).order_by("-uploaded_at")
-        return render(
-            request,
-            "complaints/handle_complaints.html",
-            context={"complaints_taken": complaints_taken, "complaints": complaints},
-        )
     if request.user.is_nucleus:
-        complaints = (
-            Complaint.objects.filter(status=Complaint.REGISTERED)
-            .filter(status=Complaint.TAKEN_UP)
-            .order_by("-uploaded_at")
-        )
-        return render(
-            request,
-            "complaints/handle_complaints.html",
-            context={"complaints": complaints},
-        )
+        complaints = Complaint.objects.filter(
+            Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
+        ).order_by("-uploaded_at")
+    return render(
+        request, "complaints/handle_complaints.html", context={"complaints": complaints}
+    )
 
 
 @user_is_logged_in_and_active
@@ -145,11 +138,11 @@ def display_request(request):
     if request.user.is_nucleus:
         requests = UnblockRequest.objects.filter(
             status=UnblockRequest.REGISTERED
-        ).order_by("-uploaded_at")
+        ).order_by("-request_time")
     else:
         requests = UnblockRequest.objects.filter(
             status=UnblockRequest.VERIFIED
-        ).order_by("-uploaded_at")
+        ).order_by("-request_time")
     return render(
         request, "complaints/handle_requests.html", context={"requests": requests}
     )
@@ -163,22 +156,21 @@ def request_unblock(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
-            if form_obj.domain in (
-                req.domain
-                for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
-            ):
-                messages.success(
-                    request,
-                    "This url is under consideration. The issue will soon be resolved.",
-                )
-                return render(request, "complaints/request_unblock.html")
-            if form_obj.domain in (
-                req.domain
-                for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
-            ):
-                messages.success(request, "This url has already been unblocked.")
-                return render(request, "complaints/request_unblock.html")
-            form_obj.save()
+            try:
+                form_obj.save()
+            except ValidationError as e:
+                if str(e) == "['Given Url is under consideration.']":
+                    messages.success(
+                        request,
+                        "This url is under consideration. The issue will soon be resolved.",
+                    )
+                    return render(request, "complaints/request_unblock.html")
+                elif str(e) == "['Given Url is already unblocked.']":
+                    messages.success(request, "This url has already been unblocked.")
+                    return render(request, "complaints/request_unblock.html")
+                else:
+                    messages.error(request, "Please fill up form correctly.")
+                    return render(request, "complaints/request_unblock.html")
             email_on_request(
                 request_id=form_obj.id,
                 category="Request to Unblock Website",
@@ -220,16 +212,20 @@ def handle_unblock_request(request):
         if request_obj.status == UnblockRequest.VERIFIED:
             email_verified(url=request_obj.url)
         else:
+            if request_obj.status == UnblockRequest.CANCELLED:
+                request_status = "Cancelled"
+            else:
+                request_status = "Resolved"
             email_resolve(
-                category=request_obj.category,
+                category="URL Unblock Request",
                 request_id=request_obj.id,
                 issue="Request",
-                user_email=request.user.email,
-                request_status=request_obj.status,
-                details=request_obj.remark,
+                user_email=request_obj.user.email,
+                request_status=request_status,
+                details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
-        display_request(request)
+        return display_request(request)
 
 
 def email_on_request(request_id, category, details, issue, user_email):
@@ -238,19 +234,19 @@ def email_on_request(request_id, category, details, issue, user_email):
     from_email = settings.EMAIL_HOST_USER
     subject = f"{issue} Registered"
     message = (
-        f"Your {issue} with reference number {request_id}, "
-        f"category- {category} and details- {details} has been successfully registered. "
+        f"Your {issue} with reference ID- {request_id}, "
+        f"category- {category} and details- {details} ,has been successfully registered. "
         f"Soon a technician will be alloted to look into the issue"
     )
     to_email = [user_email]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
     subject = f"New {issue} Registered"
     message = (
-        f"New {issue} with reference id {request_id}, "
-        f"category- {category} and details- {details} has been registered. "
+        f"New {issue} with reference ID {request_id}, "
+        f"category- {category} and details- {details} ,has been registered. "
         f"Please allocate a technician to look into the issue"
     )
-    to_email = ["ccit_student_nucleus@hyderabad.bits-pilani.ac.in"]
+    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 

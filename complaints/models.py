@@ -1,5 +1,5 @@
 """Module for Creating Complaints Model"""
-from datetime import time
+from datetime import date, time, timedelta
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -55,14 +55,23 @@ class Complaint(models.Model):
     room_no = models.TextField(null=False, blank=False)
     avail_start_time = models.TimeField(null=False, blank=False)
     avail_end_time = models.TimeField(null=False, blank=False)
+    avail_date = models.DateField(null=False, blank=False)
     handler = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="handler"
     )
+    image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
+        if self.avail_date.weekday in (5, 6):
+            raise ValidationError("Sundays and Saturdays are holidays.")
+        if (
+            self.avail_date < date.today()
+            or self.avail_date > timedelta(days=7) + date.today()
+        ):
+            raise ValidationError("Given date is out of range.")
         if self.avail_end_time < time(
             self.avail_start_time.hour + 1,
             self.avail_start_time.minute,
@@ -124,6 +133,16 @@ class UnblockRequest(models.Model):
             self.domain = get_fld(self.url)
         except (TldBadUrl, TldDomainNotFound):
             raise ValidationError("Given url is not valid.")
+        if self.domain in (
+            req.domain
+            for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
+        ):
+            raise ValidationError("Given Url is under consideration.")
+        if self.domain in (
+            req.domain
+            for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
+        ):
+            raise ValidationError("Given Url is already unblocked.")
         if self.handler == self.user:
             if self.status != self.CANCELLED:
                 raise ValidationError(
@@ -133,7 +152,10 @@ class UnblockRequest(models.Model):
             if self.status == self.REGISTERED:
                 raise ValidationError("Request handled but status not updated.")
         if not (
-            self.handler is None or self.handler.is_staff or self.handler == self.user
+            self.handler is None
+            or self.handler.is_staff
+            or self.handler == self.user
+            or self.handler.is_nucleus
         ):
             raise ValidationError("Invalid request handler.")
         if not self.reason:
