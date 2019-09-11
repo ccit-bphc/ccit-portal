@@ -242,7 +242,7 @@ def email_on_request(request_id, category, details, issue, user_email):
         f"category- {category} and details- {details} ,has been registered. "
         f"Please allocate a technician to look into the issue"
     )
-    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
+    to_email = [settings.ADMIN_EMAIL]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 
@@ -270,5 +270,5 @@ def email_verified(url):
         "Please do the needful at the earliest."
     )
     from_email = settings.EMAIL_HOST_USER
-    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
+    to_email = [settings.ADMIN_EMAIL]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
