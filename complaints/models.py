@@ -65,13 +65,14 @@ class Complaint(models.Model):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
-        if self.avail_date.weekday in (5, 6):
-            raise ValidationError("Sundays and Saturdays are holidays.")
-        if (
-            self.avail_date < date.today()
-            or self.avail_date > timedelta(days=7) + date.today()
-        ):
-            raise ValidationError("Given date is out of range.")
+        if self.status == self.REGISTERED:
+            if self.avail_date.weekday in (5, 6):
+                raise ValidationError("Sundays and Saturdays are holidays.")
+            if (
+                self.avail_date < date.today()
+                or self.avail_date > timedelta(days=7) + date.today()
+            ):
+                raise ValidationError("Given date is out of range.")
         if self.avail_end_time < time(
             self.avail_start_time.hour + 1,
             self.avail_start_time.minute,
