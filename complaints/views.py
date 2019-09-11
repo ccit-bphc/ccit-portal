@@ -75,15 +75,13 @@ def register_complaint(request):
             request.user.contact_no = form_obj.contact_no
             request.user.save()
             messages.success(request, "Your Complaint has been Successfully Registered")
-            return render(request, "complaints/complaints_register.html")
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
-            return render(request, "complaints/complaints_register.html")
-    else:
-        form = ComplaintForm()
         return render(request, "complaints/complaints_register.html")
+    form = ComplaintForm()
+    return render(request, "complaints/complaints_register.html")
 
 
 @user_is_logged_in_and_active
@@ -111,7 +109,7 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        return display_complaint(request)
+    return display_complaint(request)
 
 
 @user_is_logged_in_and_active
@@ -165,7 +163,7 @@ def request_unblock(request):
                         "This url is under consideration. The issue will soon be resolved.",
                     )
                     return render(request, "complaints/request_unblock.html")
-                elif str(e) == "['Given Url is already unblocked.']":
+                if str(e) == "['Given Url is already unblocked.']":
                     messages.success(request, "This url has already been unblocked.")
                     return render(request, "complaints/request_unblock.html")
                 else:
@@ -179,21 +177,19 @@ def request_unblock(request):
                 user_email=request.user.email,
             )
             messages.success(request, "Your Request has been Successfully Registered")
-            return render(request, "complaints/request_unblock.html")
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
-            return render(request, "complaints/request_unblock.html")
-    else:
-        user = request.user
-        complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
-        unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
-        return render(
-            request,
-            "complaints/request_unblock.html",
-            context={"complaints": complaints, "unblocks": unblocks},
-        )
+        return render(request, "complaints/request_unblock.html")
+    user = request.user
+    complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
+    return render(
+        request,
+        "complaints/request_unblock.html",
+        context={"complaints": complaints, "unblocks": unblocks},
+    )
 
 
 @user_is_logged_in_and_active
@@ -225,7 +221,7 @@ def handle_unblock_request(request):
                 details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
-        return display_request(request)
+    return display_request(request)
 
 
 def email_on_request(request_id, category, details, issue, user_email):
