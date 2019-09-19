@@ -107,7 +107,7 @@ class Complaint(models.Model):
                 or self.avail_end_time > self.GIRLS_END_TIME
             ):
                 raise ValidationError(
-                    "Girls Hostel is only open from"
+                    "Girls Hostel is only open from "
                     f"{self.GIRLS_START_TIME.strftime('%H:%M')} to "
                     f"{self.GIRLS_END_TIME.strftime('%H:%M')}."
                 )

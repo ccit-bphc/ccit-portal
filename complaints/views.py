@@ -79,7 +79,7 @@ def register_complaint(request):
                     request, "Your Complaint has been Successfully Registered"
                 )
             except ValidationError as e:
-                for err in str(e):
+                for err in e:
                     messages.error(request, err)
         else:
             messages.error(
