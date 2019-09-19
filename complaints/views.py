@@ -64,17 +64,23 @@ def register_complaint(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
-            form_obj.save()
-            email_on_request(
-                request_id=form_obj.id,
-                category=form_obj.category,
-                details=form_obj.remark,
-                issue="Complaint",
-                user_email=request.user.email,
-            )
-            request.user.contact_no = form_obj.contact_no
-            request.user.save()
-            messages.success(request, "Your Complaint has been Successfully Registered")
+            try:
+                form_obj.save()
+                email_on_request(
+                    request_id=form_obj.id,
+                    category=form_obj.category,
+                    details=form_obj.remark,
+                    issue="Complaint",
+                    user_email=request.user.email,
+                )
+                request.user.contact_no = form_obj.contact_no
+                request.user.save()
+                messages.success(
+                    request, "Your Complaint has been Successfully Registered"
+                )
+            except ValidationError as e:
+                for err in e:
+                    messages.error(request, err)
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
