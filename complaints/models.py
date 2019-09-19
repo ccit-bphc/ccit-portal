@@ -41,10 +41,11 @@ class Complaint(models.Model):
     BUDH = "B"
     VYAS = "V"
     GAUTAM = "GT"
-    VALMIKI = "VL"
-    MEERA = "ME"
-    MALVIYA = "ML"
-    VISHWAKARMA = "VK"
+    VALMIKI = "VM"
+    MEERA = "M"
+    MALVIYA = "MM"
+    VK_BOYS = "VB"
+    VK_GIRLS = "VG"
     MRS_TOWER = "MR"
     H8_BLOCK = "H8"
 
@@ -60,7 +61,8 @@ class Complaint(models.Model):
         (VALMIKI, "Valmiki"),
         (MEERA, "Meera"),
         (MALVIYA, "Malviya"),
-        (VISHWAKARMA, "Vishwakarma"),
+        (VK_BOYS, "Vishwakarma Boys"),
+        (VK_GIRLS, "Vishwakarma Girls"),
         (MRS_TOWER, "MRS Tower"),
         (H8_BLOCK, "H8 Block"),
     )
@@ -99,7 +101,7 @@ class Complaint(models.Model):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
-        if self.bhavan in (self.MEERA, self.MALVIYA):
+        if self.bhavan in (self.MEERA, self.MALVIYA, self.VK_GIRLS):
             if (
                 self.avail_start_time < self.GIRLS_START_TIME
                 or self.avail_end_time > self.GIRLS_END_TIME
