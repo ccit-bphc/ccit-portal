@@ -34,7 +34,40 @@ class Complaint(models.Model):
         (CATEGORY_3, "Sophos Firewall"),
     )
 
+    KRISHNA = "K"
+    RAM = "R"
+    SHANKAR = "S"
+    GANDHI = "G"
+    BUDH = "B"
+    VYAS = "V"
+    GAUTAM = "GT"
+    VALMIKI = "VL"
+    MEERA = "ME"
+    MALVIYA = "ML"
+    VISHWAKARMA = "VK"
+    MRS_TOWER = "MR"
+    H8_BLOCK = "H8"
+
+    BHAVAN_CHOICES = (
+        (None, "Bhavan"),
+        (KRISHNA, "Krishna"),
+        (RAM, "Ram"),
+        (SHANKAR, "Shankar"),
+        (GANDHI, "Gandhi"),
+        (BUDH, "Budh"),
+        (VYAS, "Vyas"),
+        (GAUTAM, "Gautam"),
+        (VALMIKI, "Valmiki"),
+        (MEERA, "Meera"),
+        (MALVIYA, "Malviya"),
+        (VISHWAKARMA, "Vishwakarma"),
+        (MRS_TOWER, "MRS Tower"),
+        (H8_BLOCK, "H8 Block"),
+    )
+
     PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
+    GIRLS_START_TIME = time(16, 30)  # 4:30 pm
+    GIRLS_END_TIME = time(17)  # 5:00 pm
 
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
@@ -52,7 +85,8 @@ class Complaint(models.Model):
     contact_no = models.CharField(
         max_length=15, validators=[phone_number_validator], null=False, blank=False
     )
-    room_no = models.TextField(null=False, blank=False)
+    bhavan = models.CharField(max_length=2, choices=BHAVAN_CHOICES)
+    room_no = models.PositiveIntegerField(null=False, blank=False)
     avail_start_time = models.TimeField(null=False, blank=False)
     avail_end_time = models.TimeField(null=False, blank=False)
     avail_date = models.DateField(null=False, blank=False)
@@ -65,6 +99,17 @@ class Complaint(models.Model):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
+        if self.bhavan in (self.MEERA, self.MALVIYA):
+            if (
+                self.avail_start_time < self.GIRLS_START_TIME
+                or self.avail_end_time > self.GIRLS_END_TIME
+            ):
+                raise ValidationError(
+                    "Girls Hostel is only open from"
+                    f"{self.GIRLS_START_TIME.strftime('%H:%M')} to "
+                    f"{self.GIRLS_END_TIME.strftime('%H:%M')}."
+                )
+
         if self.status == self.REGISTERED:
             if self.avail_date.weekday in (5, 6):
                 raise ValidationError("Sundays and Saturdays are holidays.")
