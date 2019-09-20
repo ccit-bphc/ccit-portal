@@ -68,8 +68,7 @@ class Complaint(models.Model):
     )
 
     PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
-    GIRLS_START_TIME = time(16, 30)  # 4:30 pm
-    GIRLS_END_TIME = time(17)  # 5:00 pm
+    GIRLS_TIME_LIMITS = [(time(16, 30), time(17)), (time(12), time(13, 30))]
 
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
@@ -102,10 +101,13 @@ class Complaint(models.Model):
 
     def save(self, *args, **kwargs):
         if self.bhavan in (self.MEERA, self.MALVIYA, self.VK_GIRLS):
-            if (
-                self.avail_start_time < self.GIRLS_START_TIME
-                or self.avail_end_time > self.GIRLS_END_TIME
-            ):
+            for start_time, end_time in self.GIRLS_TIME_LIMITS:
+                if (
+                    self.avail_start_time >= start_time
+                    and self.avail_end_time <= end_time
+                ):
+                    break
+            else:
                 raise ValidationError(
                     "Girls Hostel is only open from "
                     f"{self.GIRLS_START_TIME.strftime('%H:%M')} to "
