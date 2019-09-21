@@ -109,9 +109,7 @@ class Complaint(models.Model):
                     break
             else:
                 raise ValidationError(
-                    "Girls Hostel is only open from "
-                    f"{self.GIRLS_START_TIME.strftime('%H:%M')} to "
-                    f"{self.GIRLS_END_TIME.strftime('%H:%M')}."
+                    "Girls' Hostel is only open for limited time slots. Your given time does not fit in them"
                 )
 
         if self.status == self.REGISTERED:
