@@ -13,6 +13,22 @@ function urg_fun() {
 		}
 	}
 	
+function timeslot_fun(){
+		var checkBox1 = document.getElementById("slot_1");
+		var checkBox2 = document.getElementById("slot_2");
+		if(checkBox1.checked == true){
+		document.getElementById('hiddentime').value = '12:00:00';
+		document.getElementById('hiddentime2').value = '01:30:00';
+		document.getElementById('slot_2').setAttribute('disabled','');}
+		else{document.getElementById('slot_2').removeAttribute('disabled');}
+		
+		if(checkBox2.checked == true){
+		document.getElementById('hiddentime').value = '04:30:00';
+		document.getElementById('hiddentime2').value = '05:30:00';
+		document.getElementById('slot_1').setAttribute('disabled','');}
+		else{document.getElementById('slot_1').removeAttribute('disabled');}
+	}
+	
 function checkURL(abc){
     string = abc.value
     if(!(/^:\/\//.test(string))){
@@ -86,6 +102,29 @@ function req_fun(id){
 }
 
 $(document).ready(function () {
+	$('#bhavan_list li').on('click', function(){
+		$("#dd_button").text($(this).text());
+		let arr = ["K", "R", "S", "G", "B", "V", "GT", "VM", "M", "MM", "VB", "VG", "MR", "H8"];
+		console.log("This: ");
+		console.log($(this).attr('id'));
+		let num = parseInt($(this).attr('id'));
+		document.getElementById('bhavan').value = arr[num];
+		console.log(num);
+		if(arr[num] == "MM" || arr[num] == "M"){
+			document.getElementById('g_msg').style="";
+			document.getElementById('slots').style="";
+			document.getElementById('time').style.display="none";
+			document.getElementById('time3').style.display="none";
+			document.getElementById('time2').style.display="none";
+			}
+		else{
+			document.getElementById('g_msg').style.display = "none";
+			document.getElementById('slots').style.display="none";
+			document.getElementById('time').style="";
+			document.getElementById('time3').style.display="inline";
+			document.getElementById('time2').style="";
+			}
+	});
 	$("#option").change(function () {
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';
@@ -121,7 +160,7 @@ $(document).ready(function () {
 	
 	$('#contact_no').change(function (){
 		var contact_no = document.getElementById('contact_no');
-		var regex = /^\d+$/ ;
+		var regex = /^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$/ ;
 		if((!regex.test(contact_no.value)) || (contact_no.value.length > 12 || contact_no.value.length < 8)){
 			contact_no.style.borderColor = 'red';
 			document.getElementById('b1').setAttribute('disabled','');
