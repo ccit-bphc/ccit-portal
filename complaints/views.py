@@ -64,30 +64,61 @@ def register_complaint(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
+            if form_obj.urgency:
+                if request.user.category not in settings.PRIVILEGED_USERS:
+                    if timezone.now().month > 5:
+                        if (timezone.now().year - request.user.enrollment_year) < 3:
+                            form_obj.urgency = False
+                    else:
+                        if (timezone.now().year - request.user.enrollment_year) < 4:
+                            form_obj.urgency = False
             try:
                 form_obj.save()
                 email_on_request(
-                    request_id=form_obj.id,
-                    category=form_obj.category,
-                    details=form_obj.remark,
-                    issue="Complaint",
-                    user_email=request.user.email,
-                )
+                request_id=form_obj.id,
+                category=form_obj.category,
+                details=form_obj.remark,
+                issue="Complaint",
+                user_email=request.user.email,
+                )  
                 request.user.contact_no = form_obj.contact_no
                 request.user.save()
-                messages.success(
-                    request, "Your Complaint has been Successfully Registered"
-                )
+                messages.success(request, "Your Complaint has been Successfully Registered")
             except ValidationError as e:
                 for err in e:
                     messages.error(request, err)
+            
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
-        return render(request, "complaints/complaints_register.html")
-    form = ComplaintForm()
     return render(request, "complaints/complaints_register.html")
+
+
+@user_is_logged_in_and_active
+@user_is_staff_or_nucleus
+def verify_urgency(request):
+    if request.method == "POST":
+        comp_id = request.POST.get("id")
+        complaint_set = Complaint.objects.filter(id=comp_id)
+        complaint_obj = complaint_set[0]
+        complaint_obj.urgency = request.POST.get("urgency")
+        complaint_obj.handler = request.user
+        complaint_obj.save()
+    return display_urgent_complaint(request)
+
+
+@user_is_logged_in_and_active
+@user_is_staff_or_nucleus
+def display_urgent_complaint(request):
+    if request.user.is_nucleus:
+        complaints = Complaint.objects.filter(urgency=False).exclude(
+            urgency_reason=None
+        )
+    else:
+        complaints = Complaint.objects.filter(urgency=True)
+    context = {"complaints": complaints}
+    return render(request, "complaints/urgent_complaints.html", context)
 
 
 @user_is_logged_in_and_active
@@ -123,14 +154,22 @@ def handle_complaint(request):
 def display_complaint(request):
     """View to display the pending requests and complaints to staff members"""
     if request.user.is_staff:
-        complaints = Complaint.objects.filter(
-            Q(status=Complaint.REGISTERED)
-            | Q(handler=request.user, status=Complaint.TAKEN_UP)
-        ).order_by("-uploaded_at")
+        complaints = (
+            Complaint.objects.filter(
+                Q(status=Complaint.REGISTERED)
+                | Q(handler=request.user, status=Complaint.TAKEN_UP)
+            )
+            .exclude(urgency=True)
+            .order_by("-uploaded_at")
+        )
     if request.user.is_nucleus:
-        complaints = Complaint.objects.filter(
-            Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
-        ).order_by("-uploaded_at")
+        complaints = (
+            Complaint.objects.filter(
+                Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
+            )
+            .exclude(urgency=True)
+            .order_by("-uploaded_at")
+        )
     return render(
         request, "complaints/handle_complaints.html", context={"complaints": complaints}
     )
