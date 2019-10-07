@@ -59,6 +59,32 @@
                      </div>
                   </div>
                   <div class="form-group">
+                     <label class="col-md-3 control-label" for="name">Hostel</label>
+                     <div class="col-md-9">
+						<div class="dropdown">
+						  <button class="btn dropdown-toggle" type="button" id="dd_button" style="background:white;border-color:#ccc" data-toggle="dropdown">-
+						  <span class="caret"></span></button>
+						  <ul id="bhavan_list" class="dropdown-menu" style="max-height:100px;overflow-y:scroll;">
+							<li id="0"><a>Krishna Bhavan</a></li>
+							<li id="1"><a>Ram Bhavan</a></li>
+							<li id="2"><a>Shankar Bhavan</a></li>
+							<li id="3"><a>Gandhi Bhavan</a></li>
+							<li id="4"><a>Budh Bhavan</a></li>
+							<li id="5"><a>Vyas Bhavan</a></li>
+							<li id="6"><a>Gautam Bhavan</a></li>
+							<li id="7"><a>Valmiki Bhavan</a></li>
+							<li id="8"><a>Meera Bhavan</a></li>
+							<li id="9"><a>Malaviya Bhavan</a></li>
+							<li id="10"><a>Vishwakarma Bhavan(Boys)</a></li>
+							<li id="11"><a>Vishwakarma Bhavan(Girls)</a></li>
+							<li id="12"><a>MRS Tower</a></li>
+							<li id="13"><a>H8 Block</a></li>
+						  </ul>
+						</div>
+						<input type="hidden" name="bhavan" id="bhavan" value="">                
+					</div>
+                  </div>
+                  <div class="form-group">
                      <label class="col-md-3 control-label" for="name">Room number</label>
                      <div class="col-md-9">
                         <input id="room_no" name="room_no" type="text" placeholder="" class="form-control" required>
@@ -66,16 +92,18 @@
                   </div>
                   <div class="form-group">
                      <label class="col-md-3 control-label" for="name">Availability</label>
-                     <div class="col-md-9" style="display:inline;">
-
+                     <div class="col-md-9" style="">
                         <input type="date" id="date" name="avail_date" required>&nbsp;&nbsp;
                         <script>date.min = new Date().toISOString().split("T")[0]; dt = new Date(); dt.setDate(dt.getDate() + 7); date.max = dt.toISOString().split("T")[0];</script>
                         <input type="time" id="time" onchange="timerecord1()" value="16:00:00" required>
-                        &nbsp;&nbsp;to&nbsp;&nbsp;
+                        <div id="time3" style="display:inline;">&nbsp;&nbsp;to&nbsp;&nbsp;</div>
                         <input type="time" id="time2" onchange="timerecord2()" value="18:00:00" required>
                         <p style="display:none;" id="time_alert"><br>The difference between times must be at least 1
                            hour</p>
-						<p>(Staff available on working days only)</p>
+						<p style="display:none;" id="g_msg"><br>*<b>Technicians are allowed into girls hostels between 12:00-1:30pm and 4:30-5:00pm only</b></p>
+						<div id="slots" style="display:none;"><input type="checkbox" id="slot_1" onclick="timeslot_fun()"> 12:00pm to 1:30pm
+						<input type="checkbox" id="slot_2" onclick="timeslot_fun()"> 4:30pm to 5:00pm</div>
+						<br><br><p>(Staff available on working days only, between 9:00AM to 5:00PM)</p>
                         <input type="hidden" id="hiddentime" name="avail_start_time" value="16:00:00">
                         <input type="hidden" id="hiddentime2" name="avail_end_time" value="18:00:00">
                      </div>
