@@ -75,12 +75,19 @@ def register_complaint(request):
             try:
                 form_obj.save()
                 email_on_request(
-                request_id=form_obj.id,
-                category=form_obj.category,
-                details=form_obj.remark,
-                issue="Complaint",
-                user_email=request.user.email,
-                )  
+                    request_id=form_obj.id,
+                    category=form_obj.category,
+                    details=form_obj.remark,
+                    issue="Complaint",
+                    user_email=request.user.email,
+                )
+                if not form_obj.urgency and form_obj.urgency_reason:
+                    email_for_verification(
+                        request_id=form_obj.id,
+                        category=form_obj.category,
+                        details=form_obj.remark,
+                        issue="Urgent Complaint",
+                    )
                 request.user.contact_no = form_obj.contact_no
                 request.user.save()
                 messages.success(request, "Your Complaint has been Successfully Registered")
@@ -201,6 +208,22 @@ def request_unblock(request):
             form_obj.user = request.user
             try:
                 form_obj.save()
+                email_on_request(
+                    request_id=form_obj.id,
+                    category="Request to Unblock Website",
+                    details=form_obj.reason,
+                    issue="Request",
+                    user_email=request.user.email,
+                )
+                email_for_verification(
+                    request_id=form_obj.id,
+                    category="Request to Unblock Website",
+                    details=form_obj.remark,
+                    issue="URL Unblock Request",
+                )
+                messages.success(
+                    request, "Your Request has been Successfully Registered"
+                )
             except ValidationError as e:
                 if str(e) == "['Given Url is under consideration.']":
                     messages.success(
@@ -214,14 +237,6 @@ def request_unblock(request):
                 else:
                     messages.error(request, "Please fill up form correctly.")
                     return render(request, "complaints/request_unblock.html")
-            email_on_request(
-                request_id=form_obj.id,
-                category="Request to Unblock Website",
-                details=form_obj.reason,
-                issue="Request",
-                user_email=request.user.email,
-            )
-            messages.success(request, "Your Request has been Successfully Registered")
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
@@ -281,14 +296,15 @@ def email_on_request(request_id, category, details, issue, user_email):
     )
     to_email = [user_email]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
-    subject = f"New {issue} Registered"
-    message = (
-        f"New {issue} with reference ID {request_id}, "
-        f"category- {category} and details- {details} ,has been registered. "
-        f"Please allocate a technician to look into the issue"
-    )
-    to_email = [settings.ADMIN_EMAIL]
-    send_mail(subject, message, from_email, to_email, fail_silently=True)
+    if issue == "Complaint":
+        subject = f"New {issue} Registered"
+        message = (
+            f"New {issue} with reference ID {request_id}, "
+            f"category- {category} and details- {details} ,has been registered. "
+            f"Please allocate a technician to look into the issue"
+        )
+        to_email = [settings.ADMIN_EMAIL]
+        send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 
 def email_resolve(
@@ -316,4 +332,19 @@ def email_verified(url):
     )
     from_email = settings.EMAIL_HOST_USER
     to_email = [settings.ADMIN_EMAIL]
+    send_mail(subject, message, from_email, to_email, fail_silently=True)
+
+
+def email_for_verification(issue, request_id, category, details):
+    """Function to send email to ccit nucleus when a
+        new unblock request is received or an unprivileged user
+        registers an urgent complaint"""
+    subject = f"Verify {issue}"
+    message = (
+        f"A new {issue} with reference number {request_id}, "
+        f"category- {category} and details- {details} has been registered. "
+        f"Please Verify it so that ccit staff can take necessary action over it."
+    )
+    from_email = settings.EMAIL_HOST_USER
+    to_email = [settings.CCIT_NUCLEUS_EMAIL]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
