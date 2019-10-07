@@ -64,26 +64,30 @@ def register_complaint(request):
         if form.is_valid():
             form_obj = form.save(commit=False)
             form_obj.user = request.user
-            form_obj.save()
-            email_on_request(
-                request_id=form_obj.id,
-                category=form_obj.category,
-                details=form_obj.remark,
-                issue="Complaint",
-                user_email=request.user.email,
-            )
-            request.user.contact_no = form_obj.contact_no
-            request.user.save()
-            messages.success(request, "Your Complaint has been Successfully Registered")
-            return render(request, "complaints/complaints_register.html")
+            try:
+                form_obj.save()
+                email_on_request(
+                    request_id=form_obj.id,
+                    category=form_obj.category,
+                    details=form_obj.remark,
+                    issue="Complaint",
+                    user_email=request.user.email,
+                )
+                request.user.contact_no = form_obj.contact_no
+                request.user.save()
+                messages.success(
+                    request, "Your Complaint has been Successfully Registered"
+                )
+            except ValidationError as e:
+                for err in e:
+                    messages.error(request, err)
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
-            return render(request, "complaints/complaints_register.html")
-    else:
-        form = ComplaintForm()
         return render(request, "complaints/complaints_register.html")
+    form = ComplaintForm()
+    return render(request, "complaints/complaints_register.html")
 
 
 @user_is_logged_in_and_active
@@ -111,7 +115,7 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        return display_complaint(request)
+    return display_complaint(request)
 
 
 @user_is_logged_in_and_active
@@ -165,7 +169,7 @@ def request_unblock(request):
                         "This url is under consideration. The issue will soon be resolved.",
                     )
                     return render(request, "complaints/request_unblock.html")
-                elif str(e) == "['Given Url is already unblocked.']":
+                if str(e) == "['Given Url is already unblocked.']":
                     messages.success(request, "This url has already been unblocked.")
                     return render(request, "complaints/request_unblock.html")
                 else:
@@ -179,21 +183,19 @@ def request_unblock(request):
                 user_email=request.user.email,
             )
             messages.success(request, "Your Request has been Successfully Registered")
-            return render(request, "complaints/request_unblock.html")
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
             )
-            return render(request, "complaints/request_unblock.html")
-    else:
-        user = request.user
-        complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
-        unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
-        return render(
-            request,
-            "complaints/request_unblock.html",
-            context={"complaints": complaints, "unblocks": unblocks},
-        )
+        return render(request, "complaints/request_unblock.html")
+    user = request.user
+    complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
+    return render(
+        request,
+        "complaints/request_unblock.html",
+        context={"complaints": complaints, "unblocks": unblocks},
+    )
 
 
 @user_is_logged_in_and_active
@@ -225,7 +227,7 @@ def handle_unblock_request(request):
                 details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
-        return display_request(request)
+    return display_request(request)
 
 
 def email_on_request(request_id, category, details, issue, user_email):
@@ -246,7 +248,7 @@ def email_on_request(request_id, category, details, issue, user_email):
         f"category- {category} and details- {details} ,has been registered. "
         f"Please allocate a technician to look into the issue"
     )
-    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
+    to_email = [settings.ADMIN_EMAIL]
     send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 
@@ -274,5 +276,5 @@ def email_verified(url):
         "Please do the needful at the earliest."
     )
     from_email = settings.EMAIL_HOST_USER
-    to_email = ["ccit@hyderabad.bits-pilani.ac.in"]
+    to_email = [settings.ADMIN_EMAIL]
     send_mail(subject, message, from_email, to_email, fail_silently=True)

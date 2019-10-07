@@ -34,7 +34,41 @@ class Complaint(models.Model):
         (CATEGORY_3, "Sophos Firewall"),
     )
 
+    KRISHNA = "K"
+    RAM = "R"
+    SHANKAR = "S"
+    GANDHI = "G"
+    BUDH = "B"
+    VYAS = "V"
+    GAUTAM = "GT"
+    VALMIKI = "VM"
+    MEERA = "M"
+    MALVIYA = "MM"
+    VK_BOYS = "VB"
+    VK_GIRLS = "VG"
+    MRS_TOWER = "MR"
+    H8_BLOCK = "H8"
+
+    BHAVAN_CHOICES = (
+        (None, "Bhavan"),
+        (KRISHNA, "Krishna"),
+        (RAM, "Ram"),
+        (SHANKAR, "Shankar"),
+        (GANDHI, "Gandhi"),
+        (BUDH, "Budh"),
+        (VYAS, "Vyas"),
+        (GAUTAM, "Gautam"),
+        (VALMIKI, "Valmiki"),
+        (MEERA, "Meera"),
+        (MALVIYA, "Malviya"),
+        (VK_BOYS, "Vishwakarma Boys"),
+        (VK_GIRLS, "Vishwakarma Girls"),
+        (MRS_TOWER, "MRS Tower"),
+        (H8_BLOCK, "H8 Block"),
+    )
+
     PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
+    GIRLS_TIME_LIMITS = [(time(16, 30), time(17)), (time(12), time(13, 30))]
 
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
@@ -52,7 +86,8 @@ class Complaint(models.Model):
     contact_no = models.CharField(
         max_length=15, validators=[phone_number_validator], null=False, blank=False
     )
-    room_no = models.TextField(null=False, blank=False)
+    bhavan = models.CharField(max_length=2, choices=BHAVAN_CHOICES)
+    room_no = models.PositiveIntegerField(null=False, blank=False)
     avail_start_time = models.TimeField(null=False, blank=False)
     avail_end_time = models.TimeField(null=False, blank=False)
     avail_date = models.DateField(null=False, blank=False)
@@ -65,13 +100,26 @@ class Complaint(models.Model):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
-        if self.avail_date.weekday in (5, 6):
-            raise ValidationError("Sundays and Saturdays are holidays.")
-        if (
-            self.avail_date < date.today()
-            or self.avail_date > timedelta(days=7) + date.today()
-        ):
-            raise ValidationError("Given date is out of range.")
+        if self.bhavan in (self.MEERA, self.MALVIYA, self.VK_GIRLS):
+            for start_time, end_time in self.GIRLS_TIME_LIMITS:
+                if (
+                    self.avail_start_time >= start_time
+                    and self.avail_end_time <= end_time
+                ):
+                    break
+            else:
+                raise ValidationError(
+                    "Girls' Hostel is only open for limited time slots. Your given time does not fit in them"
+                )
+
+        if self.status == self.REGISTERED:
+            if self.avail_date.weekday in (5, 6):
+                raise ValidationError("Sundays and Saturdays are holidays.")
+            if (
+                self.avail_date < date.today()
+                or self.avail_date > timedelta(days=7) + date.today()
+            ):
+                raise ValidationError("Given date is out of range.")
         if self.avail_end_time < time(
             self.avail_start_time.hour + 1,
             self.avail_start_time.minute,
@@ -133,16 +181,17 @@ class UnblockRequest(models.Model):
             self.domain = get_fld(self.url)
         except (TldBadUrl, TldDomainNotFound):
             raise ValidationError("Given url is not valid.")
-        if self.domain in (
-            req.domain
-            for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
-        ):
-            raise ValidationError("Given Url is under consideration.")
-        if self.domain in (
-            req.domain
-            for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
-        ):
-            raise ValidationError("Given Url is already unblocked.")
+        if self.status == self.REGISTERED:
+            if self.domain in (
+                req.domain
+                for req in UnblockRequest.objects.filter(status=UnblockRequest.VERIFIED)
+            ):
+                raise ValidationError("Given Url is under consideration.")
+            if self.domain in (
+                req.domain
+                for req in UnblockRequest.objects.filter(status=UnblockRequest.DONE)
+            ):
+                raise ValidationError("Given Url is already unblocked.")
         if self.handler == self.user:
             if self.status != self.CANCELLED:
                 raise ValidationError(
