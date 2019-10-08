@@ -35,7 +35,7 @@
                      <th>Details</th>
                   </tr>
                </thead>
-               {% for comp in complaints %}
+               {% for comp in disp_list %}
                <tbody bgcolor="white">
                   <tr>
                      <td>{{ comp.category }}</td>
@@ -107,7 +107,8 @@
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}f">
                         <td style="background:white;">Contact :</td>
-                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}, Attachment: {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
+                        <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}, Attachment:
+                           {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
                      </tr>
                   </div>
                </tbody>
