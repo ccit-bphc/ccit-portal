@@ -147,17 +147,18 @@ class Complaint(models.Model):
 
     def validate_handler(self, user, handler, status):
         """Validate that a complaint is handled either by staff or by user"""
-        if not user.is_staff:
-            if handler == user:
-                if status != self.CANCELLED:
-                    raise ValidationError(
-                        "User cancelled request but status is not set to cancelled."
-                    )
-        if not (handler is None or handler.is_staff or handler == self.user):
-            raise ValidationError("Invalid complaint handler.")
-        if handler and handler.is_staff:
-            if status == self.REGISTERED:
-                raise ValidationError("Camplaint handled but status is not updated.")
+        if status == self.REGISTERED:
+            if not (handler is None or handler.is_nucleus):
+                raise ValidationError("Handler is invalid for given status")
+        if status == self.CANCELLED:
+            if handler != user:
+                raise ValidationError("Complaint Cancellation can only be done by user")
+        if status == self.TAKEN_UP:
+            if not handler.is_staff:
+                raise ValidationError("Only staff members can take up complaints")
+        if status == self.DONE:
+            if not (handler.is_staff or handler.is_nucleus):
+                raise ValidationError("Given handler is not authorised for resolution")
 
 
 class UnblockRequest(models.Model):
