@@ -20,8 +20,8 @@ class CustomUser(AbstractUser):
     contact_no = models.CharField(
         max_length=15, validators=[phone_number_validator], null=True, blank=True
     )
-    category=models.TextField(null=False,blank=False,choices=CATEGORY_CHOICES)
-    enrollment_year=models.PositiveIntegerField(null=False,blank=False)
+    category=models.TextField(choices=CATEGORY_CHOICES)
+    enrollment_year=models.PositiveIntegerField()
 
     @property
     def is_nucleus(self):

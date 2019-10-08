@@ -13,20 +13,34 @@ function urg_fun() {
 		}
 	}
 	
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+// Get the <span> element that closes the modal
+// When the user clicks the button, open the modal 
+function closepopup() {
+  document.getElementById("myModal").style = "";
+}
+// When the user clicks on <span> (x), close the modal
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    document.getElementById("myModal").style = "";
+}
+	
 function timeslot_fun(){
 		var checkBox1 = document.getElementById("slot_1");
 		var checkBox2 = document.getElementById("slot_2");
 		if(checkBox1.checked == true){
 		document.getElementById('hiddentime').value = '12:00:00';
-		document.getElementById('hiddentime2').value = '01:30:00';
-		document.getElementById('slot_2').setAttribute('disabled','');}
-		else{document.getElementById('slot_2').removeAttribute('disabled');}
+		document.getElementById('hiddentime2').value = '13:30:00';
+		}
 		
 		if(checkBox2.checked == true){
-		document.getElementById('hiddentime').value = '04:30:00';
-		document.getElementById('hiddentime2').value = '05:30:00';
-		document.getElementById('slot_1').setAttribute('disabled','');}
-		else{document.getElementById('slot_1').removeAttribute('disabled');}
+		document.getElementById('hiddentime').value = '16:30:00';
+		document.getElementById('hiddentime2').value = '17:00:00';
+		}
 	}
 	
 function checkURL(abc){
@@ -110,7 +124,7 @@ $(document).ready(function () {
 		let num = parseInt($(this).attr('id'));
 		document.getElementById('bhavan').value = arr[num];
 		console.log(num);
-		if(arr[num] == "MM" || arr[num] == "M"){
+		if(arr[num] == "MM" || arr[num] == "M" || arr[num] == "VG"){
 			document.getElementById('g_msg').style="";
 			document.getElementById('slots').style="";
 			document.getElementById('time').style.display="none";
@@ -125,6 +139,7 @@ $(document).ready(function () {
 			document.getElementById('time2').style="";
 			}
 	});
+	
 	$("#option").change(function () {
 		//document.getElementById('url_unblock').style.display = 'none';
 		document.getElementById('other3').style.display = 'none';

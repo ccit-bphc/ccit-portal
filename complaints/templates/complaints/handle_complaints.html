@@ -39,8 +39,7 @@
                <tbody bgcolor="white">
                   <tr>
                      <td>{{ comp.category }}</td>
-
-                     <td>{{ comp.room_no }}</td>
+                     <td>{{ comp.bhavan }}, {{ comp.room_no }}</td>
                      <td>{{ comp.status }}</td>
                      {% if comp.urgency == True %}
                      <td>Yes</td>
@@ -57,7 +56,7 @@
                      <tr style="display:none;" id="{{ comp.pk }}a">
                         <td style="background:white;">Details:</td>
                         <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark"
-                              disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
+                              disabled rows="5" cols="2">{{ comp.remark }}</textarea><br>Complaint ID: {{ comp.id }}</td>
                         {% if user.is_staff == True %}
                         <form method="post" action="{% url 'complaint-resolve' %}">
                            {%endif%}
