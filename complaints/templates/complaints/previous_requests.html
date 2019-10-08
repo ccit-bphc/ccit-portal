@@ -33,14 +33,14 @@
                <tbody bgcolor="white">
                   <tr>
                      <td>{{ comp.category }}</td>
-                     <td>{{ comp.room_no }}</td>
+                     <td>{{ comp.room_no }}, {{ comp.bhavan }}</td>
                      <td>{{ comp.status }}</td>
-                     {% if comp.urgency == True %}
+                    {% if comp.urgency_reason != "" %}
                      <td>Yes</td>
                      {%else%}
                      <td>No</td>
-                     {%endif%}
-                     <td>
+					{%endif%}
+					<td>
                         <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i
                               class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
                      </td>
