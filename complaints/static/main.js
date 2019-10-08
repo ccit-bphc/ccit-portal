@@ -38,8 +38,8 @@ function timeslot_fun(){
 		}
 		
 		if(checkBox2.checked == true){
-		document.getElementById('hiddentime').value = '04:30:00';
-		document.getElementById('hiddentime2').value = '05:00:00';
+		document.getElementById('hiddentime').value = '16:30:00';
+		document.getElementById('hiddentime2').value = '17:00:00';
 		}
 	}
 	
