@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from users.permissions import user_is_logged_in_and_active, user_is_staff_or_nucleus
 from .models import Complaint, UnblockRequest
 from .forms import ComplaintForm, UnblockRequestForm
@@ -90,11 +91,13 @@ def register_complaint(request):
                     )
                 request.user.contact_no = form_obj.contact_no
                 request.user.save()
-                messages.success(request, "Your Complaint has been Successfully Registered")
+                messages.success(
+                    request, "Your Complaint has been Successfully Registered"
+                )
             except ValidationError as e:
                 for err in e:
                     messages.error(request, err)
-            
+
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
@@ -161,7 +164,7 @@ def handle_complaint(request):
 def display_complaint(request):
     """View to display the pending requests and complaints to staff members"""
     if request.user.is_staff:
-        complaints = (
+        complaints_list = (
             Complaint.objects.filter(
                 Q(status=Complaint.REGISTERED)
                 | Q(handler=request.user, status=Complaint.TAKEN_UP)
@@ -170,15 +173,25 @@ def display_complaint(request):
             .order_by("-uploaded_at")
         )
     if request.user.is_nucleus:
-        complaints = (
+        complaints_list = (
             Complaint.objects.filter(
                 Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
             )
             .exclude(urgency=True)
             .order_by("-uploaded_at")
         )
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(complaints_list, 2)
+    try:
+        complaints = paginator.page(page)
+    except PageNotAnInteger:
+        complaints = paginator.page(1)
+    except EmptyPage:
+        complaints = paginator.page(paginator.num_pages)
     return render(
-        request, "complaints/handle_complaints.html", context={"complaints": complaints}
+        request, "complaints/handle_complaints.html", context={"disp_list": complaints}
     )
 
 
@@ -186,15 +199,26 @@ def display_complaint(request):
 @user_is_staff_or_nucleus
 def display_request(request):
     if request.user.is_nucleus:
-        requests = UnblockRequest.objects.filter(
+        requests_list = UnblockRequest.objects.filter(
             status=UnblockRequest.REGISTERED
         ).order_by("-request_time")
     else:
-        requests = UnblockRequest.objects.filter(
+        requests_list = UnblockRequest.objects.filter(
             status=UnblockRequest.VERIFIED
         ).order_by("-request_time")
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(requests_list, 10)
+    try:
+        requests = paginator.page(page)
+    except PageNotAnInteger:
+        requests = paginator.page(1)
+    except EmptyPage:
+        requests = paginator.page(paginator.num_pages)
+
     return render(
-        request, "complaints/handle_requests.html", context={"requests": requests}
+        request, "complaints/handle_requests.html", context={"disp_list": requests}
     )
 
 
