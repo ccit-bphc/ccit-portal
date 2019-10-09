@@ -33,14 +33,14 @@
                <tbody bgcolor="white">
                   <tr>
                      <td>{{ comp.category }}</td>
-                     <td>{{ comp.room_no }}</td>
+                     <td>{{ comp.bhavan }}, {{ comp.room_no }}</td>
                      <td>{{ comp.status }}</td>
-                     {% if comp.urgency == True %}
+                    {% if comp.urgency_reason != "" %}
                      <td>Yes</td>
                      {%else%}
                      <td>No</td>
-                     {%endif%}
-                     <td>
+					{%endif%}
+					<td>
                         <button style="color:black;border-width:1px;" onclick="comp_fun({{ comp.pk }})"><i
                               class="fas fa-caret-down" id="{{ comp.pk }}c"></i></button>
                      </td>
@@ -49,7 +49,7 @@
                      <tr style="display:none;" id="{{ comp.pk }}a">
                         <td style="background:white;">Details:</td>
                         <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark"
-                              disabled rows="5" cols="2">{{ comp.remark }}</textarea></td>
+                              disabled rows="5" cols="2">{{ comp.remark }}</textarea><br>Complaint ID: {{ comp.id }}</td>
 
                         <td style="background:white;" colspan="1" rowspan="5">Staff's Remarks:<textarea
                               class="form-control" a="true" id="remarktouser" name="remark_to_user" disabled rows="5"

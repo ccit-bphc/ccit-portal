@@ -11,6 +11,7 @@ class ComplaintForm(forms.ModelForm):
             "remark",
             "urgency",
             "urgency_reason",
+            "bhavan",
             "contact_no",
             "room_no",
             "avail_start_time",
