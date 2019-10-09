@@ -30,18 +30,16 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         else:
             get_account_adapter().populate_username(request, u)
         if str.isdigit(u.username[1]):
-            if u.username[0]=='f':
-                u.category='FD'
-            elif request.user.username[0]=='h':
-                u.category='HD'
+            if u.username[0] == "f":
+                u.category = "FD"
+            elif request.user.username[0] == "h":
+                u.category = "HD"
             else:
-                u.category='PD'
+                u.category = "PD"
         else:
-            messages.error(
-                request, "Please login using a valid Student Bitsmail"
-            )
+            messages.error(request, "Please login using a valid Student Bitsmail")
             raise ImmediateHttpResponse(redirect("account-login"))
-        u.enrollment_year=int(u.username[1:5])
+        u.enrollment_year = int(u.username[1:5])
         sociallogin.save(request)
         return u
 
@@ -56,4 +54,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                     "Please logout first to login as another user"
                 ),
             )
+            raise ImmediateHttpResponse(redirect("home"))
+        else:
+            messages.error(request,"Could not connect to Google Servers.Please Try Again!")
             raise ImmediateHttpResponse(redirect("home"))
