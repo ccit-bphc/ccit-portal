@@ -65,14 +65,17 @@ function checkURL(abc){
 		else{document.getElementById('time_alert').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
 		var today = new Date();
 		p = (today.getMonth()+1) + '/' + today.getDate() + '/' + today.getFullYear();
-		console.log(p);
+		console.log("Today date:" + p);
+		p2 = document.getElementById('date').value.split('-');
+		p2 = p2[1] + '/' + p2[2] + '/' + p2[0];
+		console.log(p2);
 		var timenow = new Date(p + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds());
-		var start_time = new Date(p + " " + document.getElementById('hiddentime').value);
-		var staff_start = new Date(p + " " + "09:00:00");
+		var start_time = new Date(p2 + " " + document.getElementById('hiddentime').value);
+		var start_time_a = new Date("01/01/2007 " + document.getElementById('hiddentime').value);
+		var staff_start = new Date("01/01/2007 " + "09:00:00");
 		console.log("now: " + timenow);
 		console.log("entered: " + start_time);
-		//if (start_time <= timenow){console.log("Working");}
-		if(start_time <= timenow || start_time < staff_start){document.getElementById('time_alert_x').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
+		if(start_time <= timenow || start_time_a < staff_start){document.getElementById('time_alert_x').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
 		else{document.getElementById('time_alert_x').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
 	};
 	function timerecord2() {
@@ -89,14 +92,17 @@ function checkURL(abc){
 		else{document.getElementById('time_alert').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
 		var today = new Date();
 		p = (today.getMonth()+1) + '/' + today.getDate() + '/' + today.getFullYear();
-		console.log(p);
+		p2 = document.getElementById('date').value.split('-');
+		p2 = p2[1] + '/' + p2[2] + '/' + p2[0];
+		console.log(p2);
+		console.log("Today date:" + p);
 		var timenow = new Date(p + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds());
-		var end_time = new Date(p + " " + document.getElementById('hiddentime').value);
-		var staff_end = new Date(p + " " + "17:00:00");
+		var end_time = new Date(p2 + " " + document.getElementById('hiddentime2').value);
+		var end_time_a = new Date("01/01/2007 " + document.getElementById('hiddentime').value);
+		var staff_end = new Date("01/01/2007 " + "17:00:00");
 		console.log("now: " + timenow);
 		console.log("entered endtime: " + end_time);
-		//if (start_time <= timenow){console.log("Working");}
-	if(end_time <= timenow || end_time > staff_end){document.getElementById('time_alert_x').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
+	if(end_time <= timenow || end_time_a > staff_end){document.getElementById('time_alert_x').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
 		else{document.getElementById('time_alert_x').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
 	};
 
