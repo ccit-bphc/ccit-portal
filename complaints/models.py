@@ -67,6 +67,7 @@ class Complaint(models.Model):
         (H8_BLOCK, "H8 Block"),
     )
 
+    GIRLS_BHAVANS = (MEERA, MALVIYA, VK_GIRLS)
     PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
     GIRLS_TIME_LIMITS = [(time(16, 30), time(17)), (time(12), time(13, 30))]
 
@@ -100,49 +101,64 @@ class Complaint(models.Model):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
-        if self.bhavan in (self.MEERA, self.MALVIYA, self.VK_GIRLS):
+        self.validate_timings(self.avail_start_time, self.avail_end_time)
+        if self.status == self.REGISTERED:
+            self.validate_date(self.avail_date)
+        self.validate_urgency(self.urgency, self.urgency_reason)
+        self.validate_handler(self.user, self.handler, self.status)
+        super().save(*args, **kwargs)
+
+    def validate_timings(self, avail_start_time, avail_end_time):
+        """
+        Validate that available timings are in given time slots, if in girls' hostels
+        or that is has at least 1 hr of time
+        """
+        if self.bhavan in self.GIRLS_BHAVANS:
             for start_time, end_time in self.GIRLS_TIME_LIMITS:
-                if (
-                    self.avail_start_time >= start_time
-                    and self.avail_end_time <= end_time
-                ):
+                if avail_start_time >= start_time and avail_end_time <= end_time:
                     break
             else:
                 raise ValidationError(
                     "Girls' Hostel is only open for limited time slots. Your given time does not fit in them"
                 )
-
-        if self.status == self.REGISTERED:
-            if self.avail_date.weekday in (5, 6):
-                raise ValidationError("Sundays and Saturdays are holidays.")
-            if (
-                self.avail_date < date.today()
-                or self.avail_date > timedelta(days=7) + date.today()
+        else:
+            if avail_end_time < time(
+                avail_start_time.hour + 1,
+                avail_start_time.minute,
+                avail_start_time.second,
             ):
-                raise ValidationError("Given date is out of range.")
-        if self.avail_end_time < time(
-            self.avail_start_time.hour + 1,
-            self.avail_start_time.minute,
-            self.avail_start_time.second,
-        ):
-            raise ValidationError("Available time is less than one hour.")
-        if self.urgency:
-            if self.urgency_reason is None or self.urgency_reason == "":
+                raise ValidationError("Available time is less than one hour.")
+
+    def validate_date(self, avail_date):
+        """
+        Validate the the available date is in the future and within a week of complaint
+        Also make sure that it on a weekday
+        """
+        if avail_date.weekday in (5, 6):
+            raise ValidationError("Sundays and Saturdays are holidays.")
+        if avail_date < date.today() or avail_date > timedelta(days=7) + date.today():
+            raise ValidationError("Given date is out of range.")
+
+    def validate_urgency(self, urgency, reason):
+        """Validate that an urgent request has an urgency reason"""
+        if urgency:
+            if reason is None or reason == "":
                 raise ValidationError("No urgency reason given for urgent complaint.")
-        if not self.user.is_staff:
-            if self.handler == self.user:
-                if self.status != self.CANCELLED:
-                    raise ValidationError(
-                        "User cancelled request but status is not set to cancelled."
-                    )
-        if not (
-            self.handler is None or self.handler.is_staff or self.handler == self.user
-        ):
-            raise ValidationError("Invalid complaint handler.")
-        if self.handler and self.handler.is_staff:
-            if self.status == self.REGISTERED:
-                raise ValidationError("Camplaint handled but status is not updated.")
-        super().save(*args, **kwargs)
+
+    def validate_handler(self, user, handler, status):
+        """Validate that a complaint is handled either by staff or by user"""
+        if status == self.REGISTERED:
+            if not (handler is None or handler.is_nucleus):
+                raise ValidationError("Handler is invalid for given status")
+        if status == self.CANCELLED:
+            if handler != user:
+                raise ValidationError("Complaint Cancellation can only be done by user")
+        if status == self.TAKEN_UP:
+            if not handler.is_staff:
+                raise ValidationError("Only staff members can take up complaints")
+        if status == self.DONE:
+            if not (handler.is_staff or handler.is_nucleus):
+                raise ValidationError("Given handler is not authorised for resolution")
 
 
 class UnblockRequest(models.Model):

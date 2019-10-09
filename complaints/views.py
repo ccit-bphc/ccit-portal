@@ -207,7 +207,7 @@ def display_request(request):
             status=UnblockRequest.VERIFIED
         ).order_by("-request_time")
 
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
 
     paginator = Paginator(requests_list, 10)
     try:
