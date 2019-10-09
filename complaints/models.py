@@ -123,10 +123,8 @@ class Complaint(models.Model):
                 raise ValidationError(
                     "Girls' Hostel is only open for limited time slots. Your given time does not fit in them"
                 )
-        for start_time, end_time in self.TECHNICIAN_WORK_HOURS:
-            if avail_start_time >= start_time and avail_end_time <= end_time:
-                break
-        else:
+        ## Technicians' break time is currently being ignored. If the specifications change, this will need to change
+        if avail_start_time < time(9) or avail_end_time > time(17):
             raise ValidationError("Availble time not in technicians' working hours")
         if self.avail_date == date.today():
             if avail_start_time < datetime.now().time():
