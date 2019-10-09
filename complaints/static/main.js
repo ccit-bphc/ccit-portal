@@ -63,6 +63,17 @@ function checkURL(abc){
 		x = x / 60 / 60 / 1000;
 		if(x < 1){document.getElementById('time_alert').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
 		else{document.getElementById('time_alert').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
+		var today = new Date();
+		p = (today.getMonth()+1) + '/' + today.getDate() + '/' + today.getFullYear();
+		console.log(p);
+		var timenow = new Date(p + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds());
+		var start_time = new Date(p + " " + document.getElementById('hiddentime').value);
+		var staff_start = new Date(p + " " + "09:00:00");
+		console.log("now: " + timenow);
+		console.log("entered: " + start_time);
+		//if (start_time <= timenow){console.log("Working");}
+		if(start_time <= timenow || start_time < staff_start){document.getElementById('time_alert_x').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
+		else{document.getElementById('time_alert_x').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
 	};
 	function timerecord2() {
 		var t2 = document.getElementById('time2').value;
@@ -76,6 +87,17 @@ function checkURL(abc){
 		x = x / 60 / 60 / 1000;
 		if(x < 1){document.getElementById('time_alert').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
 		else{document.getElementById('time_alert').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
+		var today = new Date();
+		p = (today.getMonth()+1) + '/' + today.getDate() + '/' + today.getFullYear();
+		console.log(p);
+		var timenow = new Date(p + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds());
+		var end_time = new Date(p + " " + document.getElementById('hiddentime').value);
+		var staff_end = new Date(p + " " + "17:00:00");
+		console.log("now: " + timenow);
+		console.log("entered endtime: " + end_time);
+		//if (start_time <= timenow){console.log("Working");}
+	if(end_time <= timenow || end_time > staff_end){document.getElementById('time_alert_x').style.display = "";document.getElementById('b1').setAttribute('disabled','');}
+		else{document.getElementById('time_alert_x').style.display = "none";document.getElementById('b1').removeAttribute('disabled');}
 	};
 
 function comp_fun(id){
