@@ -1,5 +1,5 @@
 """Module for Creating Complaints Model"""
-from datetime import date, time, timedelta
+from datetime import date, time, timedelta, datetime
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -10,6 +10,10 @@ from tld.exceptions import TldBadUrl, TldDomainNotFound
 
 class Complaint(models.Model):
     """Model Class for storing complaint tickets"""
+
+    PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
+    GIRLS_TIME_LIMITS = [(time(16, 30), time(17)), (time(12), time(13, 30))]
+    TECHNICIAN_WORK_HOURS = [(time(9), time(13)), (time(14), time(17))]
 
     REGISTERED = "RD"
     TAKEN_UP = "TU"
@@ -68,8 +72,6 @@ class Complaint(models.Model):
     )
 
     GIRLS_BHAVANS = (MEERA, MALVIYA, VK_GIRLS)
-    PHONE_REGEX = r"^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$"
-    GIRLS_TIME_LIMITS = [(time(16, 30), time(17)), (time(12), time(13, 30))]
 
     User = get_user_model()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
@@ -116,25 +118,28 @@ class Complaint(models.Model):
         if self.bhavan in self.GIRLS_BHAVANS:
             for start_time, end_time in self.GIRLS_TIME_LIMITS:
                 if avail_start_time >= start_time and avail_end_time <= end_time:
-                    break
+                    return
             else:
                 raise ValidationError(
                     "Girls' Hostel is only open for limited time slots. Your given time does not fit in them"
                 )
-        else:
-            if avail_end_time < time(
-                avail_start_time.hour + 1,
-                avail_start_time.minute,
-                avail_start_time.second,
-            ):
-                raise ValidationError("Available time is less than one hour.")
+        ## Technicians' break time is currently being ignored. If the specifications change, this will need to change
+        if avail_start_time < time(9) or avail_end_time > time(17):
+            raise ValidationError("Availble time not in technicians' working hours")
+        if self.avail_date == date.today():
+            if avail_start_time < datetime.now().time():
+                raise ValidationError("Available time before complaint registration.")
+        if avail_end_time < time(
+            avail_start_time.hour + 1, avail_start_time.minute, avail_start_time.second
+        ):
+            raise ValidationError("Available time is less than one hour.")
 
     def validate_date(self, avail_date):
         """
         Validate the the available date is in the future and within a week of complaint
         Also make sure that it on a weekday
         """
-        if avail_date.weekday in (5, 6):
+        if avail_date.weekday() in (5, 6):
             raise ValidationError("Sundays and Saturdays are holidays.")
         if avail_date < date.today() or avail_date > timedelta(days=7) + date.today():
             raise ValidationError("Given date is out of range.")

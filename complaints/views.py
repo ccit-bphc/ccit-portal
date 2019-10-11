@@ -96,7 +96,7 @@ def register_complaint(request):
                 )
             except ValidationError as e:
                 for err in e:
-                    messages.error(request, err)
+                    messages.error(request, f"{err} Complaint not registered. Please try again.")
 
         else:
             messages.error(
@@ -242,7 +242,7 @@ def request_unblock(request):
                 email_for_verification(
                     request_id=form_obj.id,
                     category="Request to Unblock Website",
-                    details=form_obj.remark,
+                    details=form_obj.reason,
                     issue="URL Unblock Request",
                 )
                 messages.success(
