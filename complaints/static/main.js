@@ -193,7 +193,7 @@ $(document).ready(function () {
 	$('#contact_no').change(function (){
 		var contact_no = document.getElementById('contact_no');
 		var regex = /^(\+?91[\-\s]?)?[0]?(91)?[789]\d{9}$/ ;
-		if((!regex.test(contact_no.value)) || (contact_no.value.length > 12 || contact_no.value.length < 8)){
+		if((!regex.test(contact_no.value)) || (contact_no.value.length > 12 || contact_no.value.length < 10)){
 			contact_no.style.borderColor = 'red';
 			document.getElementById('b1').setAttribute('disabled','');
 		}

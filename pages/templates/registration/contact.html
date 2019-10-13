@@ -6,6 +6,7 @@
 	{% if user.is_authenticated %} 
 	{% if user.is_staff or user.is_nucleus %}
 	  <li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
+	  <li><a href="{% url 'complaint-display' %}">Urgent Complaints</a></li>
 	{%else%}
 	  <li><a href="{% url 'previous-requests' %}">My Complaints</a></li>
 	{%endif%}
