@@ -242,7 +242,7 @@ def request_unblock(request):
                 email_for_verification(
                     request_id=form_obj.id,
                     category="Request to Unblock Website",
-                    details=form_obj.remark,
+                    details=form_obj.reason,
                     issue="URL Unblock Request",
                 )
                 messages.success(
