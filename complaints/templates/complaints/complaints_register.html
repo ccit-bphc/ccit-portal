@@ -18,13 +18,14 @@
    <div class="row">
       <div class="col-md-6 col-md-offset-3">
 		<div id="myModal" class="modal" style="display:block;">
-
+		{% if not messages %}
 		  <center>
 		  <div class="modal-content">
 			<span class="close">&times;</span>
 			<h4><b>Attention !</b></h4><p>Please read the troubleshooting steps mentioned <a href="/static/steps.pdf"><b><u>Here</u></b></a> before registering your complaint.</p>
 		  </div>
 		  </center>
+		{%endif%}
 
 		</div>
          <form class="form-horizontal" action="{% url 'complaint-register' %}" method="post"
@@ -97,7 +98,7 @@
                   <div class="form-group">
                      <label class="col-md-3 control-label" for="name">Room number</label>
                      <div class="col-md-9">
-                        <input id="room_no" name="room_no" type="text" placeholder="" class="form-control" required>
+                        <input id="room_no" name="room_no" type="number" placeholder="" class="form-control" required>
                      </div>
                   </div>
                   <div class="form-group">

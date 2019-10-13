@@ -2,8 +2,8 @@
 {% block navbar %}
 
 {% if user.is_authenticated %}
-<li class="active"><a href="{% url 'complaint-display' %}">All Complaints</a></li>
-<li><a href="{% url 'complaint-display' %}">Urgent Complaints</a></li>
+<li><a href="{% url 'complaint-display' %}">All Complaints</a></li>
+<li class="active"><a href="{% url 'complaint-display' %}">Urgent Complaints</a></li>
 <li><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
 <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
 {%endif%}
@@ -22,7 +22,7 @@
 <div class="container">
    <div class="text-center">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
-         <legend class="text-center">All Complaints</legend>
+         <legend class="text-center">Urgent Complaints</legend>
          {%endblock%}
          {% block content %}
          <center>
@@ -78,6 +78,15 @@
                               Resolve: <button type="submit" style="color:green;border-width:1px;"><i
                                     class="fa fa-check" aria-hidden="true"></i></button><br><br>
                         </form>
+						{% if user.is_nucleus %}
+							<form method="post" action="{% url 'update_request_resolve' %}">
+							<input type="hidden" value="{{ req.pk }}" name="id">
+							<input type="hidden" value="VF" name="status">
+							{% csrf_token %}
+							Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check"
+								  aria-hidden="true"></i></button><br><br>
+							</form>
+						{%endif%}
                         {%endif%}
                         {% if user.is_staff and comp.status == comp.REGISTERED %}
                         <!-- Form for "Issue taken up" -->
