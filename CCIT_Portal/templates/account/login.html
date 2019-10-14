@@ -50,23 +50,24 @@
   <div class="container" style="position:relative;bottom:3em;">
     <div class="row" style="">
       <div class="Absolute-Center is-Responsive">
-        <center><img src="{% static 'ccit.png' %}" alt="..." style="background:#EEEEEE;border:0px;width:60%;height:60%;" class="img-thumbnail"></center><br><br>
+        <center><img src="{% static 'ccit.png' %}" alt="..." style="background:#EEEEEE;border:0px;width:60%;height:60%;"
+            class="img-thumbnail"></center><br><br>
         <div class="col-sm-12 col-md-10 col-md-offset-1">
           <center>
-		    {% if form.errors %}
-			  {% for field in form %}
-			  {% for error in field.errors %}
-			  <div class="alert alert-error" style="color:red;">
-				<b>{{ error|escape }}</b>
-			  </div>
-			  {% endfor %}
-			  {% endfor %}
-			  {% for error in form.non_field_errors %}
-			  <div class="alert alert-error" style="color:red;">
-				<strong>{{ error|escape }}</strong>
-			  </div>
-			  {% endfor %}
-			  {% endif %}
+            {% if form.errors %}
+            {% for field in form %}
+            {% for error in field.errors %}
+            <div class="alert alert-error" style="color:red;">
+              <b>{{ error|escape }}</b>
+            </div>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-error" style="color:red;">
+              <strong>{{ error|escape }}</strong>
+            </div>
+            {% endfor %}
+            {% endif %}
             {% for message in messages %}
             <b>{{ message }}<br><br></b>
             {% endfor %}
@@ -94,7 +95,8 @@
           {% get_providers as socialaccount_providers %}
 
           {% if socialaccount_providers %}
-          <p>{% blocktrans with site.name as site_name %}<center><b>Faculty and students please login with your Bitsmail</b></center><br>{% endblocktrans %}</p>
+          <p>{% blocktrans with site.name as site_name %}<center><b>Faculty and students please login with your
+                Bitsmail</b></center><br>{% endblocktrans %}</p>
 
           <div class="socialaccount_ballot">
 
@@ -106,12 +108,16 @@
             {% for brand in provider.get_brands %}
             <li>
               <a title="{{brand.name}}" class="socialaccount_provider {{provider.id}} {{brand.id}}"
-                  href="{% provider_login_url provider.id openid=brand.openid_url process=process %}"><label for="default" class="btn btn-default" onclick="location.href = '{% provider_login_url provider.id openid=brand.openid_url process=process %}';" style="position:relative;">
-                {{brand.name}}</label></a>
+                href="{% provider_login_url provider.id openid=brand.openid_url process=process %}"><label for="default"
+                  class="btn btn-default"
+                  onclick="location.href = '{% provider_login_url provider.id openid=brand.openid_url process=process %}';"
+                  style="position:relative;">
+                  {{brand.name}}</label></a>
             </li>
             {% endfor %}
             {% endif %}
-            <center><label for="default" class="btn btn-default" onclick=""
+            <center><label for="default" class="btn btn-default"
+                onclick="location.href='{% provider_login_url provider.id openid=brand.openid_url process=process %}';"
                 style="position:relative;text-overflow: ellipsis;">
                 <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}"
                   href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}"><img

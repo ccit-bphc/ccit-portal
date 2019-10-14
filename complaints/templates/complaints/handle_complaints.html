@@ -3,7 +3,7 @@
 
 {% if user.is_authenticated %}
 <li class="active"><a href="{% url 'complaint-display' %}">All Complaints</a></li>
-<li><a href="{% url 'complaint-display' %}">Urgent Complaints</a></li>
+<li><a href="{% url 'urgent-complaints' %}">Urgent Complaints</a></li>
 <li><a href="{% url 'request-display' %}">URL Unblock Requests</a></li>
 <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
 {%endif%}
@@ -42,7 +42,7 @@
                      <td>{{ comp.category }}</td>
                      <td>{{ comp.bhavan }}, {{ comp.room_no }}</td>
                      <td>{{ comp.status }}</td>
-                     {% if comp.urgency == True %}
+                     {% if comp.urgency_reason %}
                      <td>Yes</td>
                      {%else%}
                      <td>No</td>
@@ -57,7 +57,8 @@
                      <tr style="display:none;" id="{{ comp.pk }}a">
                         <td style="background:white;">Details:</td>
                         <td style="background:white;" colspan="2"><textarea class="form-control" a="true" name="remark"
-                              disabled rows="5" cols="2">{{ comp.remark }}</textarea><br>Complaint ID: {{ comp.id }}</td>
+                              disabled rows="5" cols="2">{{ comp.remark }}</textarea><br>Complaint ID: {{ comp.id }}
+                        </td>
                         {% if user.is_staff == True %}
                         <form method="post" action="{% url 'complaint-resolve' %}">
                            {%endif%}
@@ -88,13 +89,17 @@
                            Takeup issue: <button type="submit" style="color:blue;border-width:1px;"><i
                                  class="fas fa-angle-up"></i></button><br><br>
                         </form>
-                        {%endif%}
+                        {% if user.is_nucleus %}
+                        Currently Handled by:
+                        {% if comp.handler != None %}{{ comp.handler }}{%else%}None{%endif%}<br><br>
+                        {% endif %}
+                        {% endif %}
                         </td>
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}b">
                         <td style="background:white;">Urgency Reason:</td>
                         <td style="background:white;" colspan="2"><input type="text" class="form-control" a="true"
-                              value="{{ comp.reason }}" disabled rows="5" cols="2"></td>
+                              value="{{ comp.urgency_reason }}" disabled rows="5" cols="2"></td>
                      </tr>
                      <tr style="display:none;" id="{{ comp.pk }}d">
                         <td style="background:white;">Registered Time:</td>
@@ -108,7 +113,7 @@
                      <tr style="display:none;" id="{{ comp.pk }}f">
                         <td style="background:white;">Contact :</td>
                         <td style="background:white;" colspan="2">{{comp.contact_no}}, User: {{comp.user}}, Attachment:
-                           {% if comp.image %}<a href="{{comp.image}}">Clickhere</a>{%else%}-{%endif%}</td>
+                           {% if comp.image %}<a href="{{ comp.image.url}}">Clickhere</a>{%else%}-{%endif%}</td>
                      </tr>
                   </div>
                </tbody>
