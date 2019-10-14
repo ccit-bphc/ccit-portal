@@ -18,4 +18,10 @@ urlpatterns = [
     path(
         "unblocks/cancel/", views.cancel_unblock_request, name="cancel-unblock-request"
     ),
+    path("urgent-tickets", views.display_urgent_complaint, name="urgent-complaints"),
+    path(
+        "verify-urgent-tickets",
+        views.verify_urgency,
+        name="verify-urgent-complaints",
+    ),
 ]
