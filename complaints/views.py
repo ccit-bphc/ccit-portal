@@ -18,8 +18,8 @@ def previous(request):
     user = request.user
     if user.is_staff or user.is_nucleus:
         return redirect("home")
-    complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
-    unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
+    complaints = Complaint.objects.filter(user=user).order_by("uploaded_at")
+    unblocks = UnblockRequest.objects.filter(user=user).order_by("request_time")
     return render(
         request,
         "complaints/previous_requests.html",
@@ -38,7 +38,7 @@ def cancel_complaint(request):
         return redirect("previous-requests")
     complaint.handler = user
     complaint.resolved_at = timezone.now()
-    complaint.status = complaint.CANCELLED
+    complaint.status = Complaint.CANCELLED
     complaint.save()
     messages.success(request, "Your Complaint has been Successfully Cancelled.")
     return redirect("previous-requests")
@@ -53,7 +53,10 @@ def cancel_unblock_request(request):
     unblock = UnblockRequest.objects.get(pk=request.POST.get("id"))
     if unblock.user != user:
         return redirect("previous-requests")
-    unblock.delete()
+    unblock.handler = user
+    unblock.resolved_at = timezone.now()
+    unblock.status = UnblockRequest.CANCELLED
+    unblock.save()
     messages.success(request, "Your Request has been Successfully Cancelled.")
     return redirect("previous-requests")
 
@@ -96,7 +99,9 @@ def register_complaint(request):
                 )
             except ValidationError as e:
                 for err in e:
-                    messages.error(request, f"{err} Complaint not registered. Please try again.")
+                    messages.error(
+                        request, f"{err} Complaint not registered. Please try again."
+                    )
 
         else:
             messages.error(
@@ -112,7 +117,10 @@ def verify_urgency(request):
         comp_id = request.POST.get("id")
         complaint_set = Complaint.objects.filter(id=comp_id)
         complaint_obj = complaint_set[0]
-        complaint_obj.urgency = request.POST.get("urgency")
+        complaint_obj.urgency = request.POST.get("urgency", False)
+        complaint_obj.urgency_reason = request.POST.get(
+            "urgency_reason", complaint_obj.urgency_reason
+        )
         complaint_obj.handler = request.user
         complaint_obj.save()
     return display_urgent_complaint(request)
@@ -122,13 +130,33 @@ def verify_urgency(request):
 @user_is_staff_or_nucleus
 def display_urgent_complaint(request):
     if request.user.is_nucleus:
-        complaints = Complaint.objects.filter(urgency=False).exclude(
-            urgency_reason=None
-        )
+        complaints_list = Complaint.objects.filter(urgency=False,status=Complaint.REGISTERED).exclude(
+            Q(urgency_reason=None)| Q(urgency_reason='')
+        ).order_by("uploaded_at")
     else:
-        complaints = Complaint.objects.filter(urgency=True)
-    context = {"complaints": complaints}
-    return render(request, "complaints/urgent_complaints.html", context)
+          complaints_list = (
+            Complaint.objects.filter(
+                Q(status=Complaint.REGISTERED)
+                | Q(handler=request.user, status=Complaint.TAKEN_UP)
+            )
+            .exclude(urgency=False)
+            .order_by("uploaded_at")
+        )
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(complaints_list, 10)
+    try:
+        complaints = paginator.page(page)
+    except PageNotAnInteger:
+        complaints = paginator.page(1)
+    except EmptyPage:
+        complaints = paginator.page(paginator.num_pages)
+    return render(
+        request,
+        "complaints/handle_urgent_complaints.html",
+        context={"disp_list": complaints},
+    )
 
 
 @user_is_logged_in_and_active
@@ -170,20 +198,19 @@ def display_complaint(request):
                 | Q(handler=request.user, status=Complaint.TAKEN_UP)
             )
             .exclude(urgency=True)
-            .order_by("-uploaded_at")
+            .order_by("uploaded_at")
         )
     if request.user.is_nucleus:
         complaints_list = (
             Complaint.objects.filter(
                 Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
             )
-            .exclude(urgency=True)
-            .order_by("-uploaded_at")
+            .order_by("uploaded_at")
         )
 
     page = request.GET.get("page", 1)
 
-    paginator = Paginator(complaints_list, 2)
+    paginator = Paginator(complaints_list, 10)
     try:
         complaints = paginator.page(page)
     except PageNotAnInteger:
@@ -267,7 +294,7 @@ def request_unblock(request):
             )
         return render(request, "complaints/request_unblock.html")
     user = request.user
-    complaints = Complaint.objects.filter(user=user).order_by("-uploaded_at")
+    complaints = Complaint.objects.filter(user=user).order_by("uploaded_at")
     unblocks = UnblockRequest.objects.filter(user=user).order_by("-request_time")
     return render(
         request,

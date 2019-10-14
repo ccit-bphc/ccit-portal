@@ -56,5 +56,5 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             )
             raise ImmediateHttpResponse(redirect("home"))
         else:
-            messages.error(request,"Could not connect to Google Servers.Please Try Again!")
+            messages.error(request, "Couldn't Log you in.Please Try Again!")
             raise ImmediateHttpResponse(redirect("home"))
