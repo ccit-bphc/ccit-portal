@@ -117,8 +117,7 @@ def register_complaint(request):
 def verify_urgency(request):
     if request.method == "POST":
         comp_id = request.POST.get("id")
-        complaint_set = Complaint.objects.filter(id=comp_id)
-        complaint_obj = complaint_set[0]
+        complaint_obj = Complaint.objects.get(id=comp_id)
         complaint_obj.urgency = request.POST.get("urgency", False)
         complaint_obj.urgency_reason = request.POST.get(
             "urgency_reason", complaint_obj.urgency_reason
@@ -172,8 +171,7 @@ def display_urgent_complaint(request):
 def handle_complaint(request):
     if request.method == "POST":
         complaint_id = request.POST.get("id")
-        complaint_set = Complaint.objects.filter(id=complaint_id)
-        complaint_obj = complaint_set[0]
+        complaint_obj = Complaint.objects.get(id=complaint_id)
         complaint_obj.status = request.POST.get("status")
         complaint_obj.handler = request.user
         complaint_obj.remark_to_user = request.POST.get("remark_to_user", None)
@@ -315,8 +313,7 @@ def handle_unblock_request(request):
     """View For Handling Request for unblocking websites"""
     if request.method == "POST":
         user_id = request.POST.get("id")
-        request_set = UnblockRequest.objects.filter(id=user_id)
-        request_obj = request_set[0]
+        request_obj = UnblockRequest.objects.get(id=user_id)
         request_obj.status = request.POST.get("status")
         request_obj.handler = request.user
         request_obj.remark_to_user = request.POST.get("remark_to_user", None)
