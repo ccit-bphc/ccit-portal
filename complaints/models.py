@@ -103,10 +103,10 @@ class Complaint(models.Model):
         return f"{self.user} - {self.category} - {self.id}"
 
     def save(self, *args, **kwargs):
-        self.validate_timings(self.avail_start_time, self.avail_end_time)
         if self.status == self.REGISTERED:
             self.validate_date(self.avail_date)
-        self.validate_urgency(self.urgency, self.urgency_reason)
+            self.validate_timings(self.avail_start_time, self.avail_end_time)
+            self.validate_urgency(self.urgency, self.urgency_reason)
         self.validate_handler(self.user, self.handler, self.status)
         super().save(*args, **kwargs)
 
