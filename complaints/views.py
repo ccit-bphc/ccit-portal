@@ -125,6 +125,10 @@ def verify_urgency(request):
         )
         complaint_obj.handler = request.user
         complaint_obj.save()
+        if complaint_obj.urgency:
+            messages.success(request,"The Urgency for The Complaint has been Successfully Verified")
+        else:
+            messages.success(request,"The Urgency for The Complaint has been Successfully Cancelled")
     return display_urgent_complaint(request)
 
 
@@ -188,6 +192,7 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
+        messages.success(request,"The Complaints has been Successfully "+complaint_obj.status)
     return display_complaint(request)
 
 
@@ -333,6 +338,7 @@ def handle_unblock_request(request):
                 details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
+            messages.success(request,"The Request has been Successfully "+request_obj.status)
     return display_request(request)
 
 
