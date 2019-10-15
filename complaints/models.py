@@ -77,7 +77,7 @@ class Complaint(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="complainer")
     category = models.CharField(max_length=2, choices=CATEGORY_CHOICES)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=REGISTERED)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(default=datetime.now)
     resolved_at = models.DateTimeField(null=True, blank=True)
     remark = models.TextField(null=True, blank=True)
     remark_to_user = models.TextField(null=True, blank=True)
@@ -126,8 +126,8 @@ class Complaint(models.Model):
         ## Technicians' break time is currently being ignored. If the specifications change, this will need to change
         if avail_start_time < time(9) or avail_end_time > time(17):
             raise ValidationError("Availble time not in technicians' working hours")
-        if self.avail_date == date.today():
-            if avail_start_time < datetime.now().time():
+        if self.avail_date == self.uploaded_at.date():
+            if avail_start_time < self.uploaded_at.time():
                 raise ValidationError("Available time before complaint registration.")
         if avail_end_time < time(
             avail_start_time.hour + 1, avail_start_time.minute, avail_start_time.second
@@ -141,7 +141,11 @@ class Complaint(models.Model):
         """
         if avail_date.weekday() in (5, 6):
             raise ValidationError("Sundays and Saturdays are holidays.")
-        if avail_date < date.today() or avail_date > timedelta(days=7) + date.today():
+        if not (
+            self.uploaded_at.date()
+            <= avail_date
+            <= timedelta(days=7) + self.uploaded_at.date()
+        ):
             raise ValidationError("Given date is out of range.")
 
     def validate_urgency(self, urgency, reason):
