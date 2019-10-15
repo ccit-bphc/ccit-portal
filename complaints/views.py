@@ -39,6 +39,7 @@ def cancel_complaint(request):
     complaint.handler = user
     complaint.resolved_at = timezone.now()
     complaint.status = Complaint.CANCELLED
+    complaint.remark_to_user = "Cancelled by User"
     complaint.save()
     messages.success(request, "Your Complaint has been Successfully Cancelled.")
     return redirect("previous-requests")
@@ -56,6 +57,7 @@ def cancel_unblock_request(request):
     unblock.handler = user
     unblock.resolved_at = timezone.now()
     unblock.status = UnblockRequest.CANCELLED
+    unblock.remark_to_user = "Cancelled by User"
     unblock.save()
     messages.success(request, "Your Request has been Successfully Cancelled.")
     return redirect("previous-requests")
@@ -130,11 +132,13 @@ def verify_urgency(request):
 @user_is_staff_or_nucleus
 def display_urgent_complaint(request):
     if request.user.is_nucleus:
-        complaints_list = Complaint.objects.filter(urgency=False,status=Complaint.REGISTERED).exclude(
-            Q(urgency_reason=None)| Q(urgency_reason='')
-        ).order_by("uploaded_at")
+        complaints_list = (
+            Complaint.objects.filter(urgency=False, status=Complaint.REGISTERED)
+            .exclude(Q(urgency_reason=None) | Q(urgency_reason=""))
+            .order_by("uploaded_at")
+        )
     else:
-          complaints_list = (
+        complaints_list = (
             Complaint.objects.filter(
                 Q(status=Complaint.REGISTERED)
                 | Q(handler=request.user, status=Complaint.TAKEN_UP)
@@ -201,12 +205,9 @@ def display_complaint(request):
             .order_by("uploaded_at")
         )
     if request.user.is_nucleus:
-        complaints_list = (
-            Complaint.objects.filter(
-                Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
-            )
-            .order_by("uploaded_at")
-        )
+        complaints_list = Complaint.objects.filter(
+            Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
+        ).order_by("uploaded_at")
 
     page = request.GET.get("page", 1)
 
@@ -228,11 +229,11 @@ def display_request(request):
     if request.user.is_nucleus:
         requests_list = UnblockRequest.objects.filter(
             status=UnblockRequest.REGISTERED
-        ).order_by("-request_time")
+        ).order_by("request_time")
     else:
         requests_list = UnblockRequest.objects.filter(
             status=UnblockRequest.VERIFIED
-        ).order_by("-request_time")
+        ).order_by("request_time")
 
     page = request.GET.get("page", 1)
 
