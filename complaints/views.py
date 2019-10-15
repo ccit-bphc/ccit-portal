@@ -39,6 +39,7 @@ def cancel_complaint(request):
     complaint.handler = user
     complaint.resolved_at = timezone.now()
     complaint.status = Complaint.CANCELLED
+    complaint.remark_to_user = "Cancelled by User"
     complaint.save()
     messages.success(request, "Your Complaint has been Successfully Cancelled.")
     return redirect("previous-requests")
@@ -56,6 +57,7 @@ def cancel_unblock_request(request):
     unblock.handler = user
     unblock.resolved_at = timezone.now()
     unblock.status = UnblockRequest.CANCELLED
+    unblock.remark_to_user = "Cancelled by User"
     unblock.save()
     messages.success(request, "Your Request has been Successfully Cancelled.")
     return redirect("previous-requests")
@@ -123,6 +125,10 @@ def verify_urgency(request):
         )
         complaint_obj.handler = request.user
         complaint_obj.save()
+        if complaint_obj.urgency:
+            messages.success(request,"The Urgency for The Complaint has been Successfully Verified")
+        else:
+            messages.success(request,"The Urgency for The Complaint has been Successfully Cancelled")
     return display_urgent_complaint(request)
 
 
@@ -130,11 +136,13 @@ def verify_urgency(request):
 @user_is_staff_or_nucleus
 def display_urgent_complaint(request):
     if request.user.is_nucleus:
-        complaints_list = Complaint.objects.filter(urgency=False,status=Complaint.REGISTERED).exclude(
-            Q(urgency_reason=None)| Q(urgency_reason='')
-        ).order_by("uploaded_at")
+        complaints_list = (
+            Complaint.objects.filter(urgency=False, status=Complaint.REGISTERED)
+            .exclude(Q(urgency_reason=None) | Q(urgency_reason=""))
+            .order_by("uploaded_at")
+        )
     else:
-          complaints_list = (
+        complaints_list = (
             Complaint.objects.filter(
                 Q(status=Complaint.REGISTERED)
                 | Q(handler=request.user, status=Complaint.TAKEN_UP)
@@ -184,6 +192,7 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
+        messages.success(request,"The Complaints has been Successfully "+complaint_obj.status)
     return display_complaint(request)
 
 
@@ -201,12 +210,9 @@ def display_complaint(request):
             .order_by("uploaded_at")
         )
     if request.user.is_nucleus:
-        complaints_list = (
-            Complaint.objects.filter(
-                Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
-            )
-            .order_by("uploaded_at")
-        )
+        complaints_list = Complaint.objects.filter(
+            Q(status=Complaint.REGISTERED) | Q(status=Complaint.TAKEN_UP)
+        ).order_by("uploaded_at")
 
     page = request.GET.get("page", 1)
 
@@ -228,11 +234,11 @@ def display_request(request):
     if request.user.is_nucleus:
         requests_list = UnblockRequest.objects.filter(
             status=UnblockRequest.REGISTERED
-        ).order_by("-request_time")
+        ).order_by("request_time")
     else:
         requests_list = UnblockRequest.objects.filter(
             status=UnblockRequest.VERIFIED
-        ).order_by("-request_time")
+        ).order_by("request_time")
 
     page = request.GET.get("page", 1)
 
@@ -332,6 +338,7 @@ def handle_unblock_request(request):
                 details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
+            messages.success(request,"The Request has been Successfully "+request_obj.status)
     return display_request(request)
 
 
