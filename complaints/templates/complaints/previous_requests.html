@@ -110,7 +110,7 @@
                {% for req in unblocks %}
                <tr>
                   <td style="text-overflow:clip;overflow:auto;">{{ req.url }}</td>
-                  <td>{{ req.status }}</td>
+                  <td>{%if req.status != "VF" %}{{ req.status }}{%else%}RD{%endif%}</td>
                   <td>{{ req.remark_to_user }}</td>
                   <td>
                      <button style="color:black;border-width:1px;" onclick="req_fun({{ req.pk }})"><i
