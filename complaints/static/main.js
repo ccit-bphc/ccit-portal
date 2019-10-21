@@ -13,6 +13,14 @@ function urg_fun() {
 		}
 	}
 	
+function validate_hostel() {
+	var x = document.getElementById("bhavan").value;
+	if (x == "") {
+		alert("Please select Hostel");
+		return false;
+	}
+}
+	
 var modal = document.getElementById("myModal");
 
 // Get the button that opens the modal
