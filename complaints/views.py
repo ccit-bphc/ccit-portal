@@ -125,9 +125,13 @@ def verify_urgency(request):
         complaint_obj.handler = request.user
         complaint_obj.save()
         if complaint_obj.urgency:
-            messages.success(request,"The Urgency for The Complaint has been Successfully Verified")
+            messages.success(
+                request, "The Urgency for The Complaint has been Successfully Verified"
+            )
         else:
-            messages.success(request,"The Urgency for The Complaint has been Successfully Cancelled")
+            messages.success(
+                request, "The Urgency for The Complaint has been Successfully Cancelled"
+            )
     return display_urgent_complaint(request)
 
 
@@ -190,7 +194,9 @@ def handle_complaint(request):
             details=complaint_obj.remark,
             remark_user=complaint_obj.remark_to_user,
         )
-        messages.success(request,"The Complaints has been Successfully "+complaint_obj.status)
+        messages.success(
+            request, "The Complaints has been Successfully " + complaint_obj.status
+        )
     return display_complaint(request)
 
 
@@ -285,13 +291,13 @@ def request_unblock(request):
                         request,
                         "This url is under consideration. The issue will soon be resolved.",
                     )
-                    return render(request, "complaints/request_unblock.html")
-                if str(e) == "['Given Url is already unblocked.']":
+                elif str(e) == "['Given Url is already unblocked.']":
                     messages.success(request, "This url has already been unblocked.")
-                    return render(request, "complaints/request_unblock.html")
+                elif str(e) == "['Given url is not valid.']":
+                    messages.error(request, "Submitted URL is invalid.")
                 else:
-                    messages.error(request, "Please fill up form correctly.")
-                    return render(request, "complaints/request_unblock.html")
+                    messages.error(request, "Please fill up the form correctly.")
+                return render(request, "complaints/request_unblock.html")
         else:
             messages.error(
                 request, "Please fill all the details correctly in the form provided"
@@ -335,7 +341,9 @@ def handle_unblock_request(request):
                 details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
-            messages.success(request,"The Request has been Successfully "+request_obj.status)
+            messages.success(
+                request, "The Request has been Successfully " + request_obj.status
+            )
     return display_request(request)
 
 
