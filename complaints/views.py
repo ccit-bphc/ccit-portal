@@ -119,9 +119,13 @@ def verify_urgency(request):
         comp_id = request.POST.get("id")
         complaint_obj = Complaint.objects.get(id=comp_id)
         complaint_obj.urgency = request.POST.get("urgency", False)
-        complaint_obj.urgency_reason = request.POST.get(
+        urgency_reason = request.POST.get(
             "urgency_reason", complaint_obj.urgency_reason
         )
+        if urgency_reason == "":
+            complaint_obj.urgency_reason = None
+        else:
+            complaint_obj.urgency_reason = urgency_reason
         complaint_obj.handler = request.user
         complaint_obj.save()
         if complaint_obj.urgency:
@@ -341,9 +345,9 @@ def handle_unblock_request(request):
                 details=request_obj.url,
                 remark_user=request_obj.remark_to_user,
             )
-            messages.success(
-                request, "The Request has been Successfully " + request_obj.status
-            )
+        messages.success(
+            request, "The Request has been Successfully " + request_obj.status
+        )
     return display_request(request)
 
 
