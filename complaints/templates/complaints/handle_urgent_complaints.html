@@ -87,7 +87,11 @@
                            {% csrf_token %}
                            Verify: <button type="submit" style="color:green;border-width:1px;"><i class="fa fa-check"
                                  aria-hidden="true"></i></button><br><br>
-                           <input type="hidden" value='None' name="urgency_reason">
+                        </form>
+                        <form method="post" action="{% url 'verify-urgent-complaints' %}">
+                           {% csrf_token %}
+                           <input type="hidden" value="{{ comp.pk }}" name="id">
+                           <input type="hidden" value="" name="urgency_reason">
                            Cancel Urgency: <button type="submit" style="color:red;border-width:1px;"><i
                                  class="fas fa-ban" aria-hidden="true"></i></button><br><br>
                         </form>
