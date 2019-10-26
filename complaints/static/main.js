@@ -14,8 +14,8 @@ function urg_fun() {
 	}
 	
 function cancel_func(){
-	var remark = getElementById("remarks").value;
-	getElementById("cancel_remark").value = remark;
+	var remark = document.getElementById("remarks").value;
+	document.getElementById("cancel_remark").value = remark;
 }
 function validate_hostel() {
 	var x = document.getElementById("bhavan").value;
