@@ -63,8 +63,8 @@
                      <form method="post" action="{% url 'update_request_resolve' %}">
                         {% csrf_token %}
                         {%endif%}
-                        Staff's Remarks:<textarea class="form-control" a="true" name="remark_to_user" rows="5"
-                           placeholder="Staff's remarks">{{req.remark_to_user}}</textarea>
+                        Staff's Remarks:<textarea class="form-control" id="remarks" a="true" name="remark_to_user" rows="5"
+                           placeholder="Staff's remarks" onchange="cancel_func()">{{req.remark_to_user}}</textarea>
                         {% if user.is_staff %}
                         <input type="hidden" value="{{ req.pk }}" name="id">
                         <input type="hidden" value="DN" name="status">
@@ -84,7 +84,7 @@
                      </form>
                      {%endif%}
                      <form method="post" action="{% url 'update_request_resolve' %}">
-						<input type="hidden" value="{{req.remark_to_user}}" name="remark_to_user">
+						<input type="hidden" value="{{req.remark_to_user}}" id="cancel_remark" name="remark_to_user">
                         <input type="hidden" value="{{ req.pk }}" name="id">
                         <input type="hidden" value="CD" name="status">
                         {% csrf_token %}
